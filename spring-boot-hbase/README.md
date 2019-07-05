@@ -1,0 +1,1 @@
+http://ifeve.com/spring-boot-2-x-%EF%BC%9A%E9%80%9A%E8%BF%87-spring-boot-starter-hbase-%E9%9B%86%E6%88%90-hbase/
