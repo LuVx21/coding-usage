@@ -10,7 +10,7 @@ import javax.mail.*;
  * SMTP: smtp.office365.com 587 STARTTLS
  * 读取邮件
  */
-public class Receive0 {
+public class Receive1 {
 
     public static void main(String[] args) throws Exception {
         Session session = Session.getDefaultInstance(MailUtils.imap_config(), new Authenticator() {
