@@ -19,11 +19,11 @@ public class DebeziumEngineMain {
     private void exec() {
         DebeziumEngine<ChangeEvent<String, String>> engine = DebeziumEngine.create(Json.class)
                 .using(DebeziumRecordUtils.config())
-                .notifying(record -> {
-                    System.out.println("------------------");
-                    System.out.println(record);
-                })
-                // .notifying(new DebeziumEngineChangeConsumer())
+                // .notifying(record -> {
+                //     System.out.println("------------------");
+                //     System.out.println(record);
+                // })
+                .notifying(new DebeziumEngineChangeConsumer())
                 .build();
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
