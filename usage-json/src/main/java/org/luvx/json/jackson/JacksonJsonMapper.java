@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class JacksonJsonMapper extends BaseJsonMapper {
     @Override
-    public Map toMap(String json) {
+    public Map json2Map(String json) {
         try {
             return objectMapper.readValue(json, LinkedHashMap.class);
         } catch (IOException e) {
@@ -26,7 +26,7 @@ public class JacksonJsonMapper extends BaseJsonMapper {
     }
 
     @Override
-    public List toList(String json) {
+    public List json2List(String json) {
         try {
             return objectMapper.readValue(json, LinkedList.class);
         } catch (IOException e) {
@@ -35,7 +35,7 @@ public class JacksonJsonMapper extends BaseJsonMapper {
     }
 
     @Override
-    public <T> List<T> toList(String json, Type type) {
+    public <T> List<T> json2List(String json, Type type) {
         TypeReference<T> typeReference = new TypeReference<T>() {
             @Override
             public Type getType() {
@@ -50,7 +50,7 @@ public class JacksonJsonMapper extends BaseJsonMapper {
     }
 
     @Override
-    public String toJsonString(Object o) {
+    public String bean2Json(Object o) {
         try {
             return objectMapper.writeValueAsString(o);
         } catch (JsonProcessingException e) {
@@ -59,7 +59,7 @@ public class JacksonJsonMapper extends BaseJsonMapper {
     }
 
     @Override
-    public String toJsonWithDateFormat(Object o, String dateFormatPattern) {
+    public String bean2Json(Object o, String dateFormatPattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormatPattern);
         try {
             return objectMapper.writer(sdf).writeValueAsString(o);
@@ -69,7 +69,7 @@ public class JacksonJsonMapper extends BaseJsonMapper {
     }
 
     @Override
-    public <T> T toPojo(String json, Class<T> clazz) {
+    public <T> T json2Bean(String json, Class<T> clazz) {
         try {
             return objectMapper.readValue(json, clazz);
         } catch (IOException e) {
@@ -79,12 +79,12 @@ public class JacksonJsonMapper extends BaseJsonMapper {
     }
 
     @Override
-    public Map convertToMap(Object o) {
+    public Map bean2Map(Object o) {
         return objectMapper.convertValue(o, LinkedHashMap.class);
     }
 
     @Override
-    public <T> T convertFromMap(Map map, Class<T> clazz) {
+    public <T> T map2Bean(Map map, Class<T> clazz) {
         return objectMapper.convertValue(map, clazz);
     }
 }
