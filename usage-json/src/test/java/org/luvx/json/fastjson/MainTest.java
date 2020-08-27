@@ -18,10 +18,10 @@ public class MainTest {
         u.setBirthday(LocalDate.now());
 
         BaseJsonMapper of = Json.FAST_JSON.of();
-        String s = of.toJsonString(u);
+        String s = of.bean2Json(u);
         System.out.println(s);
 
-        Map map = of.toMap(s);
+        Map map = of.json2Map(s);
         System.out.println(map);
     }
 }
