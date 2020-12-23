@@ -20,10 +20,11 @@ import java.util.List;
  */
 @Slf4j
 public class Write1 {
+    private static final String home;
     private static final String path;
 
     static {
-        String home = System.getProperty("user.home") + "/Desktop/";
+        home = System.getProperty("user.home") + "/Desktop/";
         path = home + Write1.class.getSimpleName() + "1.xlsx";
     }
 
@@ -83,10 +84,8 @@ public class Write1 {
      * 模板
      */
     public static void write5() {
-        String template =
-                "D:\\work\\open\\core\\src\\main\\resources\\templates\\隽宝贝计划保全信息分发.xlsx";
-        String fileName =
-                "D:\\work\\open\\core\\src\\main\\resources\\templates\\隽宝贝计划保全信息分发_1588902762710.xlsx";
+        String template = home + "1.xlsx";
+        String fileName = home + "2.xlsx";
 
         EasyExcel.write(fileName, DownloadData.class)
                 .withTemplate(template)
