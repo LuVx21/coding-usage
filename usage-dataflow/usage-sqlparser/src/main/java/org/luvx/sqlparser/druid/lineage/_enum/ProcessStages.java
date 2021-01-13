@@ -1,4 +1,4 @@
-package org.luvx.druid.lineage._enum;
+package org.luvx.sqlparser.druid.lineage._enum;
 
 /**
  * @author Ren, Xie

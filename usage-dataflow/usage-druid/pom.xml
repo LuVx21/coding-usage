@@ -14,20 +14,11 @@
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
 
-    <properties>
-        <java.version>15</java.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
             <version>1.2.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.70</version>
         </dependency>
     </dependencies>
 

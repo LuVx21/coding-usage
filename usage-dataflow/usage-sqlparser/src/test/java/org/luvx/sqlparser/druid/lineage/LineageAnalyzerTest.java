@@ -1,36 +1,36 @@
-package org.luvx.druid.lineage;
+package org.luvx.sqlparser.druid.lineage;
 
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
-import org.luvx.druid.lineage.pojo.LineageField;
-import org.luvx.druid.lineage.pojo.TreeNode;
+import org.luvx.sqlparser.druid.lineage.pojo.LineageField;
+import org.luvx.sqlparser.druid.lineage.pojo.TreeNode;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public class LineageAnalyzerTest {
-    final static String sqlList = """
-            ## 1
-            select aa.user_id,aa.user_name
-            from user aa
 
-            ## 2
+    String sql1 = "select aa.user_id,aa.user_name from user aa";
+    String sql2 = """
             select
             user_id as uid
             ,user_name as uname
             from
             (
-                select user_id, concat("test",user_name) as user_name
-                from user
+             select user_id, concat("test",user_name) as user_name
+             from user
             )t
-
-            ## 3
+            """;
+    String sql3 = """
             select
                 user_id
                 ,user_name
@@ -40,29 +40,18 @@ public class LineageAnalyzerTest {
                 sub_user_id as user_id
                 ,sub_user_name as user_name
             from sub_user
-
-            ## 4
+            """;
+    String sql4 = """
             select t1.user_id,t2.user_name,t2.sub_user_id,t2.sub_user_name
             from user t1
             left join sub_user t2
             on t1.user_id = t2.user_id
             """;
-
     String sql;
 
     @Before
     public void before() {
-        String sqlId = "2";
-        Matcher matcher = Pattern.compile("##\\s.*\\S").matcher(sqlList);
-        List<String> list = Arrays.asList(sqlList.split("##\\s.*\\S"));
-        int j = 1;
-        Map<String, String> map = new LinkedHashMap<>();
-        while (matcher.find()) {
-            String key = matcher.group().replace("##", "").trim();
-            map.put(key, list.get(j));
-            j++;
-        }
-        sql = map.get(sqlId);
+        sql = sql1;
     }
 
     @Test
@@ -87,5 +76,19 @@ public class LineageAnalyzerTest {
         //                     + JSONObject.toJSONString(node.getData()) + "\n"
         //     );
         // }
+    }
+
+    @Test
+    public void test1() {
+        MySqlStatementParser parser = new MySqlStatementParser(sql1);
+        SQLStatement stmt = parser.parseStatement();
+        MySqlSchemaStatVisitor visitor = new MySqlSchemaStatVisitor();
+        stmt.accept(visitor);
+        Map<TableStat.Name, TableStat> map = visitor.getTables();
+        for (Map.Entry<TableStat.Name, TableStat> entry : map.entrySet()) {
+            TableStat stat = entry.getValue();
+            String operator = stat.toString();
+            System.out.println(operator);
+        }
     }
 }

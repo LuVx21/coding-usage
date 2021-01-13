@@ -1,8 +1,8 @@
-package org.luvx.druid.lineage.pojo;
+package org.luvx.sqlparser.druid.lineage.pojo;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.luvx.druid.lineage.utils.EmptyUtils;
+import org.luvx.sqlparser.druid.lineage.utils.EmptyUtils;
 
 /**
  * @author Ren, Xie

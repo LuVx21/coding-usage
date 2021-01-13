@@ -1,4 +1,4 @@
-package org.luvx.druid.lineage;
+package org.luvx.sqlparser.druid.lineage;
 
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLExpr;
@@ -7,9 +7,9 @@ import com.alibaba.druid.sql.ast.expr.*;
 import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.util.JdbcConstants;
 import com.alibaba.druid.util.StringUtils;
-import org.luvx.druid.lineage.pojo.LineageField;
-import org.luvx.druid.lineage.pojo.TreeNode;
-import org.luvx.druid.lineage.utils.EmptyUtils;
+import org.luvx.sqlparser.druid.lineage.pojo.LineageField;
+import org.luvx.sqlparser.druid.lineage.pojo.TreeNode;
+import org.luvx.sqlparser.druid.lineage.utils.EmptyUtils;
 
 import java.util.List;
 import java.util.Objects;

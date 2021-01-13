@@ -1,4 +1,4 @@
-package org.luvx.druid.lineage.utils;
+package org.luvx.sqlparser.druid.lineage.utils;
 
 import com.alibaba.druid.util.StringUtils;
 

@@ -1,7 +1,7 @@
-package org.luvx.druid.lineage;
+package org.luvx.sqlparser.druid.lineage;
 
-import org.luvx.druid.lineage._enum.ProcessStages;
-import org.luvx.druid.lineage.pojo.TreeNode;
+import org.luvx.sqlparser.druid.lineage._enum.ProcessStages;
+import org.luvx.sqlparser.druid.lineage.pojo.TreeNode;
 
 import java.util.Iterator;
 

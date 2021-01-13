@@ -1,7 +1,7 @@
-package org.luvx.druid.lineage.pojo;
+package org.luvx.sqlparser.druid.lineage.pojo;
 
 import lombok.Getter;
-import org.luvx.druid.lineage.TreeNodeIterator;
+import org.luvx.sqlparser.druid.lineage.TreeNodeIterator;
 
 import java.util.*;
 
