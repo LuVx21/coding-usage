@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.alibaba.druid.sql.parser.SQLExprParser</OriginalElement>
+  <nodes>
+    <node x="642.0" y="348.0">com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser</node>
+    <node x="326.0" y="128.0">com.alibaba.druid.sql.parser.SQLStatementParser</node>
+    <node x="642.0" y="174.0">com.alibaba.druid.sql.parser.SQLExprParser</node>
+    <node x="21.5" y="0.0">com.alibaba.druid.sql.parser.Lexer</node>
+    <node x="0.0" y="505.0">com.alibaba.druid.sql.ast.SQLObject</node>
+    <node x="370.0" y="348.0">com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser</node>
+    <node x="0.0" y="382.0">com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer</node>
+    <node x="34.5" y="702.0">com.alibaba.druid.sql.ast.SQLStatement</node>
+    <node x="568.0" y="0.0">com.alibaba.druid.sql.parser.SQLParser</node>
+    <node x="294.0" y="505.0">com.alibaba.druid.sql.parser.Keywords</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser" target="com.alibaba.druid.sql.parser.SQLStatementParser">
+      <point x="0.0" y="-39.0" />
+      <point x="0.0" y="85.0" />
+    </edge>
+    <edge source="com.alibaba.druid.sql.ast.SQLStatement" target="com.alibaba.druid.sql.ast.SQLObject">
+      <point x="0.0" y="-50.5" />
+      <point x="0.0" y="73.5" />
+    </edge>
+    <edge source="com.alibaba.druid.sql.parser.SQLStatementParser" target="com.alibaba.druid.sql.parser.SQLParser">
+      <point x="0.0" y="-85.0" />
+      <point x="474.0" y="103.0" />
+      <point x="598.0" y="103.0" />
+      <point x="-30.0" y="39.0" />
+    </edge>
+    <edge source="com.alibaba.druid.sql.dialect.mysql.parser.MySqlLexer" target="com.alibaba.druid.sql.parser.Lexer">
+      <point x="0.0" y="-39.0" />
+      <point x="0.0" y="166.0" />
+    </edge>
+    <edge source="com.alibaba.druid.sql.parser.SQLExprParser" target="com.alibaba.druid.sql.parser.SQLParser">
+      <point x="0.0" y="-39.0" />
+      <point x="782.0" y="103.0" />
+      <point x="658.0" y="103.0" />
+      <point x="30.0" y="39.0" />
+    </edge>
+    <edge source="com.alibaba.druid.sql.dialect.mysql.parser.MySqlExprParser" target="com.alibaba.druid.sql.parser.SQLExprParser">
+      <point x="0.0" y="-39.0" />
+      <point x="0.0" y="39.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.04375" x="410.4134167279864" y="548.0652440519991" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+
