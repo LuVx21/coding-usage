@@ -1006,6 +1006,7 @@ bool_expr_binary_operator :
 
 expr :
        expr interval_item
+     | expr T_EQUAL expr
      | expr T_MUL expr
      | expr T_DIV expr
      | expr T_ADD expr
