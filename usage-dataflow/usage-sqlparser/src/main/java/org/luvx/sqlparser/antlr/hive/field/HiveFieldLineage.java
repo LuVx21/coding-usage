@@ -10,13 +10,13 @@ import java.util.HashSet;
  */
 @Getter
 @Setter
-public class HiveFieldLineageModel {
+public class HiveFieldLineage {
     /**
      * 目标字段
      */
-    private FieldNameModel                     field;
+    private FieldNameModel          field;
     /**
      * 来源字段列表
      */
-    private HashSet<FieldNameWithProcessModel> sourceFields;
+    private HashSet<FieldNameModel> sourceFields;
 }

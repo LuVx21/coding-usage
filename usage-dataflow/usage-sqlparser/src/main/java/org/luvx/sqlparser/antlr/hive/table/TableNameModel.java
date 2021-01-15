@@ -14,26 +14,6 @@ public class TableNameModel {
     private String dbName;
     private String tableName;
 
-    public static String dealNameMark(String name) {
-        if (name.startsWith("`") && name.endsWith("`")) {
-            return name.substring(1, name.length() - 1);
-        } else {
-            return name;
-        }
-    }
-
-    public static TableNameModel parseTableName(String tableName) {
-        TableNameModel tableNameModel = new TableNameModel();
-        String[] splitTable = tableName.split("\\.");
-        if (splitTable.length == 2) {
-            tableNameModel.setDbName(splitTable[0]);
-            tableNameModel.setTableName(splitTable[1]);
-        } else if (splitTable.length == 1) {
-            tableNameModel.setTableName(splitTable[0]);
-        }
-        return tableNameModel;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -43,12 +23,45 @@ public class TableNameModel {
             return false;
         }
         TableNameModel that = (TableNameModel) o;
-        return dbName.equals(that.dbName) && tableName.equals(that.tableName);
+        return Objects.equals(dbName, that.dbName) && Objects.equals(tableName, that.tableName);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(dbName, tableName);
+    }
+
+    /**
+     * 删除表名前后的`字符
+     *
+     * @param name
+     * @return
+     */
+    public static String dealNameMark(String name) {
+        return name.startsWith("`") && name.endsWith("`") ?
+                name.substring(1, name.length() - 1) : name;
+    }
+
+    /**
+     * tableName
+     * dbName.tableName
+     *
+     * @param tableName 表名(可能含有库名)
+     * @return
+     */
+    public static TableNameModel parseTableName(String tableName) {
+        String[] array = tableName.split("\\.");
+        String dbName = null;
+        if (array.length == 2) {
+            dbName = array[0];
+            tableName = array[1];
+        } else if (array.length == 1) {
+            tableName = array[0];
+        }
+        TableNameModel name = new TableNameModel();
+        name.setDbName(dbName);
+        name.setTableName(tableName);
+        return name;
     }
 }
 

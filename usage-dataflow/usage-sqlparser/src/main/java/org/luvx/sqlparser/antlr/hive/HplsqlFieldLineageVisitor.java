@@ -22,9 +22,9 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
     private Map<Integer, String>                         selectParentKeyMap  = new HashMap<>();
     private String                                       thisSelectId;
     private String                                       sourceSQL;
-    private List<HiveFieldLineageSelectModel>            hiveFieldSelectList = new ArrayList<>();
-    private HashSet<FieldNameWithProcessModel>           sourceFields;
-    private String                                       fieldProcess        = "";
+    private List<HiveFieldLineageSelectModel> hiveFieldSelectList = new ArrayList<>();
+    private HashSet<FieldNameModel>           sourceFields;
+    private String                            fieldProcess        = "";
 
     private HiveFieldLineageSelectItemModel       selectItemModel;
     private List<HiveFieldLineageSelectItemModel> selectFields    = new ArrayList<>();
@@ -328,11 +328,11 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
                                     fieldProcess = selectItem.getProcess();
                                 }
                                 for (String field : selectItem.getFieldNames()) {
-                                    FieldNameWithProcessModel fieldNameWithProcessModel = new FieldNameWithProcessModel();
+                                    FieldNameModel fieldNameWithProcessModel = new FieldNameModel();
                                     fieldNameWithProcessModel.setDbName(select.getFromTable().getDbName());
                                     fieldNameWithProcessModel.setTableName(select.getFromTable().getTableName());
                                     fieldNameWithProcessModel.setFieldName(field);
-                                    fieldNameWithProcessModel.setProcess(fieldProcess);
+                                    fieldNameWithProcessModel.setExpression(fieldProcess);
                                     sourceFields.add(fieldNameWithProcessModel);
                                 }
                             }
@@ -346,12 +346,12 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
     /**
      * 获取字段血缘列表
      */
-    public List<HiveFieldLineageModel> getHiveFieldLineage() {
+    public List<HiveFieldLineage> getHiveFieldLineage() {
         transSelectToList();
         List<FieldNameModel> targetFields = getTargetFields();
-        List<HiveFieldLineageModel> hiveFieldLineageModelList = new ArrayList<>();
+        List<HiveFieldLineage> hiveFieldLineageModelList = new ArrayList<>();
         for (FieldNameModel field : targetFields) {
-            HiveFieldLineageModel hiveFieldLineageModel = new HiveFieldLineageModel();
+            HiveFieldLineage hiveFieldLineageModel = new HiveFieldLineage();
             hiveFieldLineageModel.setField(field);
             sourceFields = new HashSet<>();
             fieldProcess = "";

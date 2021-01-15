@@ -8,7 +8,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
-import org.luvx.sqlparser.antlr.hive.field.HiveFieldLineageModel;
+import org.luvx.sqlparser.antlr.hive.field.HiveFieldLineage;
 import org.luvx.sqlparser.antlr.hive.table.HiveTableLineageModel;
 import org.luvx.sqlparser.utils.ReadFileUtils;
 
@@ -28,7 +28,7 @@ public class HplsqlTableLineageVisitorTest {
     static ParseTree    parseTree;
 
     static {
-        sql = ReadFileUtils.readFile("1.sql");
+        sql = ReadFileUtils.readFile("2.sql");
         charStream = CharStreams.fromString(sql);
         sqlLexer = new HplsqlLexer(charStream);
         tokenStream = new CommonTokenStream(sqlLexer);
@@ -45,7 +45,7 @@ public class HplsqlTableLineageVisitorTest {
 
         HplsqlFieldLineageVisitor visitor1 = new HplsqlFieldLineageVisitor(sql);
         visitor1.visit(parseTree);
-        List<HiveFieldLineageModel> list = visitor1.getHiveFieldLineage();
+        List<HiveFieldLineage> list = visitor1.getHiveFieldLineage();
         System.out.println(JSON.toJSONString(list, true));
     }
 }
