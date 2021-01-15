@@ -534,7 +534,7 @@ include_stmt :          // INCLUDE statement
      ;
 
 insert_stmt :           // INSERT statement
-       T_INSERT (T_OVERWRITE T_TABLE | T_INTO T_TABLE?) table_name insert_stmt_cols? (select_stmt | insert_stmt_rows)
+       T_INSERT (T_OVERWRITE T_TABLE | T_INTO T_TABLE?) table_name insert_stmt_cols? insert_overwrite_stmt? (select_stmt | insert_stmt_rows)
      ;
 
 insert_stmt_cols :
@@ -552,6 +552,10 @@ insert_stmt_row:
 insert_directory_stmt :
        T_INSERT T_OVERWRITE T_LOCAL? T_DIRECTORY expr_file expr_select
      ;
+
+insert_overwrite_stmt:
+       T_PARTITION T_OPEN_P ident (T_EQUAL expr_atom)? (T_COMMA ident (T_EQUAL expr_atom)?)* T_CLOSE_P
+    ;
 
 exit_stmt :
        T_EXIT L_ID? (T_WHEN bool_expr)?
@@ -1135,6 +1139,7 @@ expr_func_params :
 
 func_param :
        {!_input.LT(1).getText().equalsIgnoreCase("INTO")}? (ident T_EQUAL T_GREATER?)? expr
+     | bool_expr
      ;
 
 expr_select :
