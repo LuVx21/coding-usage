@@ -156,15 +156,15 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     public Object visitSelect_stmt(HplsqlParser.Select_stmtContext ctx) {
         List<HplsqlParser.Fullselect_stmt_itemContext> selectItems = ctx.fullselect_stmt().fullselect_stmt_item();
         for (HplsqlParser.Fullselect_stmt_itemContext selectItem : selectItems) {
-            HplsqlParser.Subselect_stmtContext subSelect = selectItem.subselect_stmt();
-            Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext0 = Optional.ofNullable(subSelect)
-                    .map(HplsqlParser.Subselect_stmtContext::from_clause)
+            final Integer thisId = selectItem.getStart().getStartIndex();
+            Optional<HplsqlParser.From_clauseContext> from_clauseContext = Optional.of(selectItem)
+                    .map(HplsqlParser.Fullselect_stmt_itemContext::subselect_stmt)
+                    .map(HplsqlParser.Subselect_stmtContext::from_clause);
+            Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext0 = from_clauseContext
                     .map(HplsqlParser.From_clauseContext::from_table_clause);
-            Integer thisId = selectItem.getStart().getStartIndex();
             a(thisId, from_table_clauseContext0);
 
-            List<HplsqlParser.From_join_clauseContext> fromJoinClauses = Optional.ofNullable(subSelect)
-                    .map(HplsqlParser.Subselect_stmtContext::from_clause)
+            List<HplsqlParser.From_join_clauseContext> fromJoinClauses = from_clauseContext
                     .map(HplsqlParser.From_clauseContext::from_join_clause)
                     .orElse(new ArrayList<>());
             for (HplsqlParser.From_join_clauseContext fromJoinClauseContext : fromJoinClauses) {
