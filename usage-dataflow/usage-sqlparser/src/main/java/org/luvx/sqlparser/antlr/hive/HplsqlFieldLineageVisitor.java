@@ -156,92 +156,64 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     public Object visitSelect_stmt(HplsqlParser.Select_stmtContext ctx) {
         List<HplsqlParser.Fullselect_stmt_itemContext> selectItems = ctx.fullselect_stmt().fullselect_stmt_item();
         for (HplsqlParser.Fullselect_stmt_itemContext selectItem : selectItems) {
-            SelectModel selectModel = new SelectModel();
             HplsqlParser.Subselect_stmtContext subSelect = selectItem.subselect_stmt();
-            Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext1 = Optional.ofNullable(subSelect)
+            Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext0 = Optional.ofNullable(subSelect)
                     .map(HplsqlParser.Subselect_stmtContext::from_clause)
                     .map(HplsqlParser.From_clauseContext::from_table_clause);
-            HplsqlParser.From_table_name_clauseContext fromTableNameClause = from_table_clauseContext1
-                    .map(HplsqlParser.From_table_clauseContext::from_table_name_clause)
-                    .orElse(null);
-            Optional.ofNullable(fromTableNameClause)
-                    .map(HplsqlParser.From_table_name_clauseContext::table_name)
-                    .map(RuleContext::getText)
-                    .map(TableNameUtils::parseTableName)
-                    .ifPresent(selectModel::setFromTable);
-            Optional.ofNullable(fromTableNameClause)
-                    .map(HplsqlParser.From_table_name_clauseContext::from_alias_clause)
-                    .map(HplsqlParser.From_alias_clauseContext::ident)
-                    .map(RuleContext::getText)
-                    .ifPresent(selectModel::setTableAlias);
-            from_table_clauseContext1
-                    .map(HplsqlParser.From_table_clauseContext::from_subselect_clause)
-                    .map(HplsqlParser.From_subselect_clauseContext::from_alias_clause)
-                    .map(RuleContext::getText)
-                    .ifPresent(selectModel::setTableAlias);
-
             Integer thisId = selectItem.getStart().getStartIndex();
-            String alias = selectModel.getTableAlias();
-            String thisKey = String.format("%s_%s", thisId, alias == null ? "" : alias);
-            selectModel.setId(thisKey + "");
-            selectModel.setParentId(selectParentKeyMap.get(thisId));
-            selectModel.setSelectItems(new ArrayList<>());
-            hiveFieldSelects.put(thisKey, selectModel);
-
-            from_table_clauseContext1
-                    .map(HplsqlParser.From_table_clauseContext::from_subselect_clause)
-                    .map(HplsqlParser.From_subselect_clauseContext::select_stmt)
-                    .map(HplsqlParser.Select_stmtContext::fullselect_stmt)
-                    .map(HplsqlParser.Fullselect_stmtContext::fullselect_stmt_item)
-                    .ifPresent(subSelects ->
-                            subSelects.forEach(item ->
-                                    selectParentKeyMap.put(item.getStart().getStartIndex(), thisKey)));
+            a(thisId, from_table_clauseContext0);
 
             List<HplsqlParser.From_join_clauseContext> fromJoinClauses = Optional.ofNullable(subSelect)
                     .map(HplsqlParser.Subselect_stmtContext::from_clause)
                     .map(HplsqlParser.From_clauseContext::from_join_clause)
                     .orElse(new ArrayList<>());
             for (HplsqlParser.From_join_clauseContext fromJoinClauseContext : fromJoinClauses) {
-                SelectModel joinSelect = new SelectModel();
-                Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext = Optional.ofNullable(fromJoinClauseContext)
+                Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext1 = Optional.ofNullable(fromJoinClauseContext)
                         .map(HplsqlParser.From_join_clauseContext::from_table_clause);
-                Optional<HplsqlParser.From_table_name_clauseContext> from_table_name_clauseContext = from_table_clauseContext
-                        .map(HplsqlParser.From_table_clauseContext::from_table_name_clause);
-                from_table_name_clauseContext
-                        .map(HplsqlParser.From_table_name_clauseContext::table_name)
-                        .map(RuleContext::getText)
-                        .map(TableNameUtils::parseTableName)
-                        .ifPresent(joinSelect::setFromTable);
-                from_table_name_clauseContext
-                        .map(HplsqlParser.From_table_name_clauseContext::from_alias_clause)
-                        .map(HplsqlParser.From_alias_clauseContext::ident)
-                        .map(RuleContext::getText)
-                        .ifPresent(joinSelect::setTableAlias);
-                Optional<HplsqlParser.From_subselect_clauseContext> from_subselect_clauseContext = from_table_clauseContext
-                        .map(HplsqlParser.From_table_clauseContext::from_subselect_clause);
-                from_subselect_clauseContext
-                        .map(HplsqlParser.From_subselect_clauseContext::from_alias_clause)
-                        .map(RuleContext::getText)
-                        .ifPresent(joinSelect::setTableAlias);
-
-                String jalias = joinSelect.getTableAlias();
-                String jkey = String.format("%s_%s", thisId, jalias == null ? "" : jalias);
-                joinSelect.setId(jkey);
-                joinSelect.setParentId(selectParentKeyMap.get(thisId));
-                joinSelect.setSelectItems(new ArrayList<>());
-                hiveFieldSelects.put(jkey, joinSelect);
-
-                from_subselect_clauseContext
-                        .map(HplsqlParser.From_subselect_clauseContext::select_stmt)
-                        .map(HplsqlParser.Select_stmtContext::fullselect_stmt)
-                        .map(HplsqlParser.Fullselect_stmtContext::fullselect_stmt_item)
-                        .ifPresent(subSelects ->
-                                subSelects.forEach(item ->
-                                        selectParentKeyMap.put(item.getStart().getStartIndex(), jkey)));
+                a(thisId, from_table_clauseContext1);
             }
         }
         return super.visitSelect_stmt(ctx);
     }
+
+    private void a(Integer thisId,
+                   Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext0) {
+        SelectModel selectModel0 = new SelectModel();
+        Optional<HplsqlParser.From_table_name_clauseContext> from_table_name_clauseContext0 = from_table_clauseContext0
+                .map(HplsqlParser.From_table_clauseContext::from_table_name_clause);
+        from_table_name_clauseContext0
+                .map(HplsqlParser.From_table_name_clauseContext::table_name)
+                .map(RuleContext::getText)
+                .map(TableNameUtils::parseTableName)
+                .ifPresent(selectModel0::setFromTable);
+        from_table_name_clauseContext0
+                .map(HplsqlParser.From_table_name_clauseContext::from_alias_clause)
+                .map(HplsqlParser.From_alias_clauseContext::ident)
+                .map(RuleContext::getText)
+                .ifPresent(selectModel0::setTableAlias);
+        Optional<HplsqlParser.From_subselect_clauseContext> from_subselect_clauseContext0 = from_table_clauseContext0
+                .map(HplsqlParser.From_table_clauseContext::from_subselect_clause);
+        from_subselect_clauseContext0
+                .map(HplsqlParser.From_subselect_clauseContext::from_alias_clause)
+                .map(RuleContext::getText)
+                .ifPresent(selectModel0::setTableAlias);
+
+        String alias = selectModel0.getTableAlias();
+        String thisKey0 = String.format("%s_%s", thisId, alias == null ? "" : alias);
+        selectModel0.setId(thisKey0);
+        selectModel0.setParentId(selectParentKeyMap.get(thisId));
+        selectModel0.setSelectItems(new ArrayList<>());
+        hiveFieldSelects.put(thisKey0, selectModel0);
+
+        from_subselect_clauseContext0
+                .map(HplsqlParser.From_subselect_clauseContext::select_stmt)
+                .map(HplsqlParser.Select_stmtContext::fullselect_stmt)
+                .map(HplsqlParser.Fullselect_stmtContext::fullselect_stmt_item)
+                .ifPresent(subSelects ->
+                        subSelects.forEach(item ->
+                                selectParentKeyMap.put(item.getStart().getStartIndex(), thisKey0)));
+    }
+
 
     /**
      * 处理每个子select进入前，
