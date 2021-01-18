@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author Ren, Xie
  */
 @Slf4j
-public class HplsqlTableLineageVisitor extends HplsqlBaseVisitor {
+public class HplsqlTableLineageVisitor extends HplsqlBaseVisitor<Object> {
     private       TableInfo          outputTable;
     private final HashSet<TableInfo> inputTables = new HashSet<>();
 

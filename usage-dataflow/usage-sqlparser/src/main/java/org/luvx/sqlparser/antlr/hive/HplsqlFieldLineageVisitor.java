@@ -1,15 +1,13 @@
 package org.luvx.sqlparser.antlr.hive;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.StringUtils;
-import org.luvx.sqlparser.antlr.hive.pojo.FieldInfo;
-import org.luvx.sqlparser.antlr.hive.pojo.HiveFieldLineage;
-import org.luvx.sqlparser.antlr.hive.pojo.SelectItemModel;
-import org.luvx.sqlparser.antlr.hive.pojo.SelectModel;
-import org.luvx.sqlparser.antlr.hive.pojo.TableInfo;
+import org.luvx.sqlparser.antlr.hive.pojo.*;
 import org.luvx.sqlparser.antlr.hive.utils.TableNameUtils;
 
 import java.util.*;
@@ -21,28 +19,25 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
 
-    private final String                sql;
-    private       TableInfo             outputTable;
-    private       String                thisSelectId;
-    private       HashSet<FieldInfo>    sourceFields;
-    private       String                fieldExpression = "";
-    private       SelectItemModel       selectItemModel;
-    private       List<SelectItemModel> selectFields    = new ArrayList<>();
-    private       Boolean               startSelectItem = false;
+    private TableInfo          outputTable;
+    private HashSet<FieldInfo> sourceFields;
 
-    private final HashMap<String, SelectModel> hiveFieldSelects    = new LinkedHashMap<>();
-    private final Map<Integer, String>         selectParentKeyMap  = new HashMap<>();
-    private final List<SelectModel>            hiveFieldSelectList = new ArrayList<>();
+    private String thisSelectId;
+    private String fieldExpression = "";
 
-    public HplsqlFieldLineageVisitor(String sql) {
-        this.sql = sql;
-    }
+    private SelectItemModel       selectItemModel;
+    private List<SelectItemModel> selectFields    = Lists.newArrayList();
+    /**
+     * 标记是否最外层的查询字段
+     */
+    private Boolean               startSelectItem = false;
 
-    private String subSourceSql(ParserRuleContext parserRuleContext) {
-        return sql.substring(
-                parserRuleContext.getStart().getStartIndex(),
-                parserRuleContext.getStop().getStopIndex() + 1);
-    }
+    private final HashMap<String, SelectModel> hiveFieldSelects    = Maps.newLinkedHashMap();
+    /**
+     * 本select id = alias 父select id _ alias
+     */
+    private final Map<Integer, String>         selectParentKeyMap  = Maps.newHashMap();
+    private final List<SelectModel>            hiveFieldSelectList = Lists.newArrayList();
 
     /**
      * insert解析结果表
@@ -86,7 +81,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
         selectItemModel.setFieldNames(new HashSet<>());
         Optional.ofNullable(ctx)
                 .map(HplsqlParser.Select_list_itemContext::expr)
-                .map(this::subSourceSql)
+                .map(RuleContext::getText)
                 .ifPresent(selectItemModel::setExpression);
         Optional.ofNullable(ctx)
                 .map(HplsqlParser.Select_list_itemContext::select_list_alias)
@@ -106,45 +101,47 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     public Object visitFrom_clause(HplsqlParser.From_clauseContext ctx) {
         startSelectItem = false;
         HashMap<String, List<SelectItemModel>> fieldItems = new HashMap<>();
-        for (SelectItemModel item : selectFields) {
-            HashMap<String, HashSet<String>> aliasSet = new HashMap<>();
-            for (String field : item.getFieldNames()) {
-                String[] sp = field.split("\\.");
-                if (sp.length == 2) {
-                    String key = thisSelectId + "_" + sp[0];
-                    aliasSet.computeIfAbsent(key, t -> new HashSet<>());
-                    aliasSet.get(key).add(sp[1]);
-                } else if (sp.length == 1) {
-                    boolean flat = true;
-                    for (String k : selectParentKeyMap.values()) {
-                        if (k.startsWith(thisSelectId + "_")) {
-                            aliasSet.computeIfAbsent(k, t -> new HashSet<>());
-                            aliasSet.get(k).add(sp[0]);
-                            flat = false;
+        for (SelectItemModel selectField : selectFields) {
+            HashMap<String, Set<String>> aliasMap = new HashMap<>();
+
+            for (String fieldNames : selectField.getFieldNames()) {
+                String[] sp = fieldNames.split("\\.");
+                int len = sp.length;
+                String fieldName = sp[len - 1];
+                String prefix = thisSelectId + "_";
+                if (len == 1) {
+                    boolean flag = true;
+                    for (String value : selectParentKeyMap.values()) {
+                        if (value.startsWith(prefix)) {
+                            aliasMap.computeIfAbsent(value, t -> Sets.newHashSet()).add(fieldName);
+                            flag = false;
                         }
                     }
-                    if (flat) {
-                        String key = thisSelectId + "_";
-                        aliasSet.computeIfAbsent(key, t -> new HashSet<>());
-                        aliasSet.get(key).add(sp[0]);
+                    if (flag) {
+                        aliasMap.computeIfAbsent(prefix, t -> Sets.newHashSet()).add(fieldName);
                     }
+                } else if (len == 2) {
+                    String key = prefix + sp[len - 2];
+                    aliasMap.computeIfAbsent(key, t -> Sets.newHashSet()).add(fieldName);
                 }
             }
-            for (String key : aliasSet.keySet()) {
-                fieldItems.computeIfAbsent(key, k -> new ArrayList<>());
-                SelectItemModel selectItemModel = new SelectItemModel();
-                selectItemModel.setFieldNames(aliasSet.get(key));
-                selectItemModel.setAlias(item.getAlias());
-                selectItemModel.setExpression(item.getExpression());
-                if (selectItemModel.getFieldNames().size() == 1 && selectItemModel.getAlias() == null) {
-                    selectItemModel.setAlias(selectItemModel.getFieldNames().iterator().next());
+
+            for (Map.Entry<String, Set<String>> entry : aliasMap.entrySet()) {
+                SelectItemModel temp = new SelectItemModel();
+                temp.setFieldNames(entry.getValue());
+                temp.setAlias(selectField.getAlias());
+                temp.setExpression(selectField.getExpression());
+                if (temp.getFieldNames().size() == 1 && temp.getAlias() == null) {
+                    temp.setAlias(temp.getFieldNames().iterator().next());
                 }
-                fieldItems.get(key).add(selectItemModel);
+
+                fieldItems.computeIfAbsent(entry.getKey(), k -> Lists.newArrayList()).add(temp);
             }
         }
-        for (String key : fieldItems.keySet()) {
-            if (hiveFieldSelects.get(key) != null) {
-                hiveFieldSelects.get(key).setSelectItems(fieldItems.get(key));
+        for (Map.Entry<String, List<SelectItemModel>> entry : fieldItems.entrySet()) {
+            SelectModel selectModel = hiveFieldSelects.get(entry.getKey());
+            if (selectModel != null) {
+                selectModel.setSelectItems(entry.getValue());
             }
         }
         return super.visitFrom_clause(ctx);
@@ -332,12 +329,12 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                                     fieldExpression = selectItem.getExpression();
                                 }
                                 for (String field : selectItem.getFieldNames()) {
-                                    FieldInfo fieldNameWithProcessModel = new FieldInfo();
-                                    fieldNameWithProcessModel.setDbName(select.getFromTable().getDbName());
-                                    fieldNameWithProcessModel.setTableName(select.getFromTable().getTableName());
-                                    fieldNameWithProcessModel.setFieldName(field);
-                                    fieldNameWithProcessModel.setExpression(fieldExpression);
-                                    sourceFields.add(fieldNameWithProcessModel);
+                                    FieldInfo fieldInfo = new FieldInfo();
+                                    fieldInfo.setDbName(select.getFromTable().getDbName());
+                                    fieldInfo.setTableName(select.getFromTable().getTableName());
+                                    fieldInfo.setFieldName(field);
+                                    fieldInfo.setExpression(fieldExpression);
+                                    sourceFields.add(fieldInfo);
                                 }
                             }
                         });
