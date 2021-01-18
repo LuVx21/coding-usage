@@ -5,8 +5,12 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.StringUtils;
-import org.luvx.sqlparser.antlr.hive.field.*;
-import org.luvx.sqlparser.antlr.hive.table.TableNameModel;
+import org.luvx.sqlparser.antlr.hive.pojo.FieldInfo;
+import org.luvx.sqlparser.antlr.hive.pojo.HiveFieldLineage;
+import org.luvx.sqlparser.antlr.hive.pojo.SelectItemModel;
+import org.luvx.sqlparser.antlr.hive.pojo.SelectModel;
+import org.luvx.sqlparser.antlr.hive.pojo.TableInfo;
+import org.luvx.sqlparser.antlr.hive.utils.TableNameUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,27 +19,27 @@ import java.util.stream.Collectors;
  * @author Ren, Xie
  */
 @Slf4j
-public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
+public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
 
-    private TableNameModel                               outputTable;
-    private HashMap<String, HiveFieldLineageSelectModel> hiveFieldSelects    = new LinkedHashMap<>();
-    private Map<Integer, String>                         selectParentKeyMap  = new HashMap<>();
-    private String                                       thisSelectId;
-    private String                                       sourceSQL;
-    private List<HiveFieldLineageSelectModel> hiveFieldSelectList = new ArrayList<>();
-    private HashSet<FieldNameModel>           sourceFields;
-    private String                            fieldProcess        = "";
+    private final String                sql;
+    private       TableInfo             outputTable;
+    private       String                thisSelectId;
+    private       HashSet<FieldInfo>    sourceFields;
+    private       String                fieldExpression = "";
+    private       SelectItemModel       selectItemModel;
+    private       List<SelectItemModel> selectFields    = new ArrayList<>();
+    private       Boolean               startSelectItem = false;
 
-    private HiveFieldLineageSelectItemModel       selectItemModel;
-    private List<HiveFieldLineageSelectItemModel> selectFields    = new ArrayList<>();
-    private Boolean                               startSelectItem = false;
+    private final HashMap<String, SelectModel> hiveFieldSelects    = new LinkedHashMap<>();
+    private final Map<Integer, String>         selectParentKeyMap  = new HashMap<>();
+    private final List<SelectModel>            hiveFieldSelectList = new ArrayList<>();
 
     public HplsqlFieldLineageVisitor(String sql) {
-        this.sourceSQL = sql;
+        this.sql = sql;
     }
 
     private String subSourceSql(ParserRuleContext parserRuleContext) {
-        return sourceSQL.substring(
+        return sql.substring(
                 parserRuleContext.getStart().getStartIndex(),
                 parserRuleContext.getStop().getStopIndex() + 1);
     }
@@ -48,7 +52,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
         outputTable = Optional.ofNullable(ctx)
                 .map(HplsqlParser.Insert_stmtContext::table_name)
                 .map(RuleContext::getText)
-                .map(TableNameModel::parseTableName)
+                .map(TableNameUtils::parseTableName)
                 .orElse(null);
         return super.visitInsert_stmt(ctx);
     }
@@ -65,7 +69,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
                     .map(ParseTree::getText)
                     .ifPresent(s -> {
                         if (!StringUtils.isNumeric(s)) {
-                            selectItemModel.getFieldNames().add(TableNameModel.dealNameMark(s));
+                            selectItemModel.getFieldNames().add(TableNameUtils.dealNameMark(s));
                         }
                     });
         }
@@ -78,12 +82,12 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
     @Override
     public Object visitSelect_list_item(HplsqlParser.Select_list_itemContext ctx) {
         startSelectItem = true;
-        selectItemModel = new HiveFieldLineageSelectItemModel();
+        selectItemModel = new SelectItemModel();
         selectItemModel.setFieldNames(new HashSet<>());
         Optional.ofNullable(ctx)
                 .map(HplsqlParser.Select_list_itemContext::expr)
                 .map(this::subSourceSql)
-                .ifPresent(selectItemModel::setProcess);
+                .ifPresent(selectItemModel::setExpression);
         Optional.ofNullable(ctx)
                 .map(HplsqlParser.Select_list_itemContext::select_list_alias)
                 .map(HplsqlParser.Select_list_aliasContext::ident)
@@ -101,8 +105,8 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
     @Override
     public Object visitFrom_clause(HplsqlParser.From_clauseContext ctx) {
         startSelectItem = false;
-        HashMap<String, List<HiveFieldLineageSelectItemModel>> fieldItems = new HashMap<>();
-        for (HiveFieldLineageSelectItemModel item : selectFields) {
+        HashMap<String, List<SelectItemModel>> fieldItems = new HashMap<>();
+        for (SelectItemModel item : selectFields) {
             HashMap<String, HashSet<String>> aliasSet = new HashMap<>();
             for (String field : item.getFieldNames()) {
                 String[] sp = field.split("\\.");
@@ -128,10 +132,10 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
             }
             for (String key : aliasSet.keySet()) {
                 fieldItems.computeIfAbsent(key, k -> new ArrayList<>());
-                HiveFieldLineageSelectItemModel selectItemModel = new HiveFieldLineageSelectItemModel();
+                SelectItemModel selectItemModel = new SelectItemModel();
                 selectItemModel.setFieldNames(aliasSet.get(key));
                 selectItemModel.setAlias(item.getAlias());
-                selectItemModel.setProcess(item.getProcess());
+                selectItemModel.setExpression(item.getExpression());
                 if (selectItemModel.getFieldNames().size() == 1 && selectItemModel.getAlias() == null) {
                     selectItemModel.setAlias(selectItemModel.getFieldNames().iterator().next());
                 }
@@ -155,7 +159,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
     public Object visitSelect_stmt(HplsqlParser.Select_stmtContext ctx) {
         List<HplsqlParser.Fullselect_stmt_itemContext> selectItems = ctx.fullselect_stmt().fullselect_stmt_item();
         for (HplsqlParser.Fullselect_stmt_itemContext selectItem : selectItems) {
-            HiveFieldLineageSelectModel hiveFieldLineageSelectModel = new HiveFieldLineageSelectModel();
+            SelectModel hiveFieldLineageSelectModel = new SelectModel();
             Integer thisId = selectItem.getStart().getStartIndex();
             HplsqlParser.Subselect_stmtContext subSelect = selectItem.subselect_stmt();
             HplsqlParser.From_table_name_clauseContext fromTableNameClause = Optional.ofNullable(subSelect)
@@ -166,7 +170,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
             Optional.ofNullable(fromTableNameClause)
                     .map(HplsqlParser.From_table_name_clauseContext::table_name)
                     .map(RuleContext::getText)
-                    .map(TableNameModel::parseTableName)
+                    .map(TableNameUtils::parseTableName)
                     .ifPresent(hiveFieldLineageSelectModel::setFromTable);
             Optional.ofNullable(fromTableNameClause)
                     .map(HplsqlParser.From_table_name_clauseContext::from_alias_clause)
@@ -205,13 +209,13 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
                     .map(HplsqlParser.From_clauseContext::from_join_clause)
                     .orElse(new ArrayList<>());
             for (HplsqlParser.From_join_clauseContext fromJoinClauseContext : fromJoinClauses) {
-                HiveFieldLineageSelectModel joinSelect = new HiveFieldLineageSelectModel();
+                SelectModel joinSelect = new SelectModel();
                 Optional.ofNullable(fromJoinClauseContext)
                         .map(HplsqlParser.From_join_clauseContext::from_table_clause)
                         .map(HplsqlParser.From_table_clauseContext::from_table_name_clause)
                         .map(HplsqlParser.From_table_name_clauseContext::table_name)
                         .map(RuleContext::getText)
-                        .map(TableNameModel::parseTableName)
+                        .map(TableNameUtils::parseTableName)
                         .ifPresent(joinSelect::setFromTable);
                 Optional.ofNullable(fromJoinClauseContext)
                         .map(HplsqlParser.From_join_clauseContext::from_table_clause)
@@ -274,12 +278,12 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
      * 获取目标字段
      * 也就是parentId为null的最外层select的字段别名
      */
-    private List<FieldNameModel> getTargetFields() {
+    private List<FieldInfo> getTargetFields() {
         List<List<String>> items = hiveFieldSelectList.stream()
                 .filter(item -> item.getParentId() == null)
-                .map(HiveFieldLineageSelectModel::getSelectItems)
+                .map(SelectModel::getSelectItems)
                 .map(fields -> fields.stream()
-                        .map(HiveFieldLineageSelectItemModel::getAlias)
+                        .map(SelectItemModel::getAlias)
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
         List<String> res = new ArrayList<>();
@@ -287,9 +291,9 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
             res.addAll(item);
         }
         res = res.stream().distinct().collect(Collectors.toList());
-        List<FieldNameModel> fieldNameModels = new ArrayList<>();
+        List<FieldInfo> fieldNameModels = new ArrayList<>();
         for (String i : res) {
-            FieldNameModel fieldNameModel = new FieldNameModel();
+            FieldInfo fieldNameModel = new FieldInfo();
             if (outputTable != null) {
                 fieldNameModel.setDbName(outputTable.getDbName());
                 fieldNameModel.setTableName(outputTable.getTableName());
@@ -313,8 +317,8 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
                     if (select.getFromTable() == null) {
                         select.getSelectItems().forEach(selectItem -> {
                             if (selectItem.getAlias().equals(targetField)) {
-                                if (selectItem.getProcess().length() > fieldProcess.length()) {
-                                    fieldProcess = selectItem.getProcess();
+                                if (selectItem.getExpression().length() > fieldExpression.length()) {
+                                    fieldExpression = selectItem.getExpression();
                                 }
                                 for (String field : selectItem.getFieldNames()) {
                                     findFieldSource(field, select.getId());
@@ -324,15 +328,15 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
                     } else {
                         select.getSelectItems().forEach(selectItem -> {
                             if (selectItem.getAlias().equals(targetField)) {
-                                if (selectItem.getProcess().length() > fieldProcess.length()) {
-                                    fieldProcess = selectItem.getProcess();
+                                if (selectItem.getExpression().length() > fieldExpression.length()) {
+                                    fieldExpression = selectItem.getExpression();
                                 }
                                 for (String field : selectItem.getFieldNames()) {
-                                    FieldNameModel fieldNameWithProcessModel = new FieldNameModel();
+                                    FieldInfo fieldNameWithProcessModel = new FieldInfo();
                                     fieldNameWithProcessModel.setDbName(select.getFromTable().getDbName());
                                     fieldNameWithProcessModel.setTableName(select.getFromTable().getTableName());
                                     fieldNameWithProcessModel.setFieldName(field);
-                                    fieldNameWithProcessModel.setExpression(fieldProcess);
+                                    fieldNameWithProcessModel.setExpression(fieldExpression);
                                     sourceFields.add(fieldNameWithProcessModel);
                                 }
                             }
@@ -348,13 +352,13 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
      */
     public List<HiveFieldLineage> getHiveFieldLineage() {
         transSelectToList();
-        List<FieldNameModel> targetFields = getTargetFields();
+        List<FieldInfo> targetFields = getTargetFields();
         List<HiveFieldLineage> hiveFieldLineageModelList = new ArrayList<>();
-        for (FieldNameModel field : targetFields) {
+        for (FieldInfo field : targetFields) {
             HiveFieldLineage hiveFieldLineageModel = new HiveFieldLineage();
             hiveFieldLineageModel.setField(field);
             sourceFields = new HashSet<>();
-            fieldProcess = "";
+            fieldExpression = "";
             findFieldSource(field.getFieldName(), null);
             hiveFieldLineageModel.setSourceFields(sourceFields);
             hiveFieldLineageModelList.add(hiveFieldLineageModel);
@@ -365,7 +369,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor {
     /**
      * 获取sql解析处理后的结果
      */
-    public HashMap<String, HiveFieldLineageSelectModel> getHiveFieldSelects() {
+    public HashMap<String, SelectModel> getHiveFieldSelects() {
         return hiveFieldSelects;
     }
 }

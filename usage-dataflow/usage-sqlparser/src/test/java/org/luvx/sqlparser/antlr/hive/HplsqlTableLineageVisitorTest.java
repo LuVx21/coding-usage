@@ -8,8 +8,8 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
-import org.luvx.sqlparser.antlr.hive.field.HiveFieldLineage;
-import org.luvx.sqlparser.antlr.hive.table.HiveTableLineageModel;
+import org.luvx.sqlparser.antlr.hive.pojo.HiveFieldLineage;
+import org.luvx.sqlparser.antlr.hive.pojo.HiveTableLineage;
 import org.luvx.sqlparser.utils.ReadFileUtils;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class HplsqlTableLineageVisitorTest {
     public void test0() {
         HplsqlTableLineageVisitor visitor = new HplsqlTableLineageVisitor();
         visitor.visit(parseTree);
-        HiveTableLineageModel tableLineage = visitor.getTableLineage();
+        HiveTableLineage tableLineage = visitor.getTableLineage();
         System.out.println(JSON.toJSONString(tableLineage, true));
 
         HplsqlFieldLineageVisitor visitor1 = new HplsqlFieldLineageVisitor(sql);

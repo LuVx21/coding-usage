@@ -2,8 +2,9 @@ package org.luvx.sqlparser.antlr.hive;
 
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.RuleContext;
-import org.luvx.sqlparser.antlr.hive.table.HiveTableLineageModel;
-import org.luvx.sqlparser.antlr.hive.table.TableNameModel;
+import org.luvx.sqlparser.antlr.hive.pojo.HiveTableLineage;
+import org.luvx.sqlparser.antlr.hive.pojo.TableInfo;
+import org.luvx.sqlparser.antlr.hive.utils.TableNameUtils;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -13,15 +14,15 @@ import java.util.Optional;
  */
 @Slf4j
 public class HplsqlTableLineageVisitor extends HplsqlBaseVisitor {
-    private       TableNameModel          outputTable;
-    private final HashSet<TableNameModel> inputTables = new HashSet<>();
+    private       TableInfo          outputTable;
+    private final HashSet<TableInfo> inputTables = new HashSet<>();
 
     @Override
     public Object visitInsert_stmt(HplsqlParser.Insert_stmtContext ctx) {
         outputTable = Optional.ofNullable(ctx)
                 .map(HplsqlParser.Insert_stmtContext::table_name)
                 .map(RuleContext::getText)
-                .map(TableNameModel::parseTableName)
+                .map(TableNameUtils::parseTableName)
                 .orElse(null);
         return super.visitInsert_stmt(ctx);
     }
@@ -31,12 +32,12 @@ public class HplsqlTableLineageVisitor extends HplsqlBaseVisitor {
         if (ctx == null) {
             return null;
         }
-        inputTables.add(TableNameModel.parseTableName(ctx.table_name().getText()));
+        inputTables.add(TableNameUtils.parseTableName(ctx.table_name().getText()));
         return super.visitFrom_table_name_clause(ctx);
     }
 
-    public HiveTableLineageModel getTableLineage() {
-        HiveTableLineageModel hiveTableLineageModel = new HiveTableLineageModel();
+    public HiveTableLineage getTableLineage() {
+        HiveTableLineage hiveTableLineageModel = new HiveTableLineage();
         hiveTableLineageModel.setOutputTable(outputTable);
         hiveTableLineageModel.setInputTables(inputTables);
         return hiveTableLineageModel;
