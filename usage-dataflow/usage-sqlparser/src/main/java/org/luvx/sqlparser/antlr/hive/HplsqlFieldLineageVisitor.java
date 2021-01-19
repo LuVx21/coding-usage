@@ -160,25 +160,25 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
             Optional<HplsqlParser.From_clauseContext> from_clauseContext = Optional.of(selectItem)
                     .map(HplsqlParser.Fullselect_stmt_itemContext::subselect_stmt)
                     .map(HplsqlParser.Subselect_stmtContext::from_clause);
-            Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext0 = from_clauseContext
-                    .map(HplsqlParser.From_clauseContext::from_table_clause);
-            a(thisId, from_table_clauseContext0);
+            from_clauseContext
+                    .map(HplsqlParser.From_clauseContext::from_table_clause)
+                    .ifPresent(c -> a(thisId, c));
 
-            List<HplsqlParser.From_join_clauseContext> fromJoinClauses = from_clauseContext
+            from_clauseContext
                     .map(HplsqlParser.From_clauseContext::from_join_clause)
-                    .orElse(new ArrayList<>());
-            for (HplsqlParser.From_join_clauseContext fromJoinClauseContext : fromJoinClauses) {
-                Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext1 = Optional.ofNullable(fromJoinClauseContext)
-                        .map(HplsqlParser.From_join_clauseContext::from_table_clause);
-                a(thisId, from_table_clauseContext1);
-            }
+                    .orElse(new ArrayList<>())
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .map(HplsqlParser.From_join_clauseContext::from_table_clause)
+                    .forEach(c -> a(thisId, c));
         }
         return super.visitSelect_stmt(ctx);
     }
 
     private void a(Integer thisId,
-                   Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext0) {
+                   HplsqlParser.From_table_clauseContext from_table_clauseContext) {
         SelectModel selectModel0 = new SelectModel();
+        Optional<HplsqlParser.From_table_clauseContext> from_table_clauseContext0 = Optional.ofNullable(from_table_clauseContext);
         Optional<HplsqlParser.From_table_name_clauseContext> from_table_name_clauseContext0 = from_table_clauseContext0
                 .map(HplsqlParser.From_table_clauseContext::from_table_name_clause);
         from_table_name_clauseContext0
@@ -199,7 +199,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 .ifPresent(selectModel0::setTableAlias);
 
         String alias = selectModel0.getTableAlias();
-        String thisKey0 = String.format("%s_%s", thisId, alias == null ? "" : alias);
+        String thisKey0 = String.format("%s_%s", thisId, alias != null ? alias : "");
         selectModel0.setId(thisKey0);
         selectModel0.setParentId(selectParentKeyMap.get(thisId));
         selectModel0.setSelectItems(new ArrayList<>());
