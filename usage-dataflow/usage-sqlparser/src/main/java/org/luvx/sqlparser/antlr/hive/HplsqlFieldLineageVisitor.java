@@ -3,6 +3,7 @@ package org.luvx.sqlparser.antlr.hive;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -23,24 +24,24 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     private HashSet<FieldInfo> sourceFields;
 
     private String thisSelectId;
-    private String fieldExpression = "";
+    // private String fieldExpression = "";
 
     /**
      * 标记是否最外层的查询字段
      */
     private Boolean                startSelectItem = false;
     private SelectFieldModel       selectField;
-    private List<SelectFieldModel> selectFields    = Lists.newArrayList();
+    private List<SelectFieldModel> selectFields;
 
     /**
      * selectId_alias = SelectModel
      */
-    private final HashMap<String, SelectModel> hiveFieldSelects    = Maps.newLinkedHashMap();
+    @Getter
+    private final HashMap<String, SelectModel> hiveFieldSelects   = Maps.newLinkedHashMap();
     /**
      * selectId = 父selectId_alias
      */
-    private final Map<Integer, String>         selectParentKeyMap  = Maps.newHashMap();
-    private final List<SelectModel>            hiveFieldSelectList = Lists.newArrayList();
+    private final Map<Integer, String>         selectParentKeyMap = Maps.newHashMap();
 
     /**
      * insert解析结果表
@@ -103,6 +104,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     @Override
     public Object visitFrom_clause(HplsqlParser.From_clauseContext ctx) {
         startSelectItem = false;
+        final String prefix = thisSelectId + "_";
         for (SelectFieldModel selectField : selectFields) {
             HashMap<String, Set<String>> aliasMap = Maps.newHashMap();
 
@@ -110,16 +112,15 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 String[] sp = fieldNames.split("\\.");
                 int len = sp.length;
                 String fieldName = sp[len - 1];
-                String prefix = thisSelectId + "_";
                 if (len == 1) {
-                    boolean flag = true;
+                    boolean noSubSelect = true;
                     for (String value : selectParentKeyMap.values()) {
                         if (value.startsWith(prefix)) {
                             aliasMap.computeIfAbsent(value, t -> Sets.newHashSet()).add(fieldName);
-                            flag = false;
+                            noSubSelect = false;
                         }
                     }
-                    if (flag) {
+                    if (noSubSelect) {
                         aliasMap.computeIfAbsent(prefix, t -> Sets.newHashSet()).add(fieldName);
                     }
                 } else if (len == 2) {
@@ -202,14 +203,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 .map(HplsqlParser.From_alias_clauseContext::ident)
                 .map(RuleContext::getText)
                 .ifPresent(selectModel::setTableAlias);
-
-        String alias = selectModel.getTableAlias();
-        String fromKey = String.format("%s_%s", thisId, alias != null ? alias : "");
-        selectModel.setId(fromKey);
-        selectModel.setParentId(selectParentKeyMap.get(thisId));
-        selectModel.setSelectItems(Lists.newArrayList());
-        hiveFieldSelects.put(fromKey, selectModel);
-
+        final String fromKey = thisId + "_" + Optional.ofNullable(selectModel.getTableAlias()).orElse("");
         fromSubSelect
                 .map(HplsqlParser.From_subselect_clauseContext::select_stmt)
                 .map(HplsqlParser.Select_stmtContext::fullselect_stmt)
@@ -219,6 +213,11 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                                 item -> selectParentKeyMap.put(item.getStart().getStartIndex(), fromKey)
                         )
                 );
+
+        selectModel.setId(fromKey);
+        selectModel.setParentId(selectParentKeyMap.get(thisId));
+        selectModel.setSelectItems(Lists.newArrayList());
+        hiveFieldSelects.put(fromKey, selectModel);
     }
 
     /**
@@ -232,21 +231,11 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
         return super.visitSubselect_stmt(ctx);
     }
 
-
-    /**
-     * 转换HashMap存储为List
-     */
-    private void transSelectToList() {
-        for (String key : hiveFieldSelects.keySet()) {
-            hiveFieldSelectList.add(hiveFieldSelects.get(key));
-        }
-    }
-
     /**
      * 获取目标字段
      * 也就是parentId为null的最外层select的字段别名
      */
-    private List<FieldInfo> getTargetFields() {
+    private List<FieldInfo> getTargetFields(List<SelectModel> hiveFieldSelectList) {
         List<List<String>> items = hiveFieldSelectList.stream()
                 .filter(item -> item.getParentId() == null)
                 .map(SelectModel::getSelectItems)
@@ -255,21 +244,19 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                         .collect(Collectors.toList()))
                 .collect(Collectors.toList());
         List<String> res = Lists.newArrayList();
-        for (List<String> item : items) {
-            res.addAll(item);
-        }
+        items.forEach(res::addAll);
         res = res.stream().distinct().collect(Collectors.toList());
-        List<FieldInfo> fieldNameModels = Lists.newArrayList();
+        List<FieldInfo> fieldInfos = Lists.newArrayList();
         for (String i : res) {
-            FieldInfo fieldNameModel = new FieldInfo();
+            FieldInfo fieldInfo = new FieldInfo();
             if (outputTable != null) {
-                fieldNameModel.setDbName(outputTable.getDbName());
-                fieldNameModel.setTableName(outputTable.getTableName());
+                fieldInfo.setDbName(outputTable.getDbName());
+                fieldInfo.setTableName(outputTable.getTableName());
             }
-            fieldNameModel.setFieldName(i);
-            fieldNameModels.add(fieldNameModel);
+            fieldInfo.setFieldName(i);
+            fieldInfos.add(fieldInfo);
         }
-        return fieldNameModels;
+        return fieldInfos;
     }
 
     /**
@@ -277,24 +264,24 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      * 逻辑为最外的字段别名，父id -> 匹配子id别名 ->
      * -> 如果是来源是表，存储，如果来源是子select，继续递归
      */
-    private void findFieldSource(String targetField, String parentId) {
-        hiveFieldSelectList.forEach(select -> {
+    private void findFieldSource(String fieldExpression, List<SelectModel> hiveFieldSelectList, String targetField, String parentId) {
+        for (SelectModel select : hiveFieldSelectList) {
             if ((parentId == null && select.getParentId() == null) ||
                     (select.getParentId() != null && select.getParentId().equals(parentId))) {
                 if (select.getSelectItems() != null) {
                     if (select.getFromTable() == null) {
-                        select.getSelectItems().forEach(selectItem -> {
+                        for (SelectFieldModel selectItem : select.getSelectItems()) {
                             if (selectItem.getAlias().equals(targetField)) {
                                 if (selectItem.getExpression().length() > fieldExpression.length()) {
                                     fieldExpression = selectItem.getExpression();
                                 }
                                 for (String field : selectItem.getFieldNames()) {
-                                    findFieldSource(field, select.getId());
+                                    findFieldSource(fieldExpression, hiveFieldSelectList, field, select.getId());
                                 }
                             }
-                        });
+                        }
                     } else {
-                        select.getSelectItems().forEach(selectItem -> {
+                        for (SelectFieldModel selectItem : select.getSelectItems()) {
                             if (selectItem.getAlias().equals(targetField)) {
                                 if (selectItem.getExpression().length() > fieldExpression.length()) {
                                     fieldExpression = selectItem.getExpression();
@@ -308,36 +295,30 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                                     sourceFields.add(fieldInfo);
                                 }
                             }
-                        });
+                        }
                     }
                 }
             }
-        });
+        }
     }
 
     /**
      * 获取字段血缘列表
      */
     public List<HiveFieldLineage> getHiveFieldLineage() {
-        transSelectToList();
-        List<FieldInfo> targetFields = getTargetFields();
-        List<HiveFieldLineage> hiveFieldLineageModelList = Lists.newArrayList();
-        for (FieldInfo field : targetFields) {
-            HiveFieldLineage hiveFieldLineageModel = new HiveFieldLineage();
-            hiveFieldLineageModel.setField(field);
+        final List<SelectModel> selectList = Lists.newArrayList(hiveFieldSelects.values());
+        List<HiveFieldLineage> result = Lists.newArrayList();
+        String fieldExpression = "";
+        getTargetFields(selectList).forEach(field -> {
+            HiveFieldLineage lineage = new HiveFieldLineage();
+            lineage.setField(field);
             sourceFields = Sets.newHashSet();
-            fieldExpression = "";
-            findFieldSource(field.getFieldName(), null);
-            hiveFieldLineageModel.setSourceFields(sourceFields);
-            hiveFieldLineageModelList.add(hiveFieldLineageModel);
-        }
-        return hiveFieldLineageModelList;
-    }
+            // fieldExpression = "";
+            findFieldSource(fieldExpression, selectList, field.getFieldName(), null);
+            lineage.setSourceFields(sourceFields);
+            result.add(lineage);
+        });
 
-    /**
-     * 获取sql解析处理后的结果
-     */
-    public HashMap<String, SelectModel> getHiveFieldSelects() {
-        return hiveFieldSelects;
+        return result;
     }
 }
