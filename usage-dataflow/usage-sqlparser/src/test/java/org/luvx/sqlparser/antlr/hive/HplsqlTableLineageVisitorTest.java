@@ -43,7 +43,7 @@ public class HplsqlTableLineageVisitorTest {
         HiveTableLineage tableLineage = visitor.getTableLineage();
         System.out.println(JSON.toJSONString(tableLineage, true));
 
-        HplsqlFieldLineageVisitor visitor1 = new HplsqlFieldLineageVisitor(sql);
+        HplsqlFieldLineageVisitor visitor1 = new HplsqlFieldLineageVisitor();
         visitor1.visit(parseTree);
         List<HiveFieldLineage> list = visitor1.getHiveFieldLineage();
         System.out.println(JSON.toJSONString(list, true));

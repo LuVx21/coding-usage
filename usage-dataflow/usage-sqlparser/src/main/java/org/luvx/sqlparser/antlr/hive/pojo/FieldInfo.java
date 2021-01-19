@@ -30,11 +30,11 @@ public class FieldInfo extends TableInfo {
             return false;
         }
         FieldInfo fieldInfo = (FieldInfo) o;
-        return Objects.equals(fieldName, fieldInfo.fieldName) && Objects.equals(expression, fieldInfo.expression);
+        return Objects.equals(fieldName, fieldInfo.fieldName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), fieldName, expression);
+        return Objects.hash(super.hashCode(), fieldName);
     }
 }

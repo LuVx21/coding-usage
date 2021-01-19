@@ -19,7 +19,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-public class SelectItemModel {
+public class SelectFieldModel {
     private String      expression;
     private Set<String> fieldNames;
     private String      alias;
