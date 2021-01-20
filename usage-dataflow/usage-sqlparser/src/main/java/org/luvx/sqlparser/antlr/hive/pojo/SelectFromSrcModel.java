@@ -20,12 +20,12 @@ public class SelectFromSrcModel {
     /**
      * selectId+fromKey
      */
-    private String          idAndFromKey;
+    private String          idAndFromSrc;
     /**
      * 当前查询的所在位置(父selectId + 父selectFromKey)
      * 最外层查询此字段为空
      */
-    private String          parentIdAndFromKey;
+    private String          parentIdAndFromSrc;
     /**
      * select字段
      */

@@ -42,15 +42,15 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      * selectId_alias = SelectModel
      */
     @Getter
-    private final HashMap<String, SelectFromSrcModel> hiveFieldSelects          = Maps.newLinkedHashMap();
+    private final HashMap<String, SelectFromSrcModel> hiveFieldSelects            = Maps.newLinkedHashMap();
     /**
      * selectId = 父selectId_alias
      */
-    private final Map<Integer, String>                selectId2ParentIdAndAlias = Maps.newHashMap();
+    private final Map<Integer, String>                selectId2ParentIdAndFromSrc = Maps.newHashMap();
     /**
      * selectId = from源
      */
-    private final HashMultimap<Integer, String>       selectId2FromAlias        = HashMultimap.create();
+    private final HashMultimap<Integer, String>       selectId2FromSrc            = HashMultimap.create();
 
     public HplsqlFieldLineageVisitor(String sql) {
         this.sql = sql;
@@ -123,24 +123,21 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 .map(HplsqlParser.From_alias_clauseContext::ident)
                 .map(RuleContext::getText)
                 .ifPresent(selectModel::setTableAlias);
-        String fromKey = Optional.ofNullable(selectModel.getTableAlias())
+        String fromSrc = Optional.ofNullable(selectModel.getTableAlias())
                 .orElseGet(() -> selectModel.getFromTable().getTableName());
-        selectId2FromAlias.put(thisSelectId, fromKey);
-        final String selectIdFromKey = thisSelectId + "_" + fromKey;
+        selectId2FromSrc.put(thisSelectId, fromSrc);
+        final String selectIdFromSrc = thisSelectId + "_" + fromSrc;
         fromSubSelect
                 .map(HplsqlParser.From_subselect_clauseContext::select_stmt)
                 .map(HplsqlParser.Select_stmtContext::fullselect_stmt)
                 .map(HplsqlParser.Fullselect_stmtContext::fullselect_stmt_item)
-                .ifPresent(subSelects ->
-                        subSelects.forEach(
-                                item -> selectId2ParentIdAndAlias.put(item.getStart().getStartIndex(), selectIdFromKey)
-                        )
-                );
+                .ifPresent(subSelects -> subSelects.forEach(item ->
+                        selectId2ParentIdAndFromSrc.put(item.getStart().getStartIndex(), selectIdFromSrc)
+                ));
 
-        selectModel.setIdAndFromKey(selectIdFromKey);
-        selectModel.setParentIdAndFromKey(selectId2ParentIdAndAlias.get(thisSelectId));
-        selectModel.setSelectItems(Lists.newArrayList());
-        hiveFieldSelects.put(selectIdFromKey, selectModel);
+        selectModel.setIdAndFromSrc(selectIdFromSrc);
+        selectModel.setParentIdAndFromSrc(selectId2ParentIdAndFromSrc.get(thisSelectId));
+        hiveFieldSelects.put(selectIdFromSrc, selectModel);
     }
 
     @Override
@@ -197,7 +194,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 int len = sp.length;
                 String fieldName = sp[len - 1];
                 if (len == 1) {
-                    Set<String> aliasSet = selectId2FromAlias.get(thisSelectId);
+                    Set<String> aliasSet = selectId2FromSrc.get(thisSelectId);
                     if (aliasSet.size() > 1) {
                         throw new RuntimeException("未标识表的字段存在复数个数据源");
                     }
@@ -236,7 +233,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      */
     private List<FieldInfo> getTargetFields(List<SelectFromSrcModel> hiveFieldSelectList) {
         List<List<String>> items = hiveFieldSelectList.stream()
-                .filter(item -> item.getParentIdAndFromKey() == null)
+                .filter(item -> item.getParentIdAndFromSrc() == null)
                 .map(SelectFromSrcModel::getSelectItems)
                 .map(fields -> fields.stream()
                         .map(FieldInfo::getFieldAlias)
@@ -265,8 +262,8 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      */
     private void findFieldSource(String fieldExpression, List<SelectFromSrcModel> hiveFieldSelectList, String targetField, String parentId) {
         for (SelectFromSrcModel select : hiveFieldSelectList) {
-            if ((parentId == null && select.getParentIdAndFromKey() == null) ||
-                    (select.getParentIdAndFromKey() != null && select.getParentIdAndFromKey().equals(parentId))) {
+            if ((parentId == null && select.getParentIdAndFromSrc() == null) ||
+                    (select.getParentIdAndFromSrc() != null && select.getParentIdAndFromSrc().equals(parentId))) {
                 if (select.getSelectItems() != null) {
                     if (select.getFromTable() == null) {
                         for (FieldInfo selectItem : select.getSelectItems()) {
@@ -275,7 +272,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                                     fieldExpression = selectItem.getExpression();
                                 }
                                 for (String field : selectItem.getInnerFieldNames()) {
-                                    findFieldSource(fieldExpression, hiveFieldSelectList, field, select.getIdAndFromKey());
+                                    findFieldSource(fieldExpression, hiveFieldSelectList, field, select.getIdAndFromSrc());
                                 }
                             }
                         }
