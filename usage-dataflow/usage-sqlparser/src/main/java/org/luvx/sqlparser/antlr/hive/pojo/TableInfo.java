@@ -17,6 +17,7 @@ import java.util.Objects;
 public class TableInfo {
     protected String dbName;
     protected String tableName;
+    protected String tableAlias;
 
     @Override
     public boolean equals(Object o) {

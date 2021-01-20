@@ -5,9 +5,26 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * 表字段信息(含表达式)
+ * <pre>
+ *     INSERT INTO TABLE dest.table3
+ *     SELECT
+ *         t1.id1 + t1.id2 as _id
+ *     FROM
+ *         src.table1 as t1
+ *     ;
+ *     存储数据为:
+ *     dbName: src
+ *     tableName: table1
+ *     tableAlias: t1
+ *     fieldName: _id
+ *     alias: _id
+ *     expression: t1.id1 + t1.id2
+ *     fieldNames: [t1.id1, t1.id2]
+ * </pre>
  *
  * @author Ren, Xie
  */
@@ -16,7 +33,10 @@ import java.util.Objects;
 @ToString
 public class FieldInfo extends TableInfo {
     private String fieldName;
-    private String expression;
+
+    private String      fieldAlias;
+    private String      expression;
+    private Set<String> fieldNames;
 
     @Override
     public boolean equals(Object o) {

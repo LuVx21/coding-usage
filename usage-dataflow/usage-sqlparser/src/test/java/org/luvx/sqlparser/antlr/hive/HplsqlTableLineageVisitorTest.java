@@ -38,14 +38,16 @@ public class HplsqlTableLineageVisitorTest {
 
     @Test
     public void test0() {
+        Stopwatch started = Stopwatch.createStarted();
         HplsqlTableLineageVisitor visitor = new HplsqlTableLineageVisitor();
         visitor.visit(parseTree);
         HiveTableLineage tableLineage = visitor.getTableLineage();
         System.out.println(JSON.toJSONString(tableLineage, true));
 
-        HplsqlFieldLineageVisitor visitor1 = new HplsqlFieldLineageVisitor();
+        HplsqlFieldLineageVisitor visitor1 = new HplsqlFieldLineageVisitor(sql);
         visitor1.visit(parseTree);
         List<HiveFieldLineage> list = visitor1.getHiveFieldLineage();
         System.out.println(JSON.toJSONString(list, true));
+        log.info("耗时:{}", started.stop());
     }
 }

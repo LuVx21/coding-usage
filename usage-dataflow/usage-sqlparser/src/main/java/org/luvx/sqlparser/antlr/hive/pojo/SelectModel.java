@@ -18,21 +18,21 @@ public class SelectModel {
     /**
      * index
      */
-    private String                id;
+    private String          id;
     /**
      * 父id，第一层select 此字段为空
      */
-    private String                 parentId;
+    private String          parentId;
     /**
      * select字段
      */
-    private List<SelectFieldModel> selectItems;
+    private List<FieldInfo> selectItems;
     /**
      * 来源表，来源子select则为null
      */
-    private TableInfo              fromTable;
+    private TableInfo       fromTable;
     /**
      * 表别名或子查询别名
      */
-    private String                tableAlias;
+    private String          tableAlias;
 }
