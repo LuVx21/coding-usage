@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class SelectModel {
+public class SelectFromSrcModel {
     /**
      * selectId+fromKey
      */
