@@ -179,45 +179,46 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     }
 
     /**
-     * from语句，处理于所有selectItem结束
-     * 对上面解析出的字段名中的表别名进行处理 如t0.field
+     * field: t1.id1 + t2.id2 as id
+     * ↓
+     * selectId_t1=id1
+     * selectId_t2=id2
      */
     @Override
     public Object visitFrom_clause(HplsqlParser.From_clauseContext ctx) {
         startSelectItem = false;
         final String prefix = thisSelectId + "_";
-        for (FieldInfo model : selectFields) {
-            HashMap<String, Set<String>> aliasMap = Maps.newHashMap();
+        for (FieldInfo field : selectFields) {
+            HashMap<String, Set<String>> selectIdFromSrc2FieldsMap = Maps.newHashMap();
 
-            model.getInnerFieldNames().forEach(name -> {
+            field.getInnerFieldNames().forEach(name -> {
                 String[] sp = name.split("\\.");
                 int len = sp.length;
                 String fieldName = sp[len - 1];
                 if (len == 1) {
-                    Set<String> aliasSet = selectId2FromSrc.get(thisSelectId);
-                    if (aliasSet.size() > 1) {
+                    Set<String> fromSrcSet = selectId2FromSrc.get(thisSelectId);
+                    if (fromSrcSet.size() > 1) {
                         throw new RuntimeException("未标识表的字段存在复数个数据源");
                     }
-                    String alias = aliasSet.iterator().next();
-                    aliasMap.computeIfAbsent(prefix + alias, t -> Sets.newHashSet())
+                    String fromSrc = fromSrcSet.iterator().next();
+                    selectIdFromSrc2FieldsMap.computeIfAbsent(prefix + fromSrc, t -> Sets.newHashSet())
                             .add(fieldName);
                 } else if (len == 2) {
                     String key = prefix + sp[len - 2];
-                    aliasMap.computeIfAbsent(key, t -> Sets.newHashSet()).add(fieldName);
+                    selectIdFromSrc2FieldsMap.computeIfAbsent(key, t -> Sets.newHashSet()).add(fieldName);
                 }
             });
 
-            for (Map.Entry<String, Set<String>> entry : aliasMap.entrySet()) {
+            for (Map.Entry<String, Set<String>> entry : selectIdFromSrc2FieldsMap.entrySet()) {
                 FieldInfo temp = new FieldInfo();
                 Set<String> value = entry.getValue();
                 temp.setInnerFieldNames(value);
-                String fieldAlias = model.getFieldAlias();
+                String fieldAlias = field.getFieldAlias();
                 if (value.size() == 1 && fieldAlias == null) {
                     fieldAlias = value.iterator().next();
                 }
-                temp.setExpression(model.getExpression());
                 temp.setFieldAlias(fieldAlias);
-
+                temp.setExpression(field.getExpression());
                 SelectFromSrcModel selectModel = hiveFieldSelects.get(entry.getKey());
                 if (selectModel != null) {
                     selectModel.getSelectItems().add(temp);
