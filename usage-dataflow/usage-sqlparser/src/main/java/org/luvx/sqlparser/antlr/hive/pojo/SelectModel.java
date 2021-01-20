@@ -18,13 +18,14 @@ import java.util.List;
 @ToString
 public class SelectModel {
     /**
-     * index
+     * selectId+fromKey
      */
-    private String          id;
+    private String          idAndFromKey;
     /**
-     * 父id，第一层select 此字段为空
+     * 当前查询的所在位置(父selectId + 父selectFromKey)
+     * 最外层查询此字段为空
      */
-    private String          parentId;
+    private String          parentIdAndFromKey;
     /**
      * select字段
      */
@@ -35,7 +36,8 @@ public class SelectModel {
      */
     private TableInfo       fromTable;
     /**
-     * 表别名或子查询别名
+     * from后数据来源标识
+     * 本质是表别名或子查询别名
      */
     private String          tableAlias;
 }
