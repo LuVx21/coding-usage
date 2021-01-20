@@ -36,7 +36,7 @@ public class FieldInfo extends TableInfo {
 
     private String      fieldAlias;
     private String      expression;
-    private Set<String> fieldNames;
+    private Set<String> innerFieldNames;
 
     @Override
     public boolean equals(Object o) {

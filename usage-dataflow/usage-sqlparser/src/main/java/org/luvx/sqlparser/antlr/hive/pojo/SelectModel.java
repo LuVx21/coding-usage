@@ -1,5 +1,6 @@
 package org.luvx.sqlparser.antlr.hive.pojo;
 
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,7 +8,8 @@ import lombok.ToString;
 import java.util.List;
 
 /**
- * 查询(一个select)对象
+ * 一个select对象
+ * 对from后进行拆, 多个from源分为多个对象
  *
  * @author Ren, Xie
  */
@@ -26,9 +28,10 @@ public class SelectModel {
     /**
      * select字段
      */
-    private List<FieldInfo> selectItems;
+    private List<FieldInfo> selectItems = Lists.newArrayList();
     /**
-     * 来源表，来源子select则为null
+     * from 源
+     * 子查询则为null
      */
     private TableInfo       fromTable;
     /**
