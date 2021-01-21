@@ -1,5 +1,6 @@
 package org.luvx.sqlparser.antlr.hive;
 
+import com.alibaba.fastjson.JSON;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -26,11 +27,8 @@ import java.util.stream.Collectors;
 public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     private final String sql;
 
-    private TableInfo          outputTable;
-    private HashSet<FieldInfo> sourceFields;
-
-    private int thisSelectId;
-
+    private TableInfo       outputTable;
+    private int             thisSelectId;
     /**
      * 标记是否最外层的查询字段
      */
@@ -39,18 +37,20 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     private List<FieldInfo> selectFields;
 
     /**
-     * selectId_alias = SelectModel
+     * selectId_FromSrc = SelectModel
      */
     @Getter
-    private final HashMap<String, SelectFromSrcModel> hiveFieldSelects            = Maps.newLinkedHashMap();
+    private final Map<String, SelectFromSrcModel> hiveFieldSelects            = Maps.newLinkedHashMap();
     /**
-     * selectId = 父selectId_alias
+     * 存储子查询在哪个select的哪个fromSrc
+     * selectId = 父selectId_fromSrc
      */
-    private final Map<Integer, String>                selectId2ParentIdAndFromSrc = Maps.newHashMap();
+    private final Map<Integer, String>            selectId2ParentIdAndFromSrc = Maps.newHashMap();
     /**
+     * 存储查询有哪些fromSrc
      * selectId = from源
      */
-    private final HashMultimap<Integer, String>       selectId2FromSrc            = HashMultimap.create();
+    private final HashMultimap<Integer, String>   selectId2FromSrc            = HashMultimap.create();
 
     public HplsqlFieldLineageVisitor(String sql) {
         this.sql = sql;
@@ -255,39 +255,40 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      * 逻辑为最外的字段别名，父id -> 匹配子id别名 ->
      * -> 如果是来源是表，存储，如果来源是子select，继续递归
      */
-    private void findFieldSource(String fieldExpression, List<SelectFromSrcModel> hiveFieldSelectList, String targetField, String parentId) {
+    private void findFieldSource(List<SelectFromSrcModel> hiveFieldSelectList, final String targetField,
+                                 String parentId, Set<FieldInfo> sourceFields) {
         for (SelectFromSrcModel select : hiveFieldSelectList) {
-            if ((parentId == null && select.getParentIdAndFromSrc() == null) ||
-                    (select.getParentIdAndFromSrc() != null && select.getParentIdAndFromSrc().equals(parentId))) {
-                if (select.getSelectItems() != null) {
-                    if (select.getFromTable() == null) {
-                        for (FieldInfo selectItem : select.getSelectItems()) {
-                            if (selectItem.getFieldAlias().equals(targetField)) {
-                                if (selectItem.getExpression().length() > fieldExpression.length()) {
-                                    fieldExpression = selectItem.getExpression();
-                                }
-                                for (String field : selectItem.getInnerFieldNames()) {
-                                    findFieldSource(fieldExpression, hiveFieldSelectList, field, select.getIdAndFromSrc());
-                                }
-                            }
-                        }
-                    } else {
-                        for (FieldInfo selectItem : select.getSelectItems()) {
-                            if (selectItem.getFieldAlias().equals(targetField)) {
-                                if (selectItem.getExpression().length() > fieldExpression.length()) {
-                                    fieldExpression = selectItem.getExpression();
-                                }
-                                for (String field : selectItem.getInnerFieldNames()) {
-                                    FieldInfo fieldInfo = new FieldInfo();
-                                    fieldInfo.setDbName(select.getFromTable().getDbName());
-                                    fieldInfo.setTableName(select.getFromTable().getTableName());
-                                    fieldInfo.setFieldName(field);
-                                    fieldInfo.setExpression(fieldExpression);
-                                    sourceFields.add(fieldInfo);
-                                }
-                            }
-                        }
+            String parentIdAndFromSrc = select.getParentIdAndFromSrc();
+            // 最外层select || 是parentId的里层查询
+            boolean b = (parentIdAndFromSrc == null && parentId == null)
+                    || (parentIdAndFromSrc != null && parentIdAndFromSrc.equals(parentId));
+            List<FieldInfo> selectItems;
+            if (!b || (selectItems = select.getSelectItems()) == null) {
+                continue;
+            }
+            TableInfo fromTable = select.getFromTable();
+            if (fromTable != null) {
+                for (FieldInfo selectItem : selectItems) {
+                    if (!Objects.equals(selectItem.getFieldAlias(), targetField)) {
+                        continue;
                     }
+                    for (String field : selectItem.getInnerFieldNames()) {
+                        FieldInfo fieldInfo = new FieldInfo();
+                        fieldInfo.setDbName(fromTable.getDbName());
+                        fieldInfo.setTableName(fromTable.getTableName());
+                        fieldInfo.setFieldName(field);
+                        fieldInfo.setExpression(selectItem.getExpression());
+                        sourceFields.add(fieldInfo);
+                    }
+                }
+                continue;
+            }
+            for (FieldInfo selectItem : selectItems) {
+                if (!Objects.equals(selectItem.getFieldAlias(), targetField)) {
+                    continue;
+                }
+                for (String field : selectItem.getInnerFieldNames()) {
+                    findFieldSource(hiveFieldSelectList, field, select.getIdAndFromSrc(), sourceFields);
                 }
             }
         }
@@ -297,16 +298,15 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      * 获取字段血缘列表
      */
     public List<HiveFieldLineage> getHiveFieldLineage() {
+        log.debug("解析到查询及字段信息:{}", JSON.toJSONString(hiveFieldSelects));
+
         final List<SelectFromSrcModel> selectList = Lists.newArrayList(hiveFieldSelects.values());
         List<HiveFieldLineage> result = Lists.newArrayList();
-        String fieldExpression = "";
-        getTargetFields(selectList).forEach(field -> {
-            HiveFieldLineage lineage = new HiveFieldLineage();
-            lineage.setField(field);
-            sourceFields = Sets.newHashSet();
-            findFieldSource(fieldExpression, selectList, field.getFieldName(), null);
-            lineage.setSourceFields(sourceFields);
-            result.add(lineage);
+        List<FieldInfo> targetFields = getTargetFields(selectList);
+        targetFields.forEach(field -> {
+            Set<FieldInfo> sourceFields = Sets.newHashSet();
+            findFieldSource(selectList, field.getFieldName(), null, sourceFields);
+            result.add(new HiveFieldLineage(field, sourceFields));
         });
 
         return result;

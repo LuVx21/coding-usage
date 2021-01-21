@@ -3,7 +3,7 @@ package org.luvx.sqlparser.antlr.hive.pojo;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 血缘结果结构
@@ -16,16 +16,16 @@ public class HiveFieldLineage {
     /**
      * 目标字段
      */
-    private FieldInfo          field;
+    private FieldInfo      field;
     /**
      * 来源字段列表
      */
-    private HashSet<FieldInfo> sourceFields;
+    private Set<FieldInfo> sourceFields;
 
     public HiveFieldLineage() {
     }
 
-    public HiveFieldLineage(FieldInfo field, HashSet<FieldInfo> sourceFields) {
+    public HiveFieldLineage(FieldInfo field, Set<FieldInfo> sourceFields) {
         this.field = field;
         this.sourceFields = sourceFields;
     }
