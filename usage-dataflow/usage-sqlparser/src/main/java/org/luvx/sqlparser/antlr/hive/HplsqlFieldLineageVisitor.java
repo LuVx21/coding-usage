@@ -232,28 +232,22 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      * 获取目标字段
      * 也就是parentId为null的最外层select的字段别名
      */
-    private List<FieldInfo> getTargetFields(List<SelectFromSrcModel> hiveFieldSelectList) {
-        List<List<String>> items = hiveFieldSelectList.stream()
+    private List<FieldInfo> getTargetFields(List<SelectFromSrcModel> selectFromSrcList) {
+        return selectFromSrcList.stream()
                 .filter(item -> item.getParentIdAndFromSrc() == null)
                 .map(SelectFromSrcModel::getSelectItems)
-                .map(fields -> fields.stream()
-                        .map(FieldInfo::getFieldAlias)
-                        .collect(Collectors.toList()))
-                .collect(Collectors.toList());
-        List<String> res = Lists.newArrayList();
-        items.forEach(res::addAll);
-        res = res.stream().distinct().collect(Collectors.toList());
-        List<FieldInfo> fieldInfos = Lists.newArrayList();
-        for (String i : res) {
-            FieldInfo fieldInfo = new FieldInfo();
-            if (outputTable != null) {
-                fieldInfo.setDbName(outputTable.getDbName());
-                fieldInfo.setTableName(outputTable.getTableName());
-            }
-            fieldInfo.setFieldName(i);
-            fieldInfos.add(fieldInfo);
-        }
-        return fieldInfos;
+                .flatMap(Collection::stream)
+                .map(FieldInfo::getFieldAlias)
+                .distinct()
+                .map(name -> {
+                    FieldInfo fieldInfo = new FieldInfo();
+                    if (outputTable != null) {
+                        fieldInfo.setDbName(outputTable.getDbName());
+                        fieldInfo.setTableName(outputTable.getTableName());
+                    }
+                    fieldInfo.setFieldName(name);
+                    return fieldInfo;
+                }).collect(Collectors.toList());
     }
 
     /**

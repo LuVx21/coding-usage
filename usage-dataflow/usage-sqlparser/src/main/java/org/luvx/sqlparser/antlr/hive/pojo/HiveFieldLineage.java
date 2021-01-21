@@ -21,4 +21,12 @@ public class HiveFieldLineage {
      * 来源字段列表
      */
     private HashSet<FieldInfo> sourceFields;
+
+    public HiveFieldLineage() {
+    }
+
+    public HiveFieldLineage(FieldInfo field, HashSet<FieldInfo> sourceFields) {
+        this.field = field;
+        this.sourceFields = sourceFields;
+    }
 }
