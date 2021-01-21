@@ -267,28 +267,21 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 continue;
             }
             TableInfo fromTable = select.getFromTable();
-            if (fromTable != null) {
-                for (FieldInfo selectItem : selectItems) {
-                    if (!Objects.equals(selectItem.getFieldAlias(), targetField)) {
-                        continue;
-                    }
-                    for (String field : selectItem.getInnerFieldNames()) {
+            for (FieldInfo selectItem : selectItems) {
+                if (!Objects.equals(selectItem.getFieldAlias(), targetField)) {
+                    continue;
+                }
+                for (String field : selectItem.getInnerFieldNames()) {
+                    if (fromTable != null) {
                         FieldInfo fieldInfo = new FieldInfo();
                         fieldInfo.setDbName(fromTable.getDbName());
                         fieldInfo.setTableName(fromTable.getTableName());
                         fieldInfo.setFieldName(field);
                         fieldInfo.setExpression(selectItem.getExpression());
                         sourceFields.add(fieldInfo);
+                    } else {
+                        findFieldSource(hiveFieldSelectList, field, select.getIdAndFromSrc(), sourceFields);
                     }
-                }
-                continue;
-            }
-            for (FieldInfo selectItem : selectItems) {
-                if (!Objects.equals(selectItem.getFieldAlias(), targetField)) {
-                    continue;
-                }
-                for (String field : selectItem.getInnerFieldNames()) {
-                    findFieldSource(hiveFieldSelectList, field, select.getIdAndFromSrc(), sourceFields);
                 }
             }
         }
