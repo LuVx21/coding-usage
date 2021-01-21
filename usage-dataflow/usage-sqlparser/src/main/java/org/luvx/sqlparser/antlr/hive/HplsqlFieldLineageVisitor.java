@@ -115,16 +115,22 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 .map(HplsqlParser.From_table_name_clauseContext::from_alias_clause)
                 .map(HplsqlParser.From_alias_clauseContext::ident)
                 .map(RuleContext::getText)
-                .ifPresent(selectModel::setTableAlias);
+                .ifPresent(s -> {
+                    selectModel.setFromSrcAlias(s);
+                    selectModel.getFromTable().setTableAlias(s);
+                });
         Optional<HplsqlParser.From_subselect_clauseContext> fromSubSelect = fromTable
                 .map(HplsqlParser.From_table_clauseContext::from_subselect_clause);
         fromSubSelect
                 .map(HplsqlParser.From_subselect_clauseContext::from_alias_clause)
                 .map(HplsqlParser.From_alias_clauseContext::ident)
                 .map(RuleContext::getText)
-                .ifPresent(selectModel::setTableAlias);
-        String fromSrc = Optional.ofNullable(selectModel.getTableAlias())
-                .orElseGet(() -> selectModel.getFromTable().getTableName());
+                .ifPresent(selectModel::setFromSrcAlias);
+        // 获取fromSrc 别名: alias -> 表名 -> 生成别名
+        String fromSrc = Optional.ofNullable(selectModel.getFromSrcAlias())
+                .orElseGet(() -> Optional.ofNullable(selectModel.getFromTable())
+                        .map(TableInfo::getTableName)
+                        .orElse(System.currentTimeMillis() + ""));
         selectId2FromSrc.put(thisSelectId, fromSrc);
         final String selectIdFromSrc = thisSelectId + "_" + fromSrc;
         fromSubSelect
@@ -146,7 +152,6 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
         selectField = new FieldInfo();
         selectField.setInnerFieldNames(Sets.newHashSet());
         Optional.ofNullable(ctx)
-                .map(HplsqlParser.Select_list_itemContext::expr)
                 .map(this::substringSql)
                 .ifPresent(selectField::setExpression);
         Optional.ofNullable(ctx)
@@ -154,6 +159,10 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 .map(HplsqlParser.Select_list_aliasContext::ident)
                 .map(RuleContext::getText)
                 .ifPresent(selectField::setFieldAlias);
+        Optional.ofNullable(ctx)
+                .map(HplsqlParser.Select_list_itemContext::select_list_asterisk)
+                .map(RuleContext::getText)
+                .ifPresent(selectField.getInnerFieldNames()::add);
         Object visit = super.visitSelect_list_item(ctx);
         selectFields.add(selectField);
         return visit;
@@ -303,5 +312,12 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
         });
 
         return result;
+    }
+
+    /**
+     * 处理*号
+     * 一个*号代表一次数据源的全列
+     */
+    private void replaceMul(List<SelectFromSrcModel> selectList) {
     }
 }

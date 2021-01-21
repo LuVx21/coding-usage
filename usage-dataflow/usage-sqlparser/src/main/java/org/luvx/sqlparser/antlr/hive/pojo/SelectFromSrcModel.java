@@ -39,5 +39,5 @@ public class SelectFromSrcModel {
      * from后数据来源标识
      * 本质是表别名或子查询别名
      */
-    private String          tableAlias;
+    private String          fromSrcAlias;
 }
