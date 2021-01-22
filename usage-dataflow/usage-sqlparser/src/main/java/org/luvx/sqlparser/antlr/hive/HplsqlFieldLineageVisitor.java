@@ -132,10 +132,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 .map(HplsqlParser.From_table_name_clauseContext::from_alias_clause)
                 .map(HplsqlParser.From_alias_clauseContext::ident)
                 .map(RuleContext::getText)
-                .ifPresent(s -> {
-                    selectModel.setFromSrcAlias(s);
-                    selectModel.getFromTable().setTableAlias(s);
-                });
+                .ifPresent(selectModel::setFromSrcAlias);
         Optional<HplsqlParser.From_subselect_clauseContext> fromSubSelect = fromTable
                 .map(HplsqlParser.From_table_clauseContext::from_subselect_clause);
         fromSubSelect
@@ -146,6 +143,10 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
         // 获取fromSrc 别名: alias -> 表名 -> 生成别名
         String fromSrc = Optional.ofNullable(selectModel.getFromSrcAlias())
                 .orElseGet(() -> Optional.ofNullable(selectModel.getFromTable())
+                        .map(s -> {
+                            s.setTableAlias(s.getTableName());
+                            return s;
+                        })
                         .map(TableInfo::getTableName)
                         .orElse("_sub" + System.currentTimeMillis()));
         selectId2FromSrc.put(thisSelectId, fromSrc);
@@ -263,8 +264,10 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 TableFieldInfo temp = new TableFieldInfo();
                 Set<String> fieldNames = entry.getValue();
                 temp.setInnerFieldNames(fieldNames);
-                if (fieldAlias == null && fieldNames.size() == 1) {
-                    fieldAlias = fieldNames.iterator().next();
+                if (fieldNames.size() == 1) {
+                    if (fieldAlias == null || fieldAlias.startsWith("_c")) {
+                        fieldAlias = fieldNames.iterator().next();
+                    }
                 }
                 temp.setPosition(position);
                 temp.setFieldAlias(fieldAlias);
