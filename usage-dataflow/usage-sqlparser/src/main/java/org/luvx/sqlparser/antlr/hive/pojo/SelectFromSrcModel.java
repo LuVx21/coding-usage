@@ -29,7 +29,7 @@ public class SelectFromSrcModel {
     /**
      * select字段
      */
-    private List<FieldInfo> selectItems = Lists.newArrayList();
+    private List<FieldInfo> selectFields = Lists.newArrayList();
     /**
      * from 源
      * 子查询则为null

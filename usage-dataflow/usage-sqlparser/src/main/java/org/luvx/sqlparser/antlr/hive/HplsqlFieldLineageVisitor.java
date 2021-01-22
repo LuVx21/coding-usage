@@ -159,13 +159,8 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 .map(HplsqlParser.Select_list_aliasContext::ident)
                 .map(RuleContext::getText)
                 .ifPresent(selectField::setFieldAlias);
-        Optional.ofNullable(ctx)
-                .map(HplsqlParser.Select_list_itemContext::select_list_asterisk)
-                .map(RuleContext::getText)
-                .ifPresent(selectField.getInnerFieldNames()::add);
-        Object visit = super.visitSelect_list_item(ctx);
         selectFields.add(selectField);
-        return visit;
+        return super.visitSelect_list_item(ctx);
     }
 
     /**
@@ -187,6 +182,14 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
         return super.visitExpr(ctx);
     }
 
+    @Override
+    public Object visitSelect_list_asterisk(HplsqlParser.Select_list_asteriskContext ctx) {
+        Optional.ofNullable(ctx)
+                .map(RuleContext::getText)
+                .ifPresent(selectField.getInnerFieldNames()::add);
+        return super.visitSelect_list_asterisk(ctx);
+    }
+
     /**
      * field: t1.id1 + t2.id2 as id
      * ↓
@@ -202,7 +205,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
 
             field.getInnerFieldNames().forEach(name -> {
                 String[] sp = name.split("\\.");
-                int len = sp.length;
+                final int len = sp.length;
                 String fieldName = sp[len - 1];
                 if (len == 1) {
                     Set<String> fromSrcSet = selectId2FromSrc.get(thisSelectId);
@@ -230,7 +233,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 temp.setExpression(field.getExpression());
                 SelectFromSrcModel selectModel = hiveFieldSelects.get(entry.getKey());
                 if (selectModel != null) {
-                    selectModel.getSelectItems().add(temp);
+                    selectModel.getSelectFields().add(temp);
                 }
             }
         }
@@ -244,7 +247,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     private List<FieldInfo> getTargetFields(List<SelectFromSrcModel> selectFromSrcList) {
         return selectFromSrcList.stream()
                 .filter(item -> item.getParentIdAndFromSrc() == null)
-                .map(SelectFromSrcModel::getSelectItems)
+                .map(SelectFromSrcModel::getSelectFields)
                 .flatMap(Collection::stream)
                 .map(FieldInfo::getFieldAlias)
                 .distinct()
@@ -272,7 +275,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
             boolean b = (parentIdAndFromSrc == null && parentId == null)
                     || (parentIdAndFromSrc != null && parentIdAndFromSrc.equals(parentId));
             List<FieldInfo> selectItems;
-            if (!b || (selectItems = select.getSelectItems()) == null) {
+            if (!b || (selectItems = select.getSelectFields()) == null) {
                 continue;
             }
             TableInfo fromTable = select.getFromTable();
