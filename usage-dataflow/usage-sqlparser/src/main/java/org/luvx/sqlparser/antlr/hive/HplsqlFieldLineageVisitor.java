@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.StringUtils;
 import org.luvx.sqlparser.antlr.hive.pojo.HiveFieldLineage;
+import org.luvx.sqlparser.antlr.hive.pojo.SelectFieldModel;
 import org.luvx.sqlparser.antlr.hive.pojo.SelectFromSrcModel;
 import org.luvx.sqlparser.antlr.hive.pojo.TableFieldInfo;
 import org.luvx.sqlparser.antlr.hive.pojo.TableInfo;
@@ -34,15 +35,15 @@ import java.util.stream.Collectors;
 public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     private final String sql;
 
-    private TableInfo            outputTable;
-    private int                  thisSelectId;
-    private int                  fieldPosition;
+    private TableInfo              outputTable;
+    private int                    thisSelectId;
+    private int                    fieldPosition;
     /**
      * 标记是否最外层的查询字段
      */
-    private Boolean              startSelectItem = false;
-    private TableFieldInfo       selectField;
-    private List<TableFieldInfo> selectFields;
+    private Boolean                startSelectItem = false;
+    private SelectFieldModel       selectField;
+    private List<SelectFieldModel> selectFields;
 
     /**
      * selectId_FromSrc = SelectModel
@@ -174,7 +175,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     @Override
     public Object visitSelect_list_item(HplsqlParser.Select_list_itemContext ctx) {
         startSelectItem = true;
-        selectField = new TableFieldInfo();
+        selectField = new SelectFieldModel();
         selectField.setInnerFieldNames(Sets.newHashSet());
         Optional.ofNullable(ctx)
                 .map(this::substringSql)
@@ -237,7 +238,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     public Object visitFrom_clause(HplsqlParser.From_clauseContext ctx) {
         startSelectItem = false;
         final String prefix = thisSelectId + "_";
-        for (TableFieldInfo field : selectFields) {
+        for (SelectFieldModel field : selectFields) {
             HashMap<String, Set<String>> selectIdFromSrc2FieldsMap = Maps.newHashMap();
 
             field.getInnerFieldNames().forEach(name -> {
@@ -261,7 +262,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
             Integer position = field.getPosition();
             String fieldAlias = field.getFieldAlias(), expression = field.getExpression();
             for (Map.Entry<String, Set<String>> entry : selectIdFromSrc2FieldsMap.entrySet()) {
-                TableFieldInfo temp = new TableFieldInfo();
+                SelectFieldModel temp = new SelectFieldModel();
                 Set<String> fieldNames = entry.getValue();
                 temp.setInnerFieldNames(fieldNames);
                 if (fieldNames.size() == 1) {
@@ -290,7 +291,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 .filter(item -> item.getParentIdAndFromSrc() == null)
                 .map(SelectFromSrcModel::getSelectFields)
                 .flatMap(Collection::stream)
-                .map(TableFieldInfo::getFieldAlias)
+                .map(SelectFieldModel::getFieldAlias)
                 .distinct()
                 .map(alias -> {
                     TableFieldInfo fieldInfo = new TableFieldInfo();
@@ -315,12 +316,12 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
             // 最外层select || 是parentId的里层查询
             boolean b = (parentIdAndFromSrc == null && parentId == null)
                     || (parentIdAndFromSrc != null && parentIdAndFromSrc.equals(parentId));
-            List<TableFieldInfo> selectFields;
+            List<SelectFieldModel> selectFields;
             if (!b || (selectFields = select.getSelectFields()) == null) {
                 continue;
             }
             TableInfo fromTable = select.getFromTable();
-            for (TableFieldInfo selectField : selectFields) {
+            for (SelectFieldModel selectField : selectFields) {
                 if (!Objects.equals(selectField.getFieldAlias(), targetField)) {
                     continue;
                 }
@@ -386,7 +387,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
         Map<Integer, Set<TableFieldInfo>> map = Maps.newHashMap();
         for (SelectFromSrcModel selectFromSrcModel : collect) {
             Map<Integer, Set<TableFieldInfo>> temp = Maps.newHashMap();
-            for (TableFieldInfo field : selectFromSrcModel.getSelectFields()) {
+            for (SelectFieldModel field : selectFromSrcModel.getSelectFields()) {
                 Integer position = field.getPosition();
                 Set<TableFieldInfo> sourceFields = Sets.newHashSet();
                 temp.put(position, sourceFields);
