@@ -16,16 +16,16 @@ public class HiveFieldLineage {
     /**
      * 目标字段
      */
-    private FieldInfo      field;
+    private TableFieldInfo      field;
     /**
      * 来源字段列表
      */
-    private Set<FieldInfo> sourceFields;
+    private Set<TableFieldInfo> sourceFields;
 
     public HiveFieldLineage() {
     }
 
-    public HiveFieldLineage(FieldInfo field, Set<FieldInfo> sourceFields) {
+    public HiveFieldLineage(TableFieldInfo field, Set<TableFieldInfo> sourceFields) {
         this.field = field;
         this.sourceFields = sourceFields;
     }

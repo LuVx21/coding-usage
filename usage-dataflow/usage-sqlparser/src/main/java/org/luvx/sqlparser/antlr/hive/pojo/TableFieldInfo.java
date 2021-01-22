@@ -31,9 +31,10 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-public class FieldInfo extends TableInfo {
+public class TableFieldInfo extends TableInfo {
     private String fieldName;
 
+    private Integer     position;
     private String      fieldAlias;
     private String      expression;
     private Set<String> innerFieldNames;
@@ -49,7 +50,7 @@ public class FieldInfo extends TableInfo {
         if (!super.equals(o)) {
             return false;
         }
-        FieldInfo fieldInfo = (FieldInfo) o;
+        TableFieldInfo fieldInfo = (TableFieldInfo) o;
         return Objects.equals(fieldName, fieldInfo.fieldName);
     }
 

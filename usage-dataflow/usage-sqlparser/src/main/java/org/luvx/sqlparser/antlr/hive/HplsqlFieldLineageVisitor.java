@@ -11,7 +11,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.StringUtils;
-import org.luvx.sqlparser.antlr.hive.pojo.FieldInfo;
+import org.luvx.sqlparser.antlr.hive.pojo.TableFieldInfo;
 import org.luvx.sqlparser.antlr.hive.pojo.HiveFieldLineage;
 import org.luvx.sqlparser.antlr.hive.pojo.SelectFromSrcModel;
 import org.luvx.sqlparser.antlr.hive.pojo.TableInfo;
@@ -21,20 +21,28 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
+ * 基本思路:
+ * 1. 分析from语句, 确定当前查询和子查询的关系
+ * 2. 获取查询字段, 增加字段的位置, 别名等信息, 解析内部字段信息
+ * 3. 依据selectId+fromSrc封装成对象(包括所有子查询), 其中字段全部来源自这个fromSrc
+ * 4. 分析所有的3中对象, 确定整体查询的字段
+ * 5. 根据4中字段找到来源
+ *
  * @author Ren, Xie
  */
 @Slf4j
 public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     private final String sql;
 
-    private TableInfo       outputTable;
-    private int             thisSelectId;
+    private TableInfo            outputTable;
+    private int                  thisSelectId;
+    private int                  fieldPosition;
     /**
      * 标记是否最外层的查询字段
      */
-    private Boolean         startSelectItem = false;
-    private FieldInfo       selectField;
-    private List<FieldInfo> selectFields;
+    private Boolean              startSelectItem = false;
+    private TableFieldInfo       selectField;
+    private List<TableFieldInfo> selectFields;
 
     /**
      * selectId_FromSrc = SelectModel
@@ -79,9 +87,18 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
         return super.visitInsert_stmt(ctx);
     }
 
+    /**
+     * 进入查询语句
+     * 1. 初始化变量
+     * 2. 解析from语句, 获取表及子查询的关系
+     *
+     * @param ctx
+     * @return
+     */
     @Override
     public Object visitSubselect_stmt(HplsqlParser.Subselect_stmtContext ctx) {
         thisSelectId = ctx.getStart().getStartIndex();
+        fieldPosition = 0;
         selectFields = Lists.newArrayList();
 
         Optional<HplsqlParser.From_clauseContext> from_clauseContext = Optional.ofNullable(ctx)
@@ -130,7 +147,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
         String fromSrc = Optional.ofNullable(selectModel.getFromSrcAlias())
                 .orElseGet(() -> Optional.ofNullable(selectModel.getFromTable())
                         .map(TableInfo::getTableName)
-                        .orElse(System.currentTimeMillis() + ""));
+                        .orElse("_sub" + System.currentTimeMillis()));
         selectId2FromSrc.put(thisSelectId, fromSrc);
         final String selectIdFromSrc = thisSelectId + "_" + fromSrc;
         fromSubSelect
@@ -146,10 +163,17 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
         hiveFieldSelects.put(selectIdFromSrc, selectModel);
     }
 
+    /**
+     * select语句中select字段部分
+     * 字段可能是组合的, 来源于多个数据源
+     *
+     * @param ctx
+     * @return
+     */
     @Override
     public Object visitSelect_list_item(HplsqlParser.Select_list_itemContext ctx) {
         startSelectItem = true;
-        selectField = new FieldInfo();
+        selectField = new TableFieldInfo();
         selectField.setInnerFieldNames(Sets.newHashSet());
         Optional.ofNullable(ctx)
                 .map(this::substringSql)
@@ -159,6 +183,11 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 .map(HplsqlParser.Select_list_aliasContext::ident)
                 .map(RuleContext::getText)
                 .ifPresent(selectField::setFieldAlias);
+        // 别名为空时 自动生成一个别名 _c+position
+        if (StringUtils.isBlank(selectField.getFieldAlias())) {
+            selectField.setFieldAlias("_c" + fieldPosition);
+        }
+        selectField.setPosition(fieldPosition++);
         selectFields.add(selectField);
         return super.visitSelect_list_item(ctx);
     }
@@ -191,16 +220,23 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     }
 
     /**
-     * field: t1.id1 + t2.id2 as id
-     * ↓
-     * selectId_t1=id1
-     * selectId_t2=id2
+     * 对于一个查询(select开头的)
+     * <pre>
+     *     field:
+     *     t1.id1 + t2.id2 + t2.id3 as id
+     *          -> innerFieldNames: [t1.id1, t2.id2, t2.id3]
+     *     concat(t1.name1, t2.name2, t2.name3) as name
+     *          -> innerFieldNames: [t1.name1, t2.name2, t2.name3]
+     *     ↓
+     *     selectId_t1=[id1, name1]
+     *     selectId_t2=[id2, id3, name2, name3]
+     * </pre>
      */
     @Override
     public Object visitFrom_clause(HplsqlParser.From_clauseContext ctx) {
         startSelectItem = false;
         final String prefix = thisSelectId + "_";
-        for (FieldInfo field : selectFields) {
+        for (TableFieldInfo field : selectFields) {
             HashMap<String, Set<String>> selectIdFromSrc2FieldsMap = Maps.newHashMap();
 
             field.getInnerFieldNames().forEach(name -> {
@@ -221,16 +257,16 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 }
             });
 
+            String fieldAlias = field.getFieldAlias(), expression = field.getExpression();
             for (Map.Entry<String, Set<String>> entry : selectIdFromSrc2FieldsMap.entrySet()) {
-                FieldInfo temp = new FieldInfo();
-                Set<String> value = entry.getValue();
-                temp.setInnerFieldNames(value);
-                String fieldAlias = field.getFieldAlias();
-                if (value.size() == 1 && fieldAlias == null) {
-                    fieldAlias = value.iterator().next();
+                TableFieldInfo temp = new TableFieldInfo();
+                Set<String> fieldNames = entry.getValue();
+                temp.setInnerFieldNames(fieldNames);
+                if (fieldAlias == null && fieldNames.size() == 1) {
+                    fieldAlias = fieldNames.iterator().next();
                 }
                 temp.setFieldAlias(fieldAlias);
-                temp.setExpression(field.getExpression());
+                temp.setExpression(expression);
                 SelectFromSrcModel selectModel = hiveFieldSelects.get(entry.getKey());
                 if (selectModel != null) {
                     selectModel.getSelectFields().add(temp);
@@ -244,20 +280,20 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      * 获取目标字段
      * 也就是parentId为null的最外层select的字段别名
      */
-    private List<FieldInfo> getTargetFields(List<SelectFromSrcModel> selectFromSrcList) {
+    private List<TableFieldInfo> getTargetFields(List<SelectFromSrcModel> selectFromSrcList) {
         return selectFromSrcList.stream()
                 .filter(item -> item.getParentIdAndFromSrc() == null)
                 .map(SelectFromSrcModel::getSelectFields)
                 .flatMap(Collection::stream)
-                .map(FieldInfo::getFieldAlias)
+                .map(TableFieldInfo::getFieldAlias)
                 .distinct()
-                .map(name -> {
-                    FieldInfo fieldInfo = new FieldInfo();
+                .map(alias -> {
+                    TableFieldInfo fieldInfo = new TableFieldInfo();
                     if (outputTable != null) {
                         fieldInfo.setDbName(outputTable.getDbName());
                         fieldInfo.setTableName(outputTable.getTableName());
                     }
-                    fieldInfo.setFieldName(name);
+                    fieldInfo.setFieldName(alias);
                     return fieldInfo;
                 }).collect(Collectors.toList());
     }
@@ -268,28 +304,28 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      * -> 如果是来源是表，存储，如果来源是子select，继续递归
      */
     private void findFieldSource(List<SelectFromSrcModel> hiveFieldSelectList, final String targetField,
-                                 String parentId, Set<FieldInfo> sourceFields) {
+                                 String parentId, Set<TableFieldInfo> sourceFields) {
         for (SelectFromSrcModel select : hiveFieldSelectList) {
             String parentIdAndFromSrc = select.getParentIdAndFromSrc();
             // 最外层select || 是parentId的里层查询
             boolean b = (parentIdAndFromSrc == null && parentId == null)
                     || (parentIdAndFromSrc != null && parentIdAndFromSrc.equals(parentId));
-            List<FieldInfo> selectItems;
-            if (!b || (selectItems = select.getSelectFields()) == null) {
+            List<TableFieldInfo> selectFields;
+            if (!b || (selectFields = select.getSelectFields()) == null) {
                 continue;
             }
             TableInfo fromTable = select.getFromTable();
-            for (FieldInfo selectItem : selectItems) {
-                if (!Objects.equals(selectItem.getFieldAlias(), targetField)) {
+            for (TableFieldInfo selectField : selectFields) {
+                if (!Objects.equals(selectField.getFieldAlias(), targetField)) {
                     continue;
                 }
-                for (String field : selectItem.getInnerFieldNames()) {
+                for (String field : selectField.getInnerFieldNames()) {
                     if (fromTable != null) {
-                        FieldInfo fieldInfo = new FieldInfo();
+                        TableFieldInfo fieldInfo = new TableFieldInfo();
                         fieldInfo.setDbName(fromTable.getDbName());
                         fieldInfo.setTableName(fromTable.getTableName());
                         fieldInfo.setFieldName(field);
-                        fieldInfo.setExpression(selectItem.getExpression());
+                        fieldInfo.setExpression(selectField.getExpression());
                         sourceFields.add(fieldInfo);
                     } else {
                         findFieldSource(hiveFieldSelectList, field, select.getIdAndFromSrc(), sourceFields);
@@ -307,9 +343,9 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
 
         final List<SelectFromSrcModel> selectList = Lists.newArrayList(hiveFieldSelects.values());
         List<HiveFieldLineage> result = Lists.newArrayList();
-        List<FieldInfo> targetFields = getTargetFields(selectList);
+        List<TableFieldInfo> targetFields = getTargetFields(selectList);
         targetFields.forEach(field -> {
-            Set<FieldInfo> sourceFields = Sets.newHashSet();
+            Set<TableFieldInfo> sourceFields = Sets.newHashSet();
             findFieldSource(selectList, field.getFieldName(), null, sourceFields);
             result.add(new HiveFieldLineage(field, sourceFields));
         });
@@ -322,5 +358,15 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      * 一个*号代表一次数据源的全列
      */
     private void replaceMul(List<SelectFromSrcModel> selectList) {
+    }
+
+    /**
+     * sql 检查
+     * 1. select 字段是可以重复的
+     * 2. 子查询的select 字段不可以重复
+     *
+     * @param selectList
+     */
+    private void sqlCheck(List<SelectFromSrcModel> selectList) {
     }
 }

@@ -20,24 +20,24 @@ public class SelectFromSrcModel {
     /**
      * selectId+fromKey
      */
-    private String          idAndFromSrc;
+    private String               idAndFromSrc;
     /**
      * 当前查询的所在位置(父selectId + 父selectFromKey)
      * 最外层查询此字段为空
      */
-    private String          parentIdAndFromSrc;
+    private String               parentIdAndFromSrc;
     /**
      * select字段
      */
-    private List<FieldInfo> selectFields = Lists.newArrayList();
+    private List<TableFieldInfo> selectFields = Lists.newArrayList();
     /**
      * from 源
      * 子查询则为null
      */
-    private TableInfo       fromTable;
+    private TableInfo            fromTable;
     /**
      * from后数据来源标识
      * 本质是表别名或子查询别名
      */
-    private String          fromSrcAlias;
+    private String               fromSrcAlias;
 }
