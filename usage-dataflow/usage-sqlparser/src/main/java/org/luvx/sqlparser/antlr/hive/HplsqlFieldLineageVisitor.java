@@ -374,4 +374,41 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
      */
     private void sqlCheck(List<SelectFromSrcModel> selectList) {
     }
+
+    public List<HiveFieldLineage> getHiveFieldLineage1() {
+        log.debug("解析到查询及字段信息:{}", JSON.toJSONString(hiveFieldSelects));
+        final List<SelectFromSrcModel> selectList = Lists.newArrayList(hiveFieldSelects.values());
+        // 可能存在多个自外层select
+        List<SelectFromSrcModel> collect = selectList.stream()
+                .filter(item -> item.getParentIdAndFromSrc() == null)
+                .collect(Collectors.toList());
+
+        Map<Integer, Set<TableFieldInfo>> map = Maps.newHashMap();
+        for (SelectFromSrcModel selectFromSrcModel : collect) {
+            Map<Integer, Set<TableFieldInfo>> temp = Maps.newHashMap();
+            for (TableFieldInfo field : selectFromSrcModel.getSelectFields()) {
+                Integer position = field.getPosition();
+                Set<TableFieldInfo> sourceFields = Sets.newHashSet();
+                temp.put(position, sourceFields);
+                findFieldSource(selectList, field.getFieldAlias(), null, sourceFields);
+            }
+            for (Map.Entry<Integer, Set<TableFieldInfo>> entry : temp.entrySet()) {
+                map.computeIfAbsent(entry.getKey(), s -> Sets.newHashSet()).addAll(entry.getValue());
+            }
+        }
+
+        List<HiveFieldLineage> result = Lists.newArrayList();
+        for (Map.Entry<Integer, Set<TableFieldInfo>> entry : map.entrySet()) {
+            TableFieldInfo fieldInfo = new TableFieldInfo();
+            if (outputTable != null) {
+                fieldInfo.setDbName(outputTable.getDbName());
+                fieldInfo.setTableName(outputTable.getTableName());
+            }
+            Integer position = entry.getKey();
+            fieldInfo.setPosition(position);
+            fieldInfo.setFieldName("_" + position);
+            result.add(new HiveFieldLineage(fieldInfo, entry.getValue()));
+        }
+        return result;
+    }
 }
