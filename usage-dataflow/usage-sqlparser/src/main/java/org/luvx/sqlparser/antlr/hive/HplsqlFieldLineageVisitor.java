@@ -11,9 +11,9 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.StringUtils;
-import org.luvx.sqlparser.antlr.hive.pojo.TableFieldInfo;
 import org.luvx.sqlparser.antlr.hive.pojo.HiveFieldLineage;
 import org.luvx.sqlparser.antlr.hive.pojo.SelectFromSrcModel;
+import org.luvx.sqlparser.antlr.hive.pojo.TableFieldInfo;
 import org.luvx.sqlparser.antlr.hive.pojo.TableInfo;
 import org.luvx.sqlparser.antlr.hive.utils.TableNameUtils;
 
@@ -257,6 +257,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 }
             });
 
+            Integer position = field.getPosition();
             String fieldAlias = field.getFieldAlias(), expression = field.getExpression();
             for (Map.Entry<String, Set<String>> entry : selectIdFromSrc2FieldsMap.entrySet()) {
                 TableFieldInfo temp = new TableFieldInfo();
@@ -265,6 +266,7 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 if (fieldAlias == null && fieldNames.size() == 1) {
                     fieldAlias = fieldNames.iterator().next();
                 }
+                temp.setPosition(position);
                 temp.setFieldAlias(fieldAlias);
                 temp.setExpression(expression);
                 SelectFromSrcModel selectModel = hiveFieldSelects.get(entry.getKey());
