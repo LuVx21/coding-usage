@@ -283,28 +283,6 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
     }
 
     /**
-     * 获取目标字段
-     * 也就是parentId为null的最外层select的字段别名
-     */
-    private List<TableFieldInfo> getTargetFields(List<SelectFromSrcModel> selectFromSrcList) {
-        return selectFromSrcList.stream()
-                .filter(item -> item.getParentIdAndFromSrc() == null)
-                .map(SelectFromSrcModel::getSelectFields)
-                .flatMap(Collection::stream)
-                .map(SelectFieldModel::getFieldAlias)
-                .distinct()
-                .map(alias -> {
-                    TableFieldInfo fieldInfo = new TableFieldInfo();
-                    if (outputTable != null) {
-                        fieldInfo.setDbName(outputTable.getDbName());
-                        fieldInfo.setTableName(outputTable.getTableName());
-                    }
-                    fieldInfo.setFieldName(alias);
-                    return fieldInfo;
-                }).collect(Collectors.toList());
-    }
-
-    /**
      * 递归按每个字段从外到内寻找每个字段的来源
      * 逻辑为最外的字段别名，父id -> 匹配子id别名 ->
      * -> 如果是来源是表，存储，如果来源是子select，继续递归
@@ -339,24 +317,6 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
                 }
             }
         }
-    }
-
-    /**
-     * 获取字段血缘列表
-     */
-    public List<HiveFieldLineage> getHiveFieldLineage() {
-        log.debug("解析到查询及字段信息:{}", JSON.toJSONString(hiveFieldSelects));
-
-        final List<SelectFromSrcModel> selectList = Lists.newArrayList(hiveFieldSelects.values());
-        List<HiveFieldLineage> result = Lists.newArrayList();
-        List<TableFieldInfo> targetFields = getTargetFields(selectList);
-        targetFields.forEach(field -> {
-            Set<TableFieldInfo> sourceFields = Sets.newHashSet();
-            findFieldSource(selectList, field.getFieldName(), null, sourceFields);
-            result.add(new HiveFieldLineage(field, sourceFields));
-        });
-
-        return result;
     }
 
     /**
@@ -411,5 +371,47 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
             result.add(new HiveFieldLineage(fieldInfo, entry.getValue()));
         }
         return result;
+    }
+
+    /**
+     * 获取字段血缘列表
+     */
+    @Deprecated
+    public List<HiveFieldLineage> getHiveFieldLineage() {
+        log.debug("解析到查询及字段信息:{}", JSON.toJSONString(hiveFieldSelects));
+
+        final List<SelectFromSrcModel> selectList = Lists.newArrayList(hiveFieldSelects.values());
+        List<HiveFieldLineage> result = Lists.newArrayList();
+        List<TableFieldInfo> targetFields = getTargetFields(selectList);
+        targetFields.forEach(field -> {
+            Set<TableFieldInfo> sourceFields = Sets.newHashSet();
+            findFieldSource(selectList, field.getFieldName(), null, sourceFields);
+            result.add(new HiveFieldLineage(field, sourceFields));
+        });
+
+        return result;
+    }
+
+    /**
+     * 获取目标字段
+     * 也就是parentId为null的最外层select的字段别名
+     */
+    @Deprecated
+    private List<TableFieldInfo> getTargetFields(List<SelectFromSrcModel> selectFromSrcList) {
+        return selectFromSrcList.stream()
+                .filter(item -> item.getParentIdAndFromSrc() == null)
+                .map(SelectFromSrcModel::getSelectFields)
+                .flatMap(Collection::stream)
+                .map(SelectFieldModel::getFieldAlias)
+                .distinct()
+                .map(alias -> {
+                    TableFieldInfo fieldInfo = new TableFieldInfo();
+                    if (outputTable != null) {
+                        fieldInfo.setDbName(outputTable.getDbName());
+                        fieldInfo.setTableName(outputTable.getTableName());
+                    }
+                    fieldInfo.setFieldName(alias);
+                    return fieldInfo;
+                }).collect(Collectors.toList());
     }
 }
