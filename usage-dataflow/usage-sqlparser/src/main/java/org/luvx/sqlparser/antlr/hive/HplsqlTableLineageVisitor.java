@@ -18,6 +18,26 @@ public class HplsqlTableLineageVisitor extends HplsqlBaseVisitor<Object> {
     private final HashSet<TableInfo> inputTables = new HashSet<>();
 
     @Override
+    public Object visitCreate_table_stmt(HplsqlParser.Create_table_stmtContext ctx) {
+        outputTable = Optional.ofNullable(ctx)
+                .map(HplsqlParser.Create_table_stmtContext::table_name)
+                .map(HplsqlParser.Table_nameContext::getText)
+                .map(TableNameUtils::parseTableName)
+                .orElse(null);
+        return super.visitCreate_table_stmt(ctx);
+    }
+
+    @Override
+    public Object visitCreate_local_temp_table_stmt(HplsqlParser.Create_local_temp_table_stmtContext ctx) {
+        outputTable = Optional.ofNullable(ctx)
+                .map(HplsqlParser.Create_local_temp_table_stmtContext::ident)
+                .map(HplsqlParser.IdentContext::getText)
+                .map(TableNameUtils::parseTableName)
+                .orElse(null);
+        return super.visitCreate_local_temp_table_stmt(ctx);
+    }
+
+    @Override
     public Object visitInsert_stmt(HplsqlParser.Insert_stmtContext ctx) {
         outputTable = Optional.ofNullable(ctx)
                 .map(HplsqlParser.Insert_stmtContext::table_name)
