@@ -9,14 +9,16 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
-import org.luvx.sqlparser.antlr.hive.pojo.HiveTableLineage;
+import org.luvx.sqlparser.antlr.hive.pojo.HiveFieldLineage;
 import org.luvx.sqlparser.utils.ReadFileUtils;
+
+import java.util.List;
 
 /**
  * @author Ren, Xie
  */
 @Slf4j
-public class HplsqlTableLineageVisitorTest {
+public class HplsqlFieldLineageVisitorTest {
 
     static String       sql;
     static CharStream   charStream;
@@ -26,7 +28,7 @@ public class HplsqlTableLineageVisitorTest {
     static ParseTree    parseTree;
 
     static {
-        sql = ReadFileUtils.readFile("2.sql");
+        sql = ReadFileUtils.readFile("1.sql");
         charStream = CharStreams.fromString(sql);
         sqlLexer = new HplsqlLexer(charStream);
         tokenStream = new CommonTokenStream(sqlLexer);
@@ -38,10 +40,10 @@ public class HplsqlTableLineageVisitorTest {
     public void test0() {
         Stopwatch started = Stopwatch.createStarted();
 
-        HplsqlTableLineageVisitor visitor = new HplsqlTableLineageVisitor();
+        HplsqlFieldLineageVisitor visitor = new HplsqlFieldLineageVisitor(sql);
         visitor.visit(parseTree);
-        HiveTableLineage tableLineage = visitor.getTableLineage();
-        log.info("表血缘关系:{}", JSON.toJSONString(tableLineage, true));
+        List<HiveFieldLineage> list = visitor.getHiveFieldLineage1();
+        log.info("字段血缘关系:{}", JSON.toJSONString(list, true));
 
         log.info("耗时:{}", started.stop());
     }
