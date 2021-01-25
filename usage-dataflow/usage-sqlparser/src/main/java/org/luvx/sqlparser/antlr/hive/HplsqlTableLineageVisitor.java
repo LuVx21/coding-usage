@@ -29,17 +29,23 @@ public class HplsqlTableLineageVisitor extends HplsqlBaseVisitor<Object> {
 
     @Override
     public Object visitFrom_table_name_clause(HplsqlParser.From_table_name_clauseContext ctx) {
-        if (ctx == null) {
-            return null;
-        }
-        inputTables.add(TableNameUtils.parseTableName(ctx.table_name().getText()));
+        Optional<TableInfo> table = Optional.ofNullable(ctx)
+                .map(HplsqlParser.From_table_name_clauseContext::table_name)
+                .map(RuleContext::getText)
+                .map(TableNameUtils::parseTableName);
+        Optional.ofNullable(ctx)
+                .map(HplsqlParser.From_table_name_clauseContext::from_alias_clause)
+                .map(HplsqlParser.From_alias_clauseContext::ident)
+                .map(RuleContext::getText)
+                .ifPresent(a -> table.ifPresent(t -> t.setTableAlias(a)));
+        inputTables.add(table.orElse(null));
         return super.visitFrom_table_name_clause(ctx);
     }
 
     public HiveTableLineage getTableLineage() {
-        HiveTableLineage hiveTableLineageModel = new HiveTableLineage();
-        hiveTableLineageModel.setOutputTable(outputTable);
-        hiveTableLineageModel.setInputTables(inputTables);
-        return hiveTableLineageModel;
+        HiveTableLineage result = new HiveTableLineage();
+        result.setOutputTable(outputTable);
+        result.setInputTables(inputTables);
+        return result;
     }
 }
