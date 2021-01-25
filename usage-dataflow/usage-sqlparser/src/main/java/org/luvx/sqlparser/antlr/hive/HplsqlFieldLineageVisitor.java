@@ -71,8 +71,22 @@ public class HplsqlFieldLineageVisitor extends HplsqlBaseVisitor<Object> {
 
     @Override
     public Object visitCreate_table_stmt(HplsqlParser.Create_table_stmtContext ctx) {
-        // TODO
+        outputTable = Optional.ofNullable(ctx)
+                .map(HplsqlParser.Create_table_stmtContext::table_name)
+                .map(HplsqlParser.Table_nameContext::getText)
+                .map(TableNameUtils::parseTableName)
+                .orElse(null);
         return super.visitCreate_table_stmt(ctx);
+    }
+
+    @Override
+    public Object visitCreate_local_temp_table_stmt(HplsqlParser.Create_local_temp_table_stmtContext ctx) {
+        outputTable = Optional.ofNullable(ctx)
+                .map(HplsqlParser.Create_local_temp_table_stmtContext::ident)
+                .map(HplsqlParser.IdentContext::getText)
+                .map(TableNameUtils::parseTableName)
+                .orElse(null);
+        return super.visitCreate_local_temp_table_stmt(ctx);
     }
 
     /**
