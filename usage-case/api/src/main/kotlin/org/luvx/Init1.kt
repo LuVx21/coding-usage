@@ -1,10 +1,7 @@
 package org.luvx
 
-import lombok.extern.slf4j.Slf4j
-
 private val log = mu.KotlinLogging.logger {}
 
-@Slf4j
 class Init1 {
     open class Foo {
         var i = 1
