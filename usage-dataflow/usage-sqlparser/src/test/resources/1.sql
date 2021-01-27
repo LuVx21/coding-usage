@@ -1,3 +1,4 @@
+-- CREATE TABLE IF NOT EXISTS dest.dest
 INSERT INTO TABLE dest.dest
 SELECT
     t0.id as _id,
