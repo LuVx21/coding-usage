@@ -1,4 +1,4 @@
-package org.luvx.api.callback;
+package org.luvx.api.thread.callback.callback;
 
 
 /**
