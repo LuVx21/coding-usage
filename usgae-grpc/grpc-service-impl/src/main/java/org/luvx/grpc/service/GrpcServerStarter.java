@@ -3,8 +3,9 @@ package org.luvx.grpc.service;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.luvx.grpc.service.impl.UserInfoGrpcImpl;
+import org.luvx.grpc.service.impl.UserOperateGrpcImpl;
 import org.luvx.grpc.service.sdk.RpcConfig;
-import org.luvx.grpc.service.impl.HelloServiceImpl;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -16,11 +17,11 @@ public class GrpcServerStarter {
 
     private void start() throws IOException {
         server = ServerBuilder.forPort(RpcConfig.port)
-                .addService(new HelloServiceImpl())
+                .addService(new UserInfoGrpcImpl())
+                .addService(new UserOperateGrpcImpl())
                 .build()
                 .start();
         log.info("服务启动成功, 监听:{}", RpcConfig.port);
-        // server.awaitTermination();
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 GrpcServerStarter.this.stop();
