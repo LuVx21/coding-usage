@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 option java_multiple_files = true;
-package org.luvx.grpc.proto.rpc;
+package org.luvx.grpc.service.proto;
 
 service HelloService {
   rpc sayHello(HelloRequest) returns (HelloResponse);

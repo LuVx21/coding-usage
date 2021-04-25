@@ -5,25 +5,25 @@
 
     <parent>
         <groupId>org.luvx</groupId>
-        <artifactId>coding-java-parent</artifactId>
+        <artifactId>usage-grpc</artifactId>
         <version>1.0.1-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>usage-grpc</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>grpc-service-impl</artifactId>
+    <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-
-    <modules>
-        <module>grpc-service-sdk</module>
-        <module>grpc-service-impl</module>
-    </modules>
 
     <properties>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.luvx</groupId>
+            <artifactId>grpc-service-sdk</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>
