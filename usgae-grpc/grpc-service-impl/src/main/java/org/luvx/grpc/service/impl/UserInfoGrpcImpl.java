@@ -3,33 +3,93 @@ package org.luvx.grpc.service.impl;
 import org.luvx.grpc.service.proto.user.UserInfoGrpc.UserInfoImplBase;
 import org.luvx.grpc.service.proto.user.UserRequest;
 import org.luvx.grpc.service.proto.user.UserResponse;
+import org.luvx.grpc.service.proto.user.UserResponse.Builder;
+import org.luvx.grpc.service.proto.user.UserResponseList;
 
 import io.grpc.stub.StreamObserver;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class UserInfoGrpcImpl extends UserInfoImplBase {
+    /**
+     * one - one
+     */
     @Override
     public void selectUserInfo(UserRequest request, StreamObserver<UserResponse> responseObserver) {
-        String greeting = "Hello, "
-                + request.getId() + " "
-                + request.getName() + " "
-                + request.getPassword() + " "
-                + request.getAge();
-
         UserResponse response = UserResponse.newBuilder()
-                .setMessage("查询: " + greeting)
+                .setMessage("selectUserInfo: " + request.getName())
                 .build();
-
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }
 
+    /**
+     * one - many
+     */
     @Override
-    public void updateUser(UserRequest request, StreamObserver<UserResponse> responseObserver) {
-        UserResponse response = UserResponse.newBuilder()
-                .setMessage("更新...")
-                .build();
-
-        responseObserver.onNext(response);
+    public void selectUserInfo1(UserRequest request, StreamObserver<UserResponse> responseObserver) {
+        Builder builder = UserResponse.newBuilder();
+        for (int i = 0; i < 3; i++) {
+            UserResponse response = builder
+                    .setMessage("selectUserInfo1: " + request.getName() + i)
+                    .build();
+            responseObserver.onNext(response);
+        }
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public StreamObserver<UserRequest> selectUserInfo2(StreamObserver<UserResponseList> responseObserver) {
+        return new StreamObserver<UserRequest>() {
+            private int cnt;
+
+            @Override
+            public void onNext(UserRequest request) {
+                log.info("请求No:{} {}", ++cnt, request.getName());
+                UserResponseList.Builder builder = UserResponseList.newBuilder();
+                for (int i = 0; i < 3; i++) {
+                    builder.addUsers(
+                            UserResponse.newBuilder().setMessage("返回=" + request.getName() + "-" + i + "请求参数cnt:" + cnt)
+                                    .build());
+                }
+                responseObserver.onNext(builder.build());
+                responseObserver.onCompleted();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                log.error("", throwable);
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        };
+    }
+
+    @Override
+    public StreamObserver<UserRequest> selectUserInfo3(StreamObserver<UserResponse> responseObserver) {
+        return new StreamObserver<UserRequest>() {
+            private int cnt;
+
+            @Override
+            public void onNext(UserRequest request) {
+                log.info("请求No:{} {}", ++cnt, request.getName());
+                responseObserver.onNext(UserResponse.newBuilder().setMessage("请求参数cnt:" + cnt).build());
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                log.error("", throwable);
+            }
+
+            @Override
+            public void onCompleted() {
+                for (int i = 0; i < 2; i++) {
+                    responseObserver.onNext(UserResponse.newBuilder().setMessage("foo" + i).build());
+                }
+                responseObserver.onCompleted();
+            }
+        };
     }
 }

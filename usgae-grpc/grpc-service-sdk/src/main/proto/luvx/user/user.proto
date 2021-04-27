@@ -9,7 +9,9 @@ option java_outer_classname = "UserProto";
 
 service UserInfo {
   rpc selectUserInfo (UserRequest) returns (UserResponse) {}
-  rpc updateUser (UserRequest) returns (UserResponse) {}
+  rpc selectUserInfo1 (UserRequest) returns (stream UserResponse) {}
+  rpc selectUserInfo2 (stream UserRequest) returns (UserResponseList) {}
+  rpc selectUserInfo3 (stream UserRequest) returns (stream UserResponse) {}
 }
 
 service UserOperate {
@@ -25,4 +27,8 @@ message UserRequest {
 
 message UserResponse {
   string message = 1;
+}
+
+message UserResponseList {
+  repeated UserResponse users = 1;
 }
