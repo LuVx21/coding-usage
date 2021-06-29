@@ -19,6 +19,8 @@
         <module>api</module>
         <module>nio</module>
         <module>pattern</module>
+        <module>vavr</module>
+        <module>guava</module>
     </modules>
 
     <properties>
