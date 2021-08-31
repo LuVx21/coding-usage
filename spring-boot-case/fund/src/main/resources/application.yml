@@ -20,6 +20,9 @@ nacos:
     data-id: org.luvx.fund
     group: DEFAULT_GROUP
     type: yaml
+    auto-refresh: true
+    enable-remote-sync-config: true
+    remote-first: true
     ext-config:
       - data-id: application-mybatis.yml
         group: DEFAULT_GROUP

@@ -2,13 +2,17 @@ package org.luvx.fund.task;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 
+import org.luvx.app.config.TaskScheduler;
 import org.luvx.fund.constant.DataType;
 import org.luvx.fund.entity.Fund;
 import org.luvx.fund.entity.FundData;
@@ -16,10 +20,14 @@ import org.luvx.fund.service.FundDataService;
 import org.luvx.fund.service.FundService;
 import org.luvx.fund.util.RequestUtils;
 import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.nacos.api.annotation.NacosInjected;
+import com.alibaba.nacos.api.config.ConfigService;
+import com.alibaba.nacos.api.config.annotation.NacosValue;
+import com.alibaba.nacos.api.config.listener.Listener;
+import com.alibaba.nacos.api.exception.NacosException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.util.concurrent.RateLimiter;
 
@@ -34,9 +42,45 @@ public class FundTask {
     private FundService fundService;
     @Resource
     private FundDataService fundDataService;
+    @NacosInjected
+    private ConfigService configService;
+    @Resource
+    private TaskScheduler taskScheduler;
 
-    @Scheduled(cron = "0 50 17 * * 1-5")
-    @Scheduled(cron = "0 45 14 * * 1-5")
+    @NacosValue(value = "${nacos.config.data-id:aaa}", autoRefreshed = true)
+    private String dataId;
+    @NacosValue(value = "${nacos.config.group:aaa}", autoRefreshed = true)
+    private String group;
+    @NacosValue(value = "${task.ids}", autoRefreshed = true)
+    private List<Integer> ids;
+    @NacosValue(value = "${task.crons}", autoRefreshed = true)
+    private List<String> crons;
+
+    @PostConstruct
+    public void onMessage() throws NacosException {
+        addCronTask();
+        configService.addListener(dataId, group, new Listener() {
+            @SneakyThrows
+            @Override
+            public void receiveConfigInfo(String configInfo) {
+                TimeUnit.SECONDS.sleep(5);
+                taskScheduler.cancelAll();
+                addCronTask();
+            }
+
+            @Override
+            public Executor getExecutor() {
+                return null;
+            }
+        });
+    }
+
+    private void addCronTask() {
+        for (int i = 0; i < ids.size(); i++) {
+            taskScheduler.addTriggerTask(ids.get(i), crons.get(i), this::exec);
+        }
+    }
+
     public void exec() {
         RateLimiter rateLimiter = RateLimiter.create(0.5);
         List<Fund> funds = fundService.getBaseMapper().selectList(new QueryWrapper<Fund>().orderByAsc("code"));
