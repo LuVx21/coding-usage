@@ -1,22 +1,26 @@
 package org.luvx.pattern.structural.proxy.dynamic;
 
-import org.luvx.pattern.structural.proxy.Aspect;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
+import org.luvx.pattern.structural.proxy.Aspect;
+import org.luvx.pattern.structural.proxy.LogPrinter;
+import org.luvx.pattern.structural.proxy.Printable;
+
+import lombok.AllArgsConstructor;
 
 /**
  * 动态代理
  * 动态代理类只能代理接口(不支持抽象类)
  */
+@AllArgsConstructor
 public class LogPrinterHandler implements InvocationHandler {
+    private final Printable targetObject;
 
-    private Object targetObject;
-
-    public Object newProxyInstance(Object targetObject) {
-        this.targetObject = targetObject;
-        return Proxy.newProxyInstance(targetObject.getClass().getClassLoader(), targetObject.getClass().getInterfaces(), this);
+    public Object newProxyInstance() {
+        Class<? extends Printable> clazz = targetObject.getClass();
+        return Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), this);
     }
 
     @Override

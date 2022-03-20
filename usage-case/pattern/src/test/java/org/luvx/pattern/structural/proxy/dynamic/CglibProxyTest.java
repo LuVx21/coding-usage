@@ -1,10 +1,17 @@
 package org.luvx.pattern.structural.proxy.dynamic;
 
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.luvx.pattern.structural.proxy.LogPrinter;
 import org.luvx.pattern.structural.proxy.NewLogPrinter;
+import org.springframework.cglib.core.DebuggingClassWriter;
 
 public class CglibProxyTest {
+
+    @BeforeEach
+    void before() {
+        System.setProperty(DebuggingClassWriter.DEBUG_LOCATION_PROPERTY, "");
+    }
 
     /**
      * Cglib动态代理: 代理非接口实现类
