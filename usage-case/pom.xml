@@ -21,10 +21,13 @@
         <module>pattern</module>
         <module>vavr</module>
         <module>guava</module>
+        <module>github</module>
+        <module>reactor</module>
     </modules>
 
     <properties>
-        <java.version>15</java.version>
+        <java.version>17</java.version>
+        <kotlin.version>1.6.10</kotlin.version>
     </properties>
 
     <dependencies>
