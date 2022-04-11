@@ -5,7 +5,7 @@
 
     <parent>
         <groupId>org.luvx</groupId>
-        <artifactId>coding-java-parent</artifactId>
+        <artifactId>coding-parent-java</artifactId>
         <version>1.0.1-SNAPSHOT</version>
     </parent>
 
@@ -15,9 +15,8 @@
     <name>${project.artifactId}</name>
 
     <modules>
-        <module>usage-guava</module>
-        <module>usage-vavr</module>
         <module>usage-mapstruct</module>
+        <module>usage-retrofit2</module>
     </modules>
 
 </project>
