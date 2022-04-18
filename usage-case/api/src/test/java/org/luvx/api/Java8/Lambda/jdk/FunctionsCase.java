@@ -51,7 +51,7 @@ public class FunctionsCase {
 
     @Test
     public void method8() {
-        BinaryOperator<Integer> sum = (a, b) -> a + b;
+        BinaryOperator<Integer> sum = Integer::sum;
         int result = sum.apply(1, 2);
         System.out.println(result);
     }

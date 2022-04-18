@@ -1,5 +1,8 @@
 package org.luvx.api.enum_;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * 枚举类实际是一个普通类
  * 继承自java.lang.Enum,类本身是final的,即不可被继承
@@ -8,6 +11,15 @@ package org.luvx.api.enum_;
  *
  * @author renxie
  */
+@Getter
+@AllArgsConstructor
 public enum EnumCase {
-    MON, TUE, WED, THU, FRI, SAT, SUN;
+    MON(1),
+    TUE(2),
+    WED(3),
+    THU(4),
+    FRI(5),
+    SAT(6),
+    SUN(7);
+    private final int code;
 }

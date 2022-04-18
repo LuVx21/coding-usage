@@ -1,7 +1,11 @@
-package org.luvx.api.thread.async.future;
+package org.luvx.concurrent.future;
+
+import static org.luvx.api.thread.utils.ThreadUtils.SERVICE;
 
 import com.google.common.util.concurrent.*;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.jetbrains.annotations.NotNull;
 import org.luvx.api.thread.entity.CallableCase;
 import org.luvx.api.thread.entity.Task;
@@ -20,9 +24,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Slf4j
 public class FutureCase {
-
-    static ExecutorService service = ThreadUtils.getThreadPool();
-
     /**
      * 阻塞主线程
      *
@@ -43,7 +44,7 @@ public class FutureCase {
      * @throws Exception
      */
     public static void future1() throws Exception {
-        Future<String> future = service.submit(new CallableCase("1234"));
+        Future<String> future = SERVICE.submit(new CallableCase("1234"));
         String result = future.get();
         log.info("[{}] -> {}", Thread.currentThread().getName(), result);
         log.info("future outer end.....");
@@ -57,8 +58,9 @@ public class FutureCase {
      * @throws Exception
      */
     public static void future2() {
+        // CompletableFuture.runAsync(() -> {});
         CompletableFuture<String> future = CompletableFuture.supplyAsync(() ->
-                Task.execute("1234") + "-" + LocalDateTime.now(), service
+                Task.execute("1234") + "-" + LocalDateTime.now(), SERVICE
         );
         future.thenApply(result -> {
             log.info("处理线程执行结果:{}", result);
@@ -71,7 +73,7 @@ public class FutureCase {
     }
 
     public static void guavaFuture() {
-        ListeningExecutorService guavaExecutor = MoreExecutors.listeningDecorator(service);
+        ListeningExecutorService guavaExecutor = MoreExecutors.listeningDecorator(SERVICE);
         final ListenableFuture<String> listenableFuture = guavaExecutor.submit(new CallableCase("1234"));
         listenableFuture.addListener(() -> {
             try {
@@ -80,7 +82,7 @@ public class FutureCase {
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
-        }, service);
+        }, SERVICE);
 
         Futures.addCallback(listenableFuture, new FutureCallback<>() {
             @Override
@@ -92,7 +94,7 @@ public class FutureCase {
             public void onFailure(@NotNull Throwable e) {
                 log.warn("Callback 异步异常结束", e);
             }
-        }, service);
+        }, SERVICE);
 
         log.info("guavaFuture执行结束");
     }
@@ -102,13 +104,13 @@ public class FutureCase {
 
         for (int i = 0; i < 6; i++) {
             FutureTask<String> task = new FutureTask<>(new CallableCase("1234" + i));
-            service.execute(task);
+            SERVICE.execute(task);
             list.add(task);
         }
 
-        service.shutdown();
+        SERVICE.shutdown();
 
-        while (!service.awaitTermination(10, TimeUnit.SECONDS)) {
+        while (!SERVICE.awaitTermination(10, TimeUnit.SECONDS)) {
             System.out.println("线程未结束...");
         }
 

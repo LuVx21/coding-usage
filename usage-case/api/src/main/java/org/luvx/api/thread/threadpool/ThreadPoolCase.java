@@ -19,7 +19,7 @@ public class ThreadPoolCase {
 
     public static void main(String[] args) throws Exception {
 
-        ExecutorService service = ThreadUtils.getThreadPool();
+        ThreadPoolExecutor executor = ThreadUtils.getThreadPool();
 
         for (int i = 0; i < 5; i++) {
             int index = i;
@@ -36,16 +36,15 @@ public class ThreadPoolCase {
             // service.execute(new RunnableCase("1234" + index));
 
             FutureTask<String> task = new FutureTask<>(new CallableCase("1234" + i));
-            service.execute(task);
+            executor.execute(task);
         }
 
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) service;
         long num = executor.getActiveCount();
         System.out.println(num);
 
-        service.shutdown();
+        executor.shutdown();
 
-        while (!service.awaitTermination(10, TimeUnit.SECONDS)) {
+        while (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
             System.out.println("线程未结束...");
         }
 

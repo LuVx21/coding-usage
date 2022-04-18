@@ -1,10 +1,14 @@
 package org.luvx.api.thread.utils;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
-import java.util.concurrent.*;
 
 /**
  * @ClassName: org.luvx.api.thread.utils
@@ -13,17 +17,15 @@ import java.util.concurrent.*;
  * @Date: 2019/3/7 15:08
  */
 public class ThreadUtils {
+    public static ExecutorService SERVICE = ThreadUtils.getThreadPool();
 
     private static final int size = 5;
-
     private static ExecutorService service;
 
     /**
      * 获取线程池
-     *
-     * @return
      */
-    public static ExecutorService getThreadPool() {
+    public static ThreadPoolExecutor getThreadPool() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("demo-pool-%d").build();
 
         ///
@@ -33,7 +35,7 @@ public class ThreadUtils {
         //     return thread;
         // };
 
-        ExecutorService service = new ThreadPoolExecutor(size,
+        ThreadPoolExecutor service = new ThreadPoolExecutor(size,
                 size << 1,
                 0L,
                 TimeUnit.MILLISECONDS,
@@ -46,8 +48,6 @@ public class ThreadUtils {
 
     /**
      * 获取Guava封装的线程池
-     *
-     * @return
      */
     public static ListeningExecutorService getThreadPool1() {
         // ExecutorService service = getThreadPool();

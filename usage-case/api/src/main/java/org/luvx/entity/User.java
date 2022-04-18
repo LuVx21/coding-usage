@@ -1,9 +1,11 @@
 package org.luvx.entity;
 
-import lombok.*;
-
-import javax.annotation.Nullable;
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 使用redis的pojo类
@@ -16,18 +18,17 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User implements Serializable {
-    @Nullable
-    private long   id;
+public class User {
+    public long   id;
     /**
      * 驼峰式命名
      */
-    private String userName;
+    public String userName;
     /**
      * 非驼峰式命名
      */
-    private String password;
-    private int    age;
+    public String password;
+    public int    age;
 
     public User(String userName, String password, int age) {
         this.userName = userName;
