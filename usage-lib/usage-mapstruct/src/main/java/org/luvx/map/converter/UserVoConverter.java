@@ -1,15 +1,15 @@
 package org.luvx.map.converter;
 
 import org.luvx.map.base.BaseConverter;
-import org.luvx.map.entity.User;
 import org.luvx.map.entity.UserDto;
+import org.luvx.map.entity.UserVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 @Mapper
-// @Mapper(config = MapStructConfig.class)
-public interface UserConverter extends BaseConverter<UserDto, User> {
-    UserConverter INSTANCE = Mappers.getMapper(UserConverter.class);
+//@Mapper(componentModel = "spring")
+public interface UserVoConverter extends BaseConverter<UserVo, UserDto> {
+    UserVoConverter INSTANCE = Mappers.getMapper(UserVoConverter.class);
 
     // UserDto vo2Dto(UserVo vo);
     //

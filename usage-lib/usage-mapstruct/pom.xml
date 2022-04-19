@@ -15,7 +15,6 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <java.version>1.8</java.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
     </properties>
 
