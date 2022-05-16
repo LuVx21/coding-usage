@@ -5,12 +5,12 @@
 
     <parent>
         <groupId>org.luvx</groupId>
-        <artifactId>coding-parent-kotlin</artifactId>
+        <artifactId>usage-case</artifactId>
         <version>0.1</version>
-        <relativePath/>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>usage-kotlin</artifactId>
+    <artifactId>kotlin</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -19,21 +19,23 @@
     </properties>
 
     <dependencies>
+
+<!--        <dependency>-->
+<!--            <groupId>org.jetbrains.lets-plot</groupId>-->
+<!--            <artifactId>lets-plot-common</artifactId>-->
+<!--            <version>1.5.5</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.jetbrains.lets-plot</groupId>-->
+<!--            <artifactId>lets-plot-kotlin-api</artifactId>-->
+<!--            <version>1.0.0-rc1</version>-->
+<!--        </dependency>-->
+
     </dependencies>
 
     <build>
         <plugins>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
-            -->
         </plugins>
     </build>
 
