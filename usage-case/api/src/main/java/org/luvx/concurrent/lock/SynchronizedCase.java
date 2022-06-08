@@ -1,4 +1,4 @@
-package org.luvx.api.thread.lock;
+package org.luvx.concurrent.lock;
 
 /**
  * 对象锁和类锁

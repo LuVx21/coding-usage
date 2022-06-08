@@ -1,8 +1,11 @@
 package org.luvx.api.thread.bread;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 生产者
  */
+@Slf4j
 public class Producer implements Runnable {
     private final Object           producerMonitor;
     private final Object           consumerMonitor;
@@ -23,7 +26,6 @@ public class Producer implements Runnable {
 
     public void produce() {
         step1();
-        Bread bread = step2();
         if (container.isFull()) {
             synchronized (consumerMonitor) {
                 if (container.isFull()) {
@@ -33,7 +35,6 @@ public class Producer implements Runnable {
             synchronized (producerMonitor) {
                 try {
                     if (container.isFull()) {
-                        System.out.println("生产者挂起...");
                         producerMonitor.wait();
                     }
                 } catch (InterruptedException e) {
@@ -41,8 +42,9 @@ public class Producer implements Runnable {
                 }
             }
         } else {
+            Bread bread = step2();
             boolean result = container.add(bread);
-            System.out.println("Producer:" + result);
+            log.info("生产者({})生产, {} -> {}", Thread.currentThread().getName(), container.size() - 1, container.size());
         }
     }
 

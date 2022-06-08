@@ -1,4 +1,4 @@
-package org.luvx.api.thread.unsafe;
+package org.luvx.concurrent.usage;
 
 import com.google.common.collect.Sets;
 import org.luvx.api.thread.utils.ThreadUtils;

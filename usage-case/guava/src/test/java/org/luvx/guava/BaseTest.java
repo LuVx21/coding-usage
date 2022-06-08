@@ -52,13 +52,6 @@ public class BaseTest {
     }
 
     /**
-     * 特殊集合
-     */
-    @Test
-    public void method1() {
-    }
-
-    /**
      * String -> 集合
      */
     @Test
@@ -91,22 +84,15 @@ public class BaseTest {
     @Test
     public void method3() {
         //按照条件过滤
-        ImmutableList<String> names = ImmutableList.of("begin", "code", "Guava", "Java");
-        Iterable<String> fitered = Iterables.filter(names, Predicates.or(Predicates.equalTo("Guava"), Predicates.equalTo("Java")));
+        Iterable<String> fitered = Iterables.filter(List.of("begin", "code", "Guava", "Java"),
+                Predicates.or(Predicates.equalTo("Guava"), Predicates.equalTo("Java"))
+        );
         System.out.println(fitered); // [Guava, Java]
 
-        ImmutableMap<String, Integer> m = ImmutableMap.of("begin", 12, "code", 15);
-        Map<String, Integer> m2 = Maps.transformValues(m, new Function<Integer, Integer>() {
-            public Integer apply(Integer input) {
-                if (input > 12) {
-                    return input;
-                } else {
-                    return input + 1;
-                }
-            }
-        });
-
-        System.out.println(m2);   // {begin=13, code=15}
+        Map<String, Integer> m2 = Maps.transformValues(Map.of("begin", 12, "code", 15),
+                input -> input > 12 ? input : input + 1
+        );
+        System.out.println(m2); // {begin=13, code=15}
     }
 
     /**

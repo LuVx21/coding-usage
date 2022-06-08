@@ -1,22 +1,20 @@
 package org.luvx.guava;
 
 import com.google.common.base.*;
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 import com.google.common.io.Files;
+import io.vavr.API;
+import io.vavr.Tuple;
+import io.vavr.Tuple3;
 import org.junit.Test;
-import org.luvx.entity.User;
+import org.luvx.common.util.PrintUtils;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -46,17 +44,17 @@ public class ArgsCheckTest {
 
     @Test
     public void method1() {
-        User person = new User("foo", "bar", 11);
-        String str = MoreObjects.toStringHelper("Person").add("age", person.getAge()).toString();
+        String str = MoreObjects.toStringHelper("Person").add("age", 11).toString();
         System.out.println(str);
     }
 
     @Test
     public void method2() {
-        User person = new User("aa", "aa", 14);
-        User ps = new User("bb", "bb", 13);
-        Ordering<User> byOrdering = Ordering.natural().nullsFirst().onResultOf((u) -> u.getAge() + "");
-        byOrdering.compare(person, ps);
+        Tuple3<String, String, Integer> person = Tuple.of("aa", "aa", 14);
+        Tuple3<String, String, Integer> ps = Tuple.of("bb", "bb", 13);
+        Ordering<Tuple3<String, String, Integer>> byOrdering = Ordering.natural()
+                .nullsFirst()
+                .onResultOf((u) -> u._3 + "");
         // 1 person的年龄比ps大 所以输出1
         System.out.println(byOrdering.compare(person, ps));
     }
@@ -95,34 +93,25 @@ public class ArgsCheckTest {
 
     @Test
     public void method5() throws Exception {
-        LoadingCache<String, String> cahceBuilder = CacheBuilder
-                .newBuilder()
-                .build(new CacheLoader<String, String>() {
+        LoadingCache<String, String> cache = CacheBuilder.newBuilder()
+                .maximumSize(100L)
+                .build(new CacheLoader<>() {
                     @Override
-                    public String load(String key) throws Exception {
-                        String strProValue = "hello " + key + "!";
-                        return strProValue;
+                    public String load(String key) {
+                        return "hello " + key + "!";
                     }
                 });
-        System.out.println(cahceBuilder.apply("begincode"));  //hello begincode!
-        System.out.println(cahceBuilder.get("begincode")); //hello begincode!
-        System.out.println(cahceBuilder.get("wen")); //hello wen!
-        System.out.println(cahceBuilder.apply("wen")); //hello wen!
-        System.out.println(cahceBuilder.apply("da"));//hello da!
-        cahceBuilder.put("begin", "code");
-        System.out.println(cahceBuilder.get("begin")); //code
-    }
-
-    @Test
-    public void method6() throws Exception {
-        Cache<String, String> cache = CacheBuilder.newBuilder().maximumSize(1000).build();
-        String resultVal = cache.get("code", new Callable<String>() {
-            public String call() {
-                String strProValue = "begin " + "code" + "!";
-                return strProValue;
-            }
-        });
-        System.out.println("value : " + resultVal); //value : begin code!
+        cache.put("bar", "foo");
+        PrintUtils.println(
+                cache.getUnchecked("foo"),
+                cache.get("foo"),
+                cache.get("bar")
+        );
+        PrintUtils.println(
+                cache.getIfPresent("code"),
+                cache.get("code", () -> "begin code!"),
+                cache.getIfPresent("code")
+        );
     }
 
     /**
@@ -130,27 +119,11 @@ public class ArgsCheckTest {
      */
     @Test
     public void method7() {
-        method7_1();
-        // method7_2();
-    }
-
-    public void method7_1() {
         String str = "foobar";
         Optional<String> possible = Optional.of(str);
-        System.out.println(possible.isPresent());
-        System.out.println(possible.get());
+        PrintUtils.println(possible.isPresent(), possible.get());
 
-        str = null;
-        possible = Optional.fromNullable(str);
-
-    }
-
-    public void method7_2() {
-        List<String> list = ImmutableList.of("a", "b", "c", "d");
-        list = Optional.fromNullable(list).or(Collections.EMPTY_LIST);
-        System.out.println(list);
-        list = null;
-        list = Optional.fromNullable(list).or(Collections.EMPTY_LIST);
-        System.out.println(list);
+        Optional.presentInstances(Arrays.asList("1", null, "2").stream().map(Optional::fromNullable).toList())
+                .forEach(API::println);
     }
 }

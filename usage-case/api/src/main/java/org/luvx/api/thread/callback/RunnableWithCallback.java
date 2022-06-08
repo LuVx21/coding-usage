@@ -56,7 +56,6 @@ public class RunnableWithCallback<P, T> implements Runnable {
         RunnableWithCallback<String, String> r = builder
                 .args("hello ")
                 .function(s -> {
-                    Task.execute(s);
                     return s + "world";
                 })
                 .consumer(s -> {

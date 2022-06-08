@@ -1,8 +1,11 @@
 package org.luvx.api.thread.bread;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 消费者
  */
+@Slf4j
 public class Consumer implements Runnable {
     private final Object           producerMonitor;
     private final Object           consumerMonitor;
@@ -31,7 +34,6 @@ public class Consumer implements Runnable {
             synchronized (consumerMonitor) {
                 try {
                     if (container.isEmpty()) {
-                        System.out.println("消费者挂起...");
                         consumerMonitor.wait();
                     }
                 } catch (InterruptedException e) {
@@ -40,7 +42,7 @@ public class Consumer implements Runnable {
             }
         } else {
             Bread bread = container.get();
-            System.out.println("bread:" + bread);
+            log.info("消费者({})消费, {} -> {}", Thread.currentThread().getName(), container.size() + 1, container.size());
         }
     }
 }

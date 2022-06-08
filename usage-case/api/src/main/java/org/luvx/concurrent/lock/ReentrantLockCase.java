@@ -1,4 +1,4 @@
-package org.luvx.api.thread.lock;
+package org.luvx.concurrent.lock;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -10,7 +10,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 写操作:排它锁
  */
 public class ReentrantLockCase {
-
+    // ReentrantLock lock = new ReentrantLock();
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     private void read() {

@@ -1,4 +1,4 @@
-package org.luvx.api.thread.lock;
+package org.luvx.concurrent.lock;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;

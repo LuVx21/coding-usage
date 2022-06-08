@@ -1,4 +1,4 @@
-package org.luvx.api.thread.lock;
+package org.luvx.concurrent.lock;
 
 import org.luvx.api.thread.utils.ThreadUtils;
 
