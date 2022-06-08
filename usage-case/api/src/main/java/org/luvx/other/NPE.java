@@ -2,6 +2,7 @@ package org.luvx.other;
 
 import static org.luvx.other.Returned.UNDEFINED;
 
+import org.luvx.common.util.PrintUtils;
 import org.luvx.other.Returned.ReturnValue;
 import org.luvx.other.Returned.Undefined;
 
@@ -25,6 +26,6 @@ public class NPE {
 
     public static void main(String[] args) {
         boolean l = nameEquals(new NPE("luvx"), "luvx");
-        API.println(l);
+        PrintUtils.println(l);
     }
 }
