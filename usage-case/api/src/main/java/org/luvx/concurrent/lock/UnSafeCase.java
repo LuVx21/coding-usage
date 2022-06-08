@@ -1,6 +1,6 @@
 package org.luvx.concurrent.lock;
 
-import org.luvx.api.thread.utils.ThreadUtils;
+import org.luvx.concurrent.utils.ThreadUtils;
 
 import java.util.concurrent.ExecutorService;
 

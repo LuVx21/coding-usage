@@ -1,7 +1,6 @@
 package org.luvx.concurrent.usage;
 
-import com.google.common.collect.Sets;
-import org.luvx.api.thread.utils.ThreadUtils;
+import org.luvx.concurrent.utils.ThreadUtils;
 
 import java.util.Set;
 import java.util.TreeSet;

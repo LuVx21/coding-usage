@@ -1,16 +1,16 @@
 package org.luvx.concurrent.future;
 
 import lombok.SneakyThrows;
-import org.luvx.api.thread.entity.CallableCase;
-import org.luvx.api.thread.entity.RunnableCase;
 import org.luvx.common.util.PrintUtils;
+import org.luvx.concurrent.entity.CallableCase;
+import org.luvx.concurrent.entity.RunnableCase;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
-import static org.luvx.api.thread.utils.ThreadUtils.SERVICE;
+import static org.luvx.concurrent.utils.ThreadUtils.SERVICE;
 
 public class FutureTaskCase {
     @SneakyThrows

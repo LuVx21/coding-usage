@@ -4,8 +4,8 @@ import com.google.common.util.concurrent.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.luvx.api.thread.entity.CallableCase;
-import org.luvx.api.thread.entity.Task;
+import org.luvx.concurrent.entity.CallableCase;
+import org.luvx.concurrent.entity.Task;
 import org.luvx.common.util.PrintUtils;
 
 import java.time.LocalDateTime;
@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.luvx.api.thread.utils.ThreadUtils.SERVICE;
+import static org.luvx.concurrent.utils.ThreadUtils.SERVICE;
 
 /**
  * 获取子线程的执行结果

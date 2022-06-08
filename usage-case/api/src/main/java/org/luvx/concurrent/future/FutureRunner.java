@@ -1,8 +1,8 @@
 package org.luvx.concurrent.future;
 
 import lombok.extern.slf4j.Slf4j;
-import org.luvx.api.thread.entity.Task;
-import org.luvx.api.thread.utils.ThreadUtils;
+import org.luvx.concurrent.entity.Task;
+import org.luvx.concurrent.utils.ThreadUtils;
 import org.luvx.common.util.PrintUtils;
 import org.luvx.common.util.Runs;
 
