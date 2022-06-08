@@ -1,24 +1,29 @@
 package org.luvx.api.enum_;
 
-import org.apache.commons.collections4.EnumerationUtils;
 import org.apache.commons.lang3.EnumUtils;
-import org.junit.Test;
-import org.luvx.api.enum_.EnumCase;
+import org.junit.jupiter.api.Test;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import io.vavr.API;
+import static org.luvx.common.util.PrintUtils.println;
 
 public class EnumCaseTest {
 
     @Test
+    void m1() {
+        EnumCase mon = EnumCase.fromName("MON");
+        EnumCase enumCase = EnumCase.fromCode(1);
+        println(mon, enumCase);
+    }
+
+    @Test
     public void selectAll() {
         EnumCase sat = Enum.valueOf(EnumCase.class, "SAT");
-        // API.println(sat.getCode());
-        API.println(EnumUtils.getEnumList(EnumCase.class));
+        // PrintUtils.println(sat.getCode());
+        println(EnumUtils.getEnumList(EnumCase.class));
 
         for (EnumCase e : EnumCase.values()) {
             // System.out.println(e);

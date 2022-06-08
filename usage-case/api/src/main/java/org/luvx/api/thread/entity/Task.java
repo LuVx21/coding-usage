@@ -1,19 +1,24 @@
 package org.luvx.api.thread.entity;
 
-/**
- * @ClassName: org.luvx.api.thread.thread
- * @Description:
- * @Author: Ren, Xie
- * @Date: 2019/3/7 14:18
- */
-public class Task {
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
-    public static void execute(String name) {
-        try {
-            System.out.println("正在处理: " + name);
-            Thread.sleep(5 * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+import java.util.concurrent.TimeUnit;
+
+/**
+ * @author Ren, Xie
+ */
+@Slf4j
+public class Task {
+    @SneakyThrows
+    public static String execute(int second) {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < second; i++) {
+            TimeUnit.SECONDS.sleep(1);
+            log.info("耗时操作: {}/{}", i + 1, second);
         }
+        long exec = System.currentTimeMillis() - start;
+        // log.info("总耗时:{}ms", exec);
+        return "耗时:" + exec + "ms";
     }
 }

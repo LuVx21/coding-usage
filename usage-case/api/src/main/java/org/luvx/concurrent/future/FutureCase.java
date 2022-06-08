@@ -1,21 +1,20 @@
 package org.luvx.concurrent.future;
 
-import static org.luvx.api.thread.utils.ThreadUtils.SERVICE;
-
 import com.google.common.util.concurrent.*;
-
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
 import org.jetbrains.annotations.NotNull;
 import org.luvx.api.thread.entity.CallableCase;
 import org.luvx.api.thread.entity.Task;
-import org.luvx.api.thread.utils.ThreadUtils;
+import org.luvx.common.util.PrintUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
+
+import static org.luvx.api.thread.utils.ThreadUtils.SERVICE;
 
 /**
  * 获取子线程的执行结果
@@ -31,7 +30,7 @@ public class FutureCase {
      */
     public static void future0() throws Exception {
         AtomicReference<String> result = new AtomicReference<>();
-        Thread thread = new Thread(() -> result.set(Task.execute("1234") + "-" + LocalDateTime.now()));
+        Thread thread = new Thread(() -> result.set(Task.execute(5)));
         thread.start();
         thread.join();
 
@@ -57,19 +56,21 @@ public class FutureCase {
      *
      * @throws Exception
      */
+    @SneakyThrows
     public static void future2() {
         // CompletableFuture.runAsync(() -> {});
         CompletableFuture<String> future = CompletableFuture.supplyAsync(() ->
-                Task.execute("1234") + "-" + LocalDateTime.now(), SERVICE
-        );
-        future.thenApply(result -> {
+                Task.execute(5), SERVICE
+        ).thenApply(result -> {
             log.info("处理线程执行结果:{}", result);
             return result + "-" + LocalDateTime.now();
-        });
-        future.exceptionally(e -> {
+        }).exceptionally(e -> {
             log.warn("异步异常结束", e);
             return "";
         });
+        // .thenCompose()
+        // .thenCombine()
+        PrintUtils.println(future.get());
     }
 
     public static void guavaFuture() {
@@ -97,33 +98,6 @@ public class FutureCase {
         }, SERVICE);
 
         log.info("guavaFuture执行结束");
-    }
-
-    public static void future99() throws Exception {
-        List<FutureTask<String>> list = new ArrayList<>(5);
-
-        for (int i = 0; i < 6; i++) {
-            FutureTask<String> task = new FutureTask<>(new CallableCase("1234" + i));
-            SERVICE.execute(task);
-            list.add(task);
-        }
-
-        SERVICE.shutdown();
-
-        while (!SERVICE.awaitTermination(10, TimeUnit.SECONDS)) {
-            System.out.println("线程未结束...");
-        }
-
-        System.out.println("-------------------------------");
-
-        for (FutureTask<String> task : list) {
-            if (!task.isDone()) {
-                System.out.println("继续等待......");
-                continue;
-            }
-            String result = task.get();
-            System.out.println(result);
-        }
     }
 
     public static void main(String[] args) throws Exception {
