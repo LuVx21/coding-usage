@@ -1,4 +1,4 @@
-package org.luvx.thread.usage.threenum;
+package org.luvx.concurrent.usage.threenum;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;

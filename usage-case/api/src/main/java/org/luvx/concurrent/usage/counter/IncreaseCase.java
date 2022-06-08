@@ -1,4 +1,4 @@
-package org.luvx.thread.usage.counter;
+package org.luvx.concurrent.usage.counter;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;

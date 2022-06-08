@@ -1,4 +1,4 @@
-package org.luvx.thread.usage.twonum;
+package org.luvx.concurrent.usage.twonum;
 
 import lombok.extern.slf4j.Slf4j;
 
