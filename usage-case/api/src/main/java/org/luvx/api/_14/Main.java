@@ -1,7 +1,7 @@
 package org.luvx.api._14;
 
 import io.vavr.API;
-import org.luvx.common.util.PrintUtils;
+import org.luvx.common.more.MorePrints;
 
 public class Main {
     private record User(Long id, String name, Integer age) {
@@ -21,6 +21,6 @@ public class Main {
 
     public static void main(String[] args) {
         User user = new User(1L, "luvx", 18);
-        PrintUtils.println(user, format(user));
+        MorePrints.println(user, format(user));
     }
 }

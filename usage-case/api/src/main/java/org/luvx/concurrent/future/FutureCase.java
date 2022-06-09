@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.luvx.concurrent.entity.CallableCase;
 import org.luvx.concurrent.entity.Task;
-import org.luvx.common.util.PrintUtils;
+import org.luvx.common.more.MorePrints;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
@@ -70,7 +70,7 @@ public class FutureCase {
         });
         // .thenCompose()
         // .thenCombine()
-        PrintUtils.println(future.get());
+        MorePrints.println(future.get());
     }
 
     public static void guavaFuture() {

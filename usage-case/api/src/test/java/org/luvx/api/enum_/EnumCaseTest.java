@@ -8,7 +8,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.luvx.common.util.PrintUtils.println;
+import static org.luvx.common.more.MorePrints.println;
 
 public class EnumCaseTest {
 
@@ -22,7 +22,7 @@ public class EnumCaseTest {
     @Test
     public void selectAll() {
         EnumCase sat = Enum.valueOf(EnumCase.class, "SAT");
-        // PrintUtils.println(sat.getCode());
+        // MorePrints.println(sat.getCode());
         println(EnumUtils.getEnumList(EnumCase.class));
 
         for (EnumCase e : EnumCase.values()) {

@@ -3,7 +3,7 @@ package org.luvx.concurrent.future;
 import lombok.extern.slf4j.Slf4j;
 import org.luvx.concurrent.entity.Task;
 import org.luvx.concurrent.utils.ThreadUtils;
-import org.luvx.common.util.PrintUtils;
+import org.luvx.common.more.MorePrints;
 import org.luvx.common.util.Runs;
 
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public class FutureRunner {
                     () -> Task.execute(1),
                     () -> Task.execute(1)
             );
-            PrintUtils.println(objects);
+            MorePrints.println(objects);
         });
     }
 }

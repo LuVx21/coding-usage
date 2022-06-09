@@ -5,7 +5,7 @@ import static java.lang.reflect.Modifier.*;
 import java.lang.reflect.Field;
 
 import org.apache.commons.lang3.ClassUtils;
-import org.luvx.common.util.PrintUtils;
+import org.luvx.common.more.MorePrints;
 import org.luvx.entity.User;
 
 import io.vavr.API;
@@ -19,7 +19,7 @@ public class FinalCase {
      */
     @SneakyThrows
     public static void main(String[] args) {
-        PrintUtils.println(USER);
+        MorePrints.println(USER);
         Class<FinalCase> clazz = FinalCase.class;
         Field field = clazz.getDeclaredField("USER");
         field.setAccessible(true);
@@ -27,6 +27,6 @@ public class FinalCase {
         modifiers.setAccessible(true);
         modifiers.setInt(field, field.getModifiers() & ~FINAL);
         field.set(null, new User("foo1", "bar1", 19));
-        PrintUtils.println(USER);
+        MorePrints.println(USER);
     }
 }

@@ -1,7 +1,7 @@
 package org.luvx.concurrent.future;
 
 import lombok.SneakyThrows;
-import org.luvx.common.util.PrintUtils;
+import org.luvx.common.more.MorePrints;
 import org.luvx.concurrent.entity.CallableCase;
 import org.luvx.concurrent.entity.RunnableCase;
 
@@ -20,7 +20,7 @@ public class FutureTaskCase {
         FutureTask<String> task = new FutureTask<>(runnable, s);
         SERVICE.execute(task);
         final String s1 = task.get();
-        PrintUtils.println(s, s1);
+        MorePrints.println(s, s1);
     }
 
     public static void future99() throws Exception {

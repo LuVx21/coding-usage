@@ -1,6 +1,6 @@
 package org.luvx.collections.queue;
 
-import org.luvx.common.util.PrintUtils;
+import org.luvx.common.more.MorePrints;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -14,6 +14,6 @@ public class QueueCase {
         heap.offer(3);
         heap.offer(1);
         heap.offer(2);
-        PrintUtils.println(heap.poll(), heap.poll());
+        MorePrints.println(heap.poll(), heap.poll());
     }
 }

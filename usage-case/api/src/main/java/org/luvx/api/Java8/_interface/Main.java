@@ -1,12 +1,12 @@
 package org.luvx.api.Java8._interface;
 
-import org.luvx.common.util.PrintUtils;
+import org.luvx.common.more.MorePrints;
 
 public class Main {
     public static void main(String[] args) {
         A1 a1 = new A1();
         A2 a2 = new A2();
-        PrintUtils.println(a1.doIt(), a2.doIt());
+        MorePrints.println(a1.doIt(), a2.doIt());
     }
 
     private static class A1 implements Interface1, Interface2 {

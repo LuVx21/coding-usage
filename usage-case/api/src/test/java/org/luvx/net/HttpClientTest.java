@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vavr.API;
 import lombok.SneakyThrows;
-import org.luvx.common.util.PrintUtils;
+import org.luvx.common.more.MorePrints;
 
 class HttpClientTest {
     final HttpClient client = HttpClient.newBuilder()
@@ -35,7 +35,7 @@ class HttpClientTest {
         CompletableFuture<String> future = client.sendAsync(request, BodyHandlers.ofString())
                 .thenApply(HttpResponse::body);
 
-        PrintUtils.println(response.body(), future.get());
+        MorePrints.println(response.body(), future.get());
     }
 
     @Test@SneakyThrows
@@ -46,6 +46,6 @@ class HttpClientTest {
                 .POST(BodyPublishers.ofString("name1=value1&name2=value2"))
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        PrintUtils.println(response.body());
+        MorePrints.println(response.body());
     }
 }

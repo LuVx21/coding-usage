@@ -10,7 +10,7 @@ import io.vavr.API;
 import io.vavr.Tuple;
 import io.vavr.Tuple3;
 import org.junit.Test;
-import org.luvx.common.util.PrintUtils;
+import org.luvx.common.more.MorePrints;
 
 import java.io.File;
 import java.util.Arrays;
@@ -102,12 +102,12 @@ public class ArgsCheckTest {
                     }
                 });
         cache.put("bar", "foo");
-        PrintUtils.println(
+        MorePrints.println(
                 cache.getUnchecked("foo"),
                 cache.get("foo"),
                 cache.get("bar")
         );
-        PrintUtils.println(
+        MorePrints.println(
                 cache.getIfPresent("code"),
                 cache.get("code", () -> "begin code!"),
                 cache.getIfPresent("code")
@@ -121,7 +121,7 @@ public class ArgsCheckTest {
     public void method7() {
         String str = "foobar";
         Optional<String> possible = Optional.of(str);
-        PrintUtils.println(possible.isPresent(), possible.get());
+        MorePrints.println(possible.isPresent(), possible.get());
 
         Optional.presentInstances(Arrays.asList("1", null, "2").stream().map(Optional::fromNullable).toList())
                 .forEach(API::println);

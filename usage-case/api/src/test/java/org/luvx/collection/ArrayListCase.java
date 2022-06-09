@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Spliterator;
 
-import static org.luvx.common.util.PrintUtils.println;
+import static org.luvx.common.more.MorePrints.println;
 
 /**
  * ArrayList:
