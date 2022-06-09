@@ -1,4 +1,4 @@
-package org.luvx.api.collections;
+package org.luvx.collections.list;
 
 import org.apache.commons.lang3.ArrayUtils;
 

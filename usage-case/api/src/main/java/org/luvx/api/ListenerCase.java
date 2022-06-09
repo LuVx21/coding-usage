@@ -1,22 +1,16 @@
-package org.luvx.demo;
+package org.luvx.api;
 
 import lombok.Setter;
 
 import java.util.EventListener;
 import java.util.EventObject;
 
-/**
- * @ClassName: org.luvx.demo
- * @Description:
- * @Author: Ren, Xie
- * @Date: 2019/4/30 16:45
- */
 public class ListenerCase {
     /**
      * 事件源
      */
     @Setter
-    public static class EventSource {
+    private static class EventSource {
         private Listener listener;
 
         private Event click() {
