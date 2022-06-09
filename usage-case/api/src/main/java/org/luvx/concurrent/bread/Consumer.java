@@ -2,8 +2,6 @@ package org.luvx.concurrent.bread;
 
 import lombok.extern.slf4j.Slf4j;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * 消费者
  */
