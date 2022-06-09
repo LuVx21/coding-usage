@@ -1,13 +1,11 @@
 package org.luvx.other;
 
-import static org.luvx.other.Returned.UNDEFINED;
-
-import org.luvx.common.util.PrintUtils;
+import lombok.AllArgsConstructor;
+import org.luvx.common.more.MorePrints;
 import org.luvx.other.Returned.ReturnValue;
 import org.luvx.other.Returned.Undefined;
 
-import io.vavr.API;
-import lombok.AllArgsConstructor;
+import static org.luvx.other.Returned.UNDEFINED;
 
 @AllArgsConstructor
 public class NPE {
@@ -26,6 +24,6 @@ public class NPE {
 
     public static void main(String[] args) {
         boolean l = nameEquals(new NPE("luvx"), "luvx");
-        PrintUtils.println(l);
+        MorePrints.println(l);
     }
 }

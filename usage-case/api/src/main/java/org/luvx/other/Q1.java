@@ -1,10 +1,9 @@
-package org.luvx.qa;
+package org.luvx.other;
+
+import org.luvx.common.more.MorePrints;
 
 /**
- * @ClassName: org.luvx.qa
- * @Description: 父子类属性名相同
- * @Author: Ren, Xie
- * @Date: 2019/4/26 13:48
+ * 父子类属性名相同
  */
 public class Q1 {
     private static class Parent {
@@ -18,9 +17,8 @@ public class Q1 {
     public static void main(String[] args) {
         Parent p = new Sub();
         Sub s = new Sub();
-
-        // 110
-        System.out.println((p.i + s.i));
+        // 10 100
+        MorePrints.println(p.i, s.i);
     }
 }
 
