@@ -1,7 +1,7 @@
 package org.luvx.api;
 
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.luvx.api.reflect.IntrospectorCase;
 import org.luvx.entity.User;
 

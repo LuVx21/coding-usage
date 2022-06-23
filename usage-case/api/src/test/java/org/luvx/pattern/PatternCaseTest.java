@@ -1,6 +1,6 @@
-package org.luvx.api;
+package org.luvx.pattern;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.luvx.common.more.MoreRuns;
 
 import java.util.regex.Pattern;
@@ -17,7 +17,7 @@ public class PatternCaseTest {
     ;
 
     // 劣
-    public static void method0(String str) {
+    private void method0(String str) {
         for (int i = 0; i < 10000; i++) {
             Pattern.matches(ID_REGEXP, str);
             // 或
@@ -26,36 +26,36 @@ public class PatternCaseTest {
     }
 
     // 优
-    public static void method1(String str) {
+    private void method1(String str) {
         for (int i = 0; i < 10000; i++) {
             ID_PATTERN.matcher(str).matches();
         }
     }
 
     // 劣
-    public static void method2(String str) {
+    private void method2(String str) {
         for (int i = 0; i < 10000; i++) {
             str.replaceAll(ID_REGEXP, "LuVx");
         }
     }
 
     // 优
-    public static void method3(String str) {
+    private void method3(String str) {
         for (int i = 0; i < 10000; i++) {
             ID_PATTERN.matcher(str).replaceAll("LuVx");
         }
     }
 
     @Test
-    public void run00() {
-        MoreRuns.runWithTime(() -> PatternCaseTest.method0("023"));
-        MoreRuns.runWithTime(() -> PatternCaseTest.method1("023"));
+    void run00() {
+        MoreRuns.runWithTime(() -> method0("023"));
+        MoreRuns.runWithTime(() -> method1("023"));
     }
 
     @Test
-    public void run01() {
+    void run01() {
         String str = "023152345579844321685746154023206548402304568574687023054687980";
-        MoreRuns.runWithTime(() -> PatternCaseTest.method2(str));
-        MoreRuns.runWithTime(() -> PatternCaseTest.method3(str));
+        MoreRuns.runWithTime(() -> method2(str));
+        MoreRuns.runWithTime(() -> method3(str));
     }
 }

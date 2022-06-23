@@ -1,6 +1,6 @@
 package org.luvx.api.io;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;

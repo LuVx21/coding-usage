@@ -1,6 +1,7 @@
 package org.luvx.api;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.luvx.common.more.MorePrints;
 
 import java.text.MessageFormat;
 
@@ -75,7 +76,6 @@ public class StringCase {
      */
     @Test
     public void equalsTest() {
-
         String aa = "aa";
         String cc = "aa";
         // true
@@ -96,19 +96,12 @@ public class StringCase {
 
     @Test
     public void method() {
-        String str = "from {0} to {1};";
-        String result = MessageFormat.format(str, 10001 + "", 20000 + "");
-        System.out.println(result);
-
+        String result = MessageFormat.format("from {0} to {1};", 10001 + "", 20000);
+        String b = MessageFormat.format("{0},{1},{2},''{3}'','{4}'", "a", "b", "c", "d", "e");
+        MorePrints.println(result, b);
     }
 
     @Test
     public void method1() {
-        for (int i = 1; i < 5; i++) {
-            System.out.print((i - 1) * 10000 + 1);
-            System.out.print(":");
-            System.out.println(i * 10000);
-        }
-
     }
 }

@@ -1,6 +1,6 @@
 package org.luvx.api.java8.lambda;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
 

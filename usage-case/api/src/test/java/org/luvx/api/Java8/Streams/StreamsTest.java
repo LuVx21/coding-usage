@@ -1,7 +1,7 @@
 package org.luvx.api.java8.Streams;
 
 import com.google.common.collect.ImmutableList;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
 import java.util.Optional;

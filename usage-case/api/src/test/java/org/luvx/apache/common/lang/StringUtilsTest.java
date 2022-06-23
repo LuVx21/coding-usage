@@ -2,7 +2,7 @@ package org.luvx.apache.common.lang;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @ClassName: org.luvx.apache.common.lang

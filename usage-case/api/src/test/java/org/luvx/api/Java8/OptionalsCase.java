@@ -2,7 +2,7 @@ package org.luvx.api.java8;
 
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 防止NullPointerException的手段

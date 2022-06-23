@@ -1,6 +1,6 @@
 package org.luvx.api;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Comparable 和 Comparator 的区别

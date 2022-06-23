@@ -1,6 +1,6 @@
 package org.luvx.api.java8.Time;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;

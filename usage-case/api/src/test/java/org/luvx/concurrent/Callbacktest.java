@@ -1,6 +1,6 @@
 package org.luvx.concurrent;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.luvx.concurrent.callback.callback.Callbackimpl;
 import org.luvx.concurrent.callback.callback.Callerimpl;
 

@@ -1,6 +1,6 @@
 package org.luvx.api.date;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 

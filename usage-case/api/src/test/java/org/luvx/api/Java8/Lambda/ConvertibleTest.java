@@ -3,7 +3,7 @@ package org.luvx.api.java8.lambda;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * 静态引用
