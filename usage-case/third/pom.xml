@@ -5,29 +5,18 @@
 
     <parent>
         <groupId>org.luvx</groupId>
-        <artifactId>coding-parent-kotlin</artifactId>
+        <artifactId>usage-case</artifactId>
         <version>0.1</version>
     </parent>
 
-    <artifactId>usage-case</artifactId>
+    <artifactId>third</artifactId>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
 
     <modules>
-        <module>api</module>
-        <module>nio</module>
-        <module>pattern</module>
-        <module>vavr</module>
-        <module>guava</module>
-        <module>github</module>
-        <module>third</module>
-        <!-- <module>reactor</module> -->
+        <module>usage-mapstruct</module>
+        <!-- <module>usage-retrofit2</module> -->
     </modules>
 
-    <properties>
-    </properties>
-
-    <dependencies>
-    </dependencies>
 </project>

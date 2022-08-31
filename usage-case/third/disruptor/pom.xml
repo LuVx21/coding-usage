@@ -5,29 +5,27 @@
 
     <parent>
         <groupId>org.luvx</groupId>
-        <artifactId>coding-parent-kotlin</artifactId>
+        <artifactId>lib</artifactId>
         <version>0.1</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>usage-case</artifactId>
-    <packaging>pom</packaging>
-
+    <artifactId>disruptor</artifactId>
+    <packaging>jar</packaging>
     <name>${project.artifactId}</name>
-
-    <modules>
-        <module>api</module>
-        <module>nio</module>
-        <module>pattern</module>
-        <module>vavr</module>
-        <module>guava</module>
-        <module>github</module>
-        <module>third</module>
-        <!-- <module>reactor</module> -->
-    </modules>
 
     <properties>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>3.4.4</version>
+        </dependency>
     </dependencies>
+
+    <build>
+    </build>
+
 </project>
