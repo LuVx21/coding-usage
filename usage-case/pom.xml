@@ -21,7 +21,8 @@
         <module>vavr</module>
         <module>guava</module>
         <module>github</module>
-        <module>reactor</module>
+        <module>lib</module>
+        <!-- <module>reactor</module> -->
     </modules>
 
     <properties>
