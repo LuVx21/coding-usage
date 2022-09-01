@@ -26,7 +26,7 @@ public interface BaseConverter<FROM, TO> {
     @InheritConfiguration(name = "from2To")
     void updateTo(FROM from, @MappingTarget TO to);
 
-    FROM map2From(Map<String, Object> map);
+    // FROM map2From(Map<String, Object> map);
 
-    TO map2To(Map<String, Object> map);
+    // TO map2To(Map<String, Object> map);
 }

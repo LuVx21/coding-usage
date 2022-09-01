@@ -16,8 +16,6 @@
 
     <modules>
         <module>hybrid</module>
-        <module>reactor</module>
-        <module>usage-mapstruct</module>
         <module>usage-retrofit2</module>
         <module>usage-serialize</module>
     </modules>

@@ -1,14 +1,14 @@
-package org.luvx.map.converter;
-
-import java.io.Serializable;
-import java.util.Map;
-
-import io.vavr.API;
+package org.luvx.map;
 
 import org.junit.jupiter.api.Test;
+import org.luvx.common.more.MorePrints;
+import org.luvx.map.converter.UserConverter;
+import org.luvx.map.converter.UserVoConverter;
 import org.luvx.map.entity.User;
 import org.luvx.map.entity.UserDto;
 import org.luvx.map.entity.UserVo;
+
+import java.util.Map;
 
 class UserConverterTest {
     UserConverter   userConverter = UserConverter.INSTANCE;
@@ -22,11 +22,12 @@ class UserConverterTest {
         vo.setPassword("bar");
         vo.setConfirmPwd("bar");
         vo.setAge(18);
+
         UserDto userDto = voConverter.from2To(vo);
         User user = userConverter.from2To(userDto);
         UserDto userDto1 = userConverter.to2From(user);
         UserVo userVo = voConverter.to2From(userDto1);
-        API.println(userDto, user, userDto1, userVo);
+        MorePrints.println(userDto, user, userDto1, userVo);
     }
 
     @Test
@@ -38,7 +39,7 @@ class UserConverterTest {
                 "confirmPwd", "bar",
                 "age", 18
         );
-        UserDto dto = voConverter.map2To(map);
-        API.println(dto);
+        // UserDto dto = voConverter.map2To(map);
+        // MorePrints.println(dto);
     }
 }
