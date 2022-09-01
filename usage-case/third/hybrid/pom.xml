@@ -9,7 +9,7 @@
         <version>0.1</version>
     </parent>
 
-    <artifactId>disruptor</artifactId>
+    <artifactId>hybrid</artifactId>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

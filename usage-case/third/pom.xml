@@ -15,7 +15,7 @@
     <name>${project.artifactId}</name>
 
     <modules>
-        <module>disruptor</module>
+        <module>hybrid</module>
         <module>reactor</module>
         <module>usage-mapstruct</module>
         <module>usage-retrofit2</module>
