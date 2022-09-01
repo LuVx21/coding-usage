@@ -5,17 +5,14 @@
 
     <parent>
         <groupId>org.luvx</groupId>
-        <artifactId>lib</artifactId>
+        <artifactId>third</artifactId>
         <version>0.1</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>disruptor</artifactId>
     <packaging>jar</packaging>
-    <name>${project.artifactId}</name>
 
-    <properties>
-    </properties>
+    <name>${project.artifactId}</name>
 
     <dependencies>
         <dependency>
@@ -24,8 +21,4 @@
             <version>3.4.4</version>
         </dependency>
     </dependencies>
-
-    <build>
-    </build>
-
 </project>
