@@ -1,7 +1,6 @@
 package org.luvx.json.fastjson;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson2.JSON;
 import org.luvx.json.base.BaseJsonMapper;
 
 import java.lang.reflect.Type;
@@ -36,7 +35,8 @@ public class FastJsonMapper extends BaseJsonMapper {
 
     @Override
     public String bean2Json(Object o, String dateFormatPattern) {
-        return JSON.toJSONStringWithDateFormat(o, dateFormatPattern, SerializerFeature.WriteDateUseDateFormat);
+        // return JSON.toJSONStringWithDateFormat(o, dateFormatPattern, SerializerFeature.WriteDateUseDateFormat);
+        return "";
     }
 
     @Override
