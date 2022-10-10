@@ -15,19 +15,20 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <mapstruct.version>1.5.2.Final</mapstruct.version>
+        <disruptor.version>3.4.4</disruptor.version>
+        <mapstruct.version>1.5.3.Final</mapstruct.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.lmax</groupId>
             <artifactId>disruptor</artifactId>
-            <version>3.4.4</version>
+            <version>${disruptor.version}</version>
         </dependency>
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-            <version>3.4.22</version>
+            <version>3.4.24</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>

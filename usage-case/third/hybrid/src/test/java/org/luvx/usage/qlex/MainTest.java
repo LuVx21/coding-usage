@@ -3,6 +3,7 @@ package org.luvx.usage.qlex;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.luvx.coding.usage.qlex.JoinOperator;
 
 import com.google.common.collect.ImmutableMap;
 import com.ql.util.express.DefaultContext;

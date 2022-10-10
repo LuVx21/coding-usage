@@ -1,4 +1,4 @@
-package org.luvx.usage.qlex;
+package org.luvx.coding.usage.qlex;
 
 import java.util.ArrayList;
 import java.util.Arrays;
