@@ -1,7 +1,7 @@
 package org.luvx.vavr
 
 import io.vavr.Tuple
-import org.luvx.enhancer.out
+import org.luvx.coding.common.enhancer.out
 
 fun main() {
     Tuple.of("Hello", 100)

@@ -2,7 +2,7 @@ package org.luvx.vavr
 
 import io.vavr.API
 import io.vavr.control.Option
-import org.luvx.enhancer.out
+import org.luvx.coding.common.enhancer.out
 
 private fun m1() {
     val list = listOf(1, 2, 3)

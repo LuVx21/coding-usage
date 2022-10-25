@@ -1,7 +1,7 @@
 package org.luvx.github.more.lambda;
 
 import static com.github.phantomthief.util.MoreSuppliers.lazy;
-import static org.luvx.common.util.JsonUtils.fromJson;
+import static org.luvx.coding.common.util.JsonUtils.fromJson;
 
 import java.util.Map;
 

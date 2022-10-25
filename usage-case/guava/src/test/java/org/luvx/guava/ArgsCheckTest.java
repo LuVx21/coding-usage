@@ -10,7 +10,7 @@ import io.vavr.API;
 import io.vavr.Tuple;
 import io.vavr.Tuple3;
 import org.junit.Test;
-import org.luvx.common.more.MorePrints;
+import org.luvx.coding.common.more.MorePrints;
 
 import java.io.File;
 import java.util.Arrays;

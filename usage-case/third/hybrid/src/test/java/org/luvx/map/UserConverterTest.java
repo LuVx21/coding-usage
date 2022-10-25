@@ -1,7 +1,7 @@
 package org.luvx.map;
 
 import org.junit.jupiter.api.Test;
-import org.luvx.common.more.MorePrints;
+import org.luvx.coding.common.more.MorePrints;
 import org.luvx.map.converter.UserConverter;
 import org.luvx.map.converter.UserVoConverter;
 import org.luvx.map.entity.User;
