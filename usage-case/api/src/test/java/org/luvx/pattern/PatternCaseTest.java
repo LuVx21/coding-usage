@@ -1,7 +1,7 @@
 package org.luvx.pattern;
 
 import org.junit.jupiter.api.Test;
-import org.luvx.common.more.MoreRuns;
+import org.luvx.coding.common.more.MoreRuns;
 
 import java.util.regex.Pattern;
 

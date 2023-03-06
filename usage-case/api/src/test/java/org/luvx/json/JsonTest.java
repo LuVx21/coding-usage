@@ -1,8 +1,18 @@
 package org.luvx.json;
 
+import java.util.ArrayList;
+
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
+
+import org.junit.jupiter.api.Test;
+
 public class JsonTest {
 
-    // private String json = "{\"age\":26,\"articles\":[{\"articleName\":\"test1\",\"createTime\":1544779082310},{\"articleName\":\"test2\",\"createTime\":1544779082311}],\"password\":\"1234\",\"userId\":999,\"userName\":\"Luvx\"}";
+    // private String json = "{\"age\":26,\"articles\":[{\"articleName\":\"test1\",\"createTime\":1544779082310},
+    // {\"articleName\":\"test2\",\"createTime\":1544779082311}],\"password\":\"1234\",\"userId\":999,
+    // \"userName\":\"Luvx\"}";
     //
     // @Test
     // public void toStr() {
@@ -10,8 +20,10 @@ public class JsonTest {
     //     user.setId(999L);
     //     List<Article> articles = new ArrayList<>();
     //
-    //     Article article = Article.builder().articleName("test1").createTime(new Date(System.currentTimeMillis())).build();
-    //     Article article1 = Article.builder().articleName("test2").createTime(new Date(System.currentTimeMillis() + 1)).build();
+    //     Article article = Article.builder().articleName("test1").createTime(new Date(System.currentTimeMillis()))
+    //     .build();
+    //     Article article1 = Article.builder().articleName("test2").createTime(new Date(System.currentTimeMillis() +
+    //     1)).build();
     //     articles.add(article);
     //     articles.add(article1);
     //     user.setArticles(articles);
@@ -26,20 +38,31 @@ public class JsonTest {
     //     System.out.println(user);
     // }
     //
-    // @Test
-    // public void arrayTest() {
-    //     // 解析为json对象
-    //     JSONObject jsonObject = JSON.parseObject(json);
-    //     JSONArray articles = jsonObject.getJSONArray("articles");
-    //     // 方式1
-    //     List<Article> list = JSON.parseObject(articles.toJSONString(), new TypeReference<List<Article>>() {
-    //     });
-    //     // 方式2
-    //     List<Article> newList = JSON.parseObject(articles.toJSONString(), ArrayList.class);
-    //     // 方式3
-    //     List<Article> newNewList = JSONObject.parseArray(articles.toJSONString(), Article.class);
-    // }
-    //
+    @Test
+    void arrayTest() {
+        String json = """
+                {
+                "a":[{"b":"haha"}]
+                }
+                """;
+        // 解析为json对象
+        JSONObject jsonObject = JSON.parseObject(json);
+        JSONArray array = jsonObject.getJSONArray("a");
+        for (Object o : array) {
+            System.out.println(o.getClass());
+            System.out.println(o);
+        }
+
+        // JSONArray articles = jsonObject.getJSONArray("articles");
+        // 方式1
+        // List<Article> list = JSON.parseObject(articles.toJSONString(), new TypeReference<List<Article>>() {
+        // });
+        // 方式2
+        // List<Article> newList = JSON.parseObject(articles.toJSONString(), ArrayList.class);
+        // 方式3
+        // List<Article> newNewList = JSONObject.parseArray(articles.toJSONString(), Article.class);
+    }
+
     // @Test
     // public void mapTest() {
     //     Map<String, String> map = new HashMap<>();

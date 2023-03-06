@@ -4,7 +4,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
 import io.vavr.API;
-import org.luvx.common.more.MorePrints;
+import org.luvx.coding.common.more.MorePrints;
 
 public class RefCase {
     public static void main(String[] args) {

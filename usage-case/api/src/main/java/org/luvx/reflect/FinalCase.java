@@ -1,14 +1,12 @@
 package org.luvx.reflect;
 
-import static java.lang.reflect.Modifier.*;
+import static java.lang.reflect.Modifier.FINAL;
 
 import java.lang.reflect.Field;
 
-import org.apache.commons.lang3.ClassUtils;
-import org.luvx.common.more.MorePrints;
+import org.luvx.coding.common.more.MorePrints;
 import org.luvx.entity.User;
 
-import io.vavr.API;
 import lombok.SneakyThrows;
 
 public class FinalCase {

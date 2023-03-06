@@ -1,7 +1,7 @@
 package org.luvx.api._14;
 
 import io.vavr.API;
-import org.luvx.common.more.MorePrints;
+import org.luvx.coding.common.more.MorePrints;
 
 public class Main {
     private record User(Long id, String name, Integer age) {

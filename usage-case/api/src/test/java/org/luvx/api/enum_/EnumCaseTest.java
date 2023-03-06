@@ -8,7 +8,7 @@ import java.util.EnumSet;
 import java.util.Iterator;
 import java.util.Map;
 
-import static org.luvx.common.more.MorePrints.println;
+import static org.luvx.coding.common.more.MorePrints.println;
 
 public class EnumCaseTest {
 

@@ -1,6 +1,6 @@
 package org.luvx.api.Java8._interface;
 
-import org.luvx.common.more.MorePrints;
+import org.luvx.coding.common.more.MorePrints;
 
 public class Main {
     public static void main(String[] args) {

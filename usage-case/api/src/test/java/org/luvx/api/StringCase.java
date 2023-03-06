@@ -1,9 +1,10 @@
 package org.luvx.api;
 
 import org.junit.jupiter.api.Test;
-import org.luvx.common.more.MorePrints;
+import org.luvx.coding.common.more.MorePrints;
 
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * @author renxie
@@ -102,6 +103,11 @@ public class StringCase {
     }
 
     @Test
-    public void method1() {
+    public void m1() {
+        List<String> list = List.of("a", "", "b", "", "c", "");
+        String join = String.join(",", list);
+        System.out.println(join);
+        int i = "102".compareTo("101");
+        System.out.println(i);
     }
 }

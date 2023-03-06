@@ -1,4 +1,4 @@
-package org.luvx.kotlin.api.entity
+package org.luvx.kotlin.api.a
 
 private val log = mu.KotlinLogging.logger {}
 

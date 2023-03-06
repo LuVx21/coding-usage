@@ -1,7 +1,7 @@
 package org.luvx.other;
 
 import lombok.AllArgsConstructor;
-import org.luvx.common.more.MorePrints;
+import org.luvx.coding.common.more.MorePrints;
 import org.luvx.other.Returned.ReturnValue;
 import org.luvx.other.Returned.Undefined;
 

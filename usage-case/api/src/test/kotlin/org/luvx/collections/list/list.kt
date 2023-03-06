@@ -2,11 +2,13 @@ package org.luvx.collections.list
 
 import com.google.common.collect.Lists
 import org.junit.jupiter.api.Test
-import org.luvx.enhancer.out
+import org.luvx.coding.common.enhancer.out
 import org.luvx.entity.User
 import org.luvx.kotlin.api.entity.User1
 import java.util.Map
-import java.util.stream.Collectors.*
+import java.util.stream.Collectors.groupingBy
+import java.util.stream.Collectors.mapping
+import java.util.stream.Collectors.toList
 
 fun a1() {
     val list = Lists.newArrayList(1, 2, 3, 4, 5)

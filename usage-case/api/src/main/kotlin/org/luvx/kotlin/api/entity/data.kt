@@ -1,6 +1,6 @@
 package org.luvx.kotlin.api.entity
 
-import org.luvx.enhancer.out
+import org.luvx.coding.common.enhancer.out
 
 data class User1(
     var id: Long = 0L,
@@ -17,6 +17,9 @@ data class User1(
 
 fun main() {
     val u = User1()
-    u.apply { id = 1 }.apply { userName = "foo" }.apply { password = "bar" }.apply { age = 18 }
+    u.apply { id = 1 }
+        .apply { userName = "foo" }
+        .apply { password = "bar" }
+        .apply { age = 18 }
     u.out()
 }

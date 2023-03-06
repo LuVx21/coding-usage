@@ -1,14 +1,15 @@
 package org.luvx.collection;
 
-import com.google.common.collect.Lists;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Spliterator;
 
-import static org.luvx.common.more.MorePrints.println;
+import com.google.common.collect.Lists;
+
+import org.junit.jupiter.api.Test;
+
+import static org.luvx.coding.common.more.MorePrints.println;
 
 /**
  * ArrayList:
@@ -17,11 +18,11 @@ import static org.luvx.common.more.MorePrints.println;
  * 有序
  * 非线程安全
  */
-public class ArrayListCase {
+public class ListCase {
 
     @Test
     public void run0() {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         /**
          * 扩容校验->grow()扩容1.5倍
          */
@@ -97,6 +98,9 @@ public class ArrayListCase {
         }
         System.out.println(aList);
         */
+
+        // 或者
+        aList.removeIf("abc"::equals);
     }
 
     @Test
@@ -111,5 +115,13 @@ public class ArrayListCase {
         List<Integer> list = Lists.newArrayList(0, 1, 2, 3, 4, 5, 2);
         println(list.subList(1, 3));
         println(list.retainAll(List.of(2, 4)), list);
+    }
+
+    @Test
+    void m1() {
+    }
+
+    @Test
+    void m2() {
     }
 }

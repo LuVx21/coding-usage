@@ -1,4 +1,4 @@
-package org.luvx.vavr;
+package org.luvx.github.vavr;
 
 import io.vavr.control.Try;
 

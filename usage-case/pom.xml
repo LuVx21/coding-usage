@@ -18,13 +18,12 @@
         <module>api</module>
         <module>nio</module>
         <module>pattern</module>
-        <module>vavr</module>
-        <module>guava</module>
         <module>github</module>
         <!--<module>third</module>-->
     </modules>
 
     <properties>
+        <java.version>17</java.version>
     </properties>
 
     <dependencies>

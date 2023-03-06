@@ -1,4 +1,4 @@
-package org.luvx.vavr;
+package org.luvx.github.vavr;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 

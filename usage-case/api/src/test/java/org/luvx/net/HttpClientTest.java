@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vavr.API;
 import lombok.SneakyThrows;
-import org.luvx.common.more.MorePrints;
+import org.luvx.coding.common.more.MorePrints;
 
 class HttpClientTest {
     final HttpClient client = HttpClient.newBuilder()

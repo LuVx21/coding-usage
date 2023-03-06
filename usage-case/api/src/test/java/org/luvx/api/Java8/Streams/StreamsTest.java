@@ -1,4 +1,4 @@
-package org.luvx.api.java8.Streams;
+package org.luvx.api.Java8.Streams;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;
@@ -46,6 +46,7 @@ public class StreamsTest {
         reduced.ifPresent(System.out::println);
 
         String str = list.stream().collect(Collectors.joining(","));
+        System.out.println(str);
 
         // list.parallelStream();
     }

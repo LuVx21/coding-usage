@@ -1,4 +1,4 @@
-package org.luvx.vavr
+package org.luvx.github.vavr
 
 fun main() {
 //    val list = io.vavr.kotlin.list(1)
