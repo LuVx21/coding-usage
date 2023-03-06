@@ -1,4 +1,4 @@
-package org.luvx.guava;
+package org.luvx.github.guava;
 
 import com.google.common.base.*;
 import com.google.common.cache.CacheBuilder;

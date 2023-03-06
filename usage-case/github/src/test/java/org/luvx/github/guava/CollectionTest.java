@@ -1,4 +1,4 @@
-package org.luvx.guava;
+package org.luvx.github.guava;
 
 import com.google.common.collect.*;
 import org.junit.Test;

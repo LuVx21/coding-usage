@@ -1,4 +1,4 @@
-package org.luvx.guava;
+package org.luvx.github.guava;
 
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;

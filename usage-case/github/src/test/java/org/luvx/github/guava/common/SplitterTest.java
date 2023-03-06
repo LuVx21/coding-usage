@@ -1,4 +1,4 @@
-package org.luvx.guava.common;
+package org.luvx.github.guava.common;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.luvx.guava.common
+package org.luvx.github.guava.common
 
 import com.google.common.base.Joiner
 import com.google.common.collect.ImmutableMap
