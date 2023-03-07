@@ -65,5 +65,9 @@
             <artifactId>threeten-extra</artifactId>
             <version>1.7.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.luvx.coding</groupId>
+            <artifactId>coding-manifold</artifactId>
+        </dependency>
     </dependencies>
 </project>
