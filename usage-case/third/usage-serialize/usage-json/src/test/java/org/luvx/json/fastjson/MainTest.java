@@ -1,6 +1,6 @@
 package org.luvx.json.fastjson;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.luvx.common.User;
 import org.luvx.json.Json;
 import org.luvx.json.base.BaseJsonMapper;

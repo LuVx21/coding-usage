@@ -30,17 +30,17 @@
             <version>1.0.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.phantomthief</groupId>
-            <artifactId>retrieve-id-utils</artifactId>
-            <version>1.0.10</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.github.phantomthief</groupId>-->
+        <!--            <artifactId>retrieve-id-utils</artifactId>-->
+        <!--            <version>1.0.10</version>-->
+        <!--        </dependency>-->
 
-        <dependency>
-            <groupId>com.github.phantomthief</groupId>
-            <artifactId>zknotify-cache</artifactId>
-            <version>0.1.22</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.github.phantomthief</groupId>-->
+        <!--            <artifactId>zknotify-cache</artifactId>-->
+        <!--            <version>0.1.22</version>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -64,10 +64,6 @@
             <groupId>org.threeten</groupId>
             <artifactId>threeten-extra</artifactId>
             <version>1.7.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.luvx.coding</groupId>
-            <artifactId>coding-manifold</artifactId>
         </dependency>
     </dependencies>
 </project>
