@@ -1,7 +1,9 @@
-package org.luvx.api.java8.lambda;
+package org.luvx.api.Java8.Lambda;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.luvx.api.Java8.Lambda.Person;
 
 /**
  *

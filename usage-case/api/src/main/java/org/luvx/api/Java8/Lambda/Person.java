@@ -1,8 +1,9 @@
-package org.luvx.api.java8.lambda;
+package org.luvx.api.Java8.Lambda;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.luvx.api.Java8.Lambda.Gender;
 
 import java.util.ArrayList;
 import java.util.List;
