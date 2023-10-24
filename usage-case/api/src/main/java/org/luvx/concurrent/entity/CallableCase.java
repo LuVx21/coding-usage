@@ -6,10 +6,11 @@ import java.util.concurrent.Callable;
 
 @AllArgsConstructor
 public class CallableCase implements Callable<String> {
-    private int second;
+    private String name;
+    private int    second;
 
     @Override
     public String call() {
-        return Task.execute(second);
+        return name + "-" + Task.execute(second);
     }
 }

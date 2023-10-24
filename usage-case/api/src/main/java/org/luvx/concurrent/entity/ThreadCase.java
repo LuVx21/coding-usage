@@ -4,10 +4,10 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class ThreadCase extends Thread {
-    private String name;
+    private int second;
 
     @Override
     public void run() {
-//        Task.execute(name);
+        Task.execute(second);
     }
 }
