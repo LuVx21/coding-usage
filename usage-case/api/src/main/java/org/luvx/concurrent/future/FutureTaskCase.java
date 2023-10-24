@@ -16,7 +16,7 @@ import static org.luvx.concurrent.utils.ThreadUtils.SERVICE;
 public class FutureTaskCase {
     @SneakyThrows
     private void test1() {
-        final RunnableCase runnable = new RunnableCase("a");
+        final RunnableCase runnable = new RunnableCase(-1);
         String s = null;
         FutureTask<String> task = new FutureTask<>(runnable, s);
         SERVICE.execute(task);
@@ -28,7 +28,7 @@ public class FutureTaskCase {
         List<FutureTask<String>> list = new ArrayList<>(5);
 
         for (int i = 0; i < 6; i++) {
-            FutureTask<String> task = new FutureTask<>(new CallableCase("1234" + i));
+            FutureTask<String> task = new FutureTask<>(new CallableCase("1234" + i, -1));
             SERVICE.execute(task);
             list.add(task);
         }

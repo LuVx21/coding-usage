@@ -12,7 +12,7 @@ public class ThreadPoolCase1 {
     private static ListeningExecutorService listeningExecutor = ThreadUtils.getThreadPool1();
 
     public void method() {
-        final ListenableFuture<String> future = listeningExecutor.submit(new CallableCase("1234"));
+        final ListenableFuture<String> future = listeningExecutor.submit(new CallableCase("1234", -1));
 
         future.addListener(() -> {
             try {

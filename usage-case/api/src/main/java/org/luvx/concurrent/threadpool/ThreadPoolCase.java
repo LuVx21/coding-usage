@@ -34,7 +34,7 @@ public class ThreadPoolCase {
 
             // service.execute(new RunnableCase("1234" + index));
 
-            FutureTask<String> task = new FutureTask<>(new CallableCase("1234" + i));
+            FutureTask<String> task = new FutureTask<>(new CallableCase("1234" + i, -1));
             executor.execute(task);
         }
 

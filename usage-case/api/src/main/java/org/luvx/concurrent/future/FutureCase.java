@@ -49,7 +49,7 @@ public class FutureCase {
      * @throws Exception
      */
     public static void future1() throws Exception {
-        Future<String> future = SERVICE.submit(new CallableCase("1234"));
+        Future<String> future = SERVICE.submit(new CallableCase("1234", -1));
         String result = future.get();
         log.info("[{}] -> {}", Thread.currentThread().getName(), result);
         log.info("future outer end.....");
@@ -81,7 +81,7 @@ public class FutureCase {
 
     public static void guavaFuture() {
         ListeningExecutorService guavaExecutor = MoreExecutors.listeningDecorator(SERVICE);
-        final ListenableFuture<String> listenableFuture = guavaExecutor.submit(new CallableCase("1234"));
+        final ListenableFuture<String> listenableFuture = guavaExecutor.submit(new CallableCase("1234", -1));
         listenableFuture.addListener(() -> {
             try {
                 String result = listenableFuture.get();
