@@ -1,4 +1,4 @@
-package org.luvx.concurrent.callback.callback;
+package org.luvx.coding.jdk.concurrent.callback.callback;
 
 public interface Caller {
     void called();

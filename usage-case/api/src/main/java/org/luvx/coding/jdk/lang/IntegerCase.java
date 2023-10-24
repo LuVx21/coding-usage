@@ -1,4 +1,4 @@
-package org.luvx.lang;
+package org.luvx.coding.jdk.lang;
 
 public class IntegerCase {
     public static void main(String[] args) {

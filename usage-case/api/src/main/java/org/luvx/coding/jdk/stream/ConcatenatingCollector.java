@@ -1,4 +1,4 @@
-package org.luvx.stream;
+package org.luvx.coding.jdk.stream;
 
 import java.util.EnumSet;
 import java.util.Set;

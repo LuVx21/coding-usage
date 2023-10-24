@@ -1,4 +1,4 @@
-package org.luvx.concurrent.callback;
+package org.luvx.coding.jdk.concurrent.callback;
 
 import lombok.Builder;
 import lombok.Setter;

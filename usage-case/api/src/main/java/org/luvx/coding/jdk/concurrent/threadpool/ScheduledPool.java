@@ -1,4 +1,4 @@
-package org.luvx.concurrent.threadpool;
+package org.luvx.coding.jdk.concurrent.threadpool;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

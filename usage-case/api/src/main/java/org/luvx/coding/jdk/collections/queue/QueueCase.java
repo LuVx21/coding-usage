@@ -1,4 +1,4 @@
-package org.luvx.collections.queue;
+package org.luvx.coding.jdk.collections.queue;
 
 import org.luvx.coding.common.more.MorePrints;
 

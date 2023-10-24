@@ -1,4 +1,4 @@
-package org.luvx.concurrent.entity;
+package org.luvx.coding.jdk.concurrent.entity;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

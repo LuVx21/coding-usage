@@ -1,4 +1,4 @@
-package org.luvx.concurrent.notify.pc;
+package org.luvx.coding.jdk.concurrent.notify.pc;
 
 import lombok.extern.slf4j.Slf4j;
 

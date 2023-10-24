@@ -1,7 +1,7 @@
-package org.luvx.concurrent.vt;
+package org.luvx.coding.jdk.concurrent.vt;
 
 import lombok.extern.slf4j.Slf4j;
-import org.luvx.concurrent.entity.RunnableCase;
+import org.luvx.coding.jdk.concurrent.entity.RunnableCase;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

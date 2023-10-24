@@ -1,4 +1,4 @@
-package org.luvx.concurrent;
+package org.luvx.coding.jdk.concurrent;
 
 import static java.util.Objects.requireNonNull;
 

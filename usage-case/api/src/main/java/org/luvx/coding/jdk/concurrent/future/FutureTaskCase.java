@@ -1,4 +1,4 @@
-package org.luvx.concurrent.future;
+package org.luvx.coding.jdk.concurrent.future;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,11 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import org.luvx.coding.common.more.MorePrints;
-import org.luvx.concurrent.entity.CallableCase;
-import org.luvx.concurrent.entity.RunnableCase;
+import org.luvx.coding.jdk.concurrent.entity.CallableCase;
+import org.luvx.coding.jdk.concurrent.entity.RunnableCase;
+import org.luvx.coding.jdk.concurrent.utils.ThreadUtils;
 
 import lombok.SneakyThrows;
-
-import static org.luvx.concurrent.utils.ThreadUtils.SERVICE;
 
 public class FutureTaskCase {
     @SneakyThrows
@@ -19,7 +18,7 @@ public class FutureTaskCase {
         final RunnableCase runnable = new RunnableCase(-1);
         String s = null;
         FutureTask<String> task = new FutureTask<>(runnable, s);
-        SERVICE.execute(task);
+        ThreadUtils.SERVICE.execute(task);
         final String s1 = task.get();
         MorePrints.println(s, s1);
     }
@@ -29,13 +28,13 @@ public class FutureTaskCase {
 
         for (int i = 0; i < 6; i++) {
             FutureTask<String> task = new FutureTask<>(new CallableCase("1234" + i, -1));
-            SERVICE.execute(task);
+            ThreadUtils.SERVICE.execute(task);
             list.add(task);
         }
 
-        SERVICE.shutdown();
+        ThreadUtils.SERVICE.shutdown();
 
-        while (!SERVICE.awaitTermination(10, TimeUnit.SECONDS)) {
+        while (!ThreadUtils.SERVICE.awaitTermination(10, TimeUnit.SECONDS)) {
             System.out.println("线程未结束...");
         }
 

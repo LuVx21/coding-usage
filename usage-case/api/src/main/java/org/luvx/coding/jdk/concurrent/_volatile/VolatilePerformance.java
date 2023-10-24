@@ -1,4 +1,4 @@
-package org.luvx.concurrent._volatile;
+package org.luvx.coding.jdk.concurrent._volatile;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.luvx.api.Java8.Streams;
+package org.luvx.coding.jdk.Java8.Streams;
 
 import com.google.common.collect.ImmutableList;
 import org.junit.jupiter.api.Test;

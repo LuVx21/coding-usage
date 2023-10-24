@@ -1,4 +1,4 @@
-package org.luvx.concurrent.callback;
+package org.luvx.coding.jdk.concurrent.callback;
 
 /**
  * 带有回调的Runnable

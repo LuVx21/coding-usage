@@ -1,4 +1,4 @@
-package org.luvx.concurrent.poolsize;
+package org.luvx.coding.jdk.concurrent.poolsize;
 
 import java.io.BufferedReader;
 import java.io.IOException;

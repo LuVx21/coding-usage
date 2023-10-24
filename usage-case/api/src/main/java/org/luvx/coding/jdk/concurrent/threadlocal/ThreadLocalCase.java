@@ -1,4 +1,4 @@
-package org.luvx.concurrent.threadlocal;
+package org.luvx.coding.jdk.concurrent.threadlocal;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

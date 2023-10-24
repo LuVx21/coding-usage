@@ -1,4 +1,4 @@
-package org.luvx.lang;
+package org.luvx.coding.jdk.lang;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;

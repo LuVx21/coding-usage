@@ -1,4 +1,4 @@
-package org.luvx.concurrent.notify.pc;
+package org.luvx.coding.jdk.concurrent.notify.pc;
 
 import java.util.concurrent.TimeUnit;
 

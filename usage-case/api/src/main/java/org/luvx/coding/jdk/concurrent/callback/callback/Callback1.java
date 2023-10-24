@@ -1,4 +1,4 @@
-package org.luvx.concurrent.callback.callback;
+package org.luvx.coding.jdk.concurrent.callback.callback;
 
 /**
  * 回调函数示例 某个程序S(Student.main) 调用 服务程序A(Arrays) 中的某个方法(sort),

@@ -1,4 +1,4 @@
-package org.luvx.lang.utils;
+package org.luvx.coding.jdk.lang.utils;
 
 public class BitSetCase {
     public static void main(String[] args) {

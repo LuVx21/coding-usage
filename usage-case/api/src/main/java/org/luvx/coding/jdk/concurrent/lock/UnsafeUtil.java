@@ -1,4 +1,4 @@
-package org.luvx.concurrent.lock;
+package org.luvx.coding.jdk.concurrent.lock;
 
 import lombok.Data;
 import sun.misc.Unsafe;

@@ -1,4 +1,4 @@
-package org.luvx.concurrent;
+package org.luvx.coding.jdk.concurrent;
 
 import java.util.List;
 import java.util.concurrent.Callable;

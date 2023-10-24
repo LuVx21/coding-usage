@@ -1,4 +1,4 @@
-package org.luvx.concurrent.usage.threenum;
+package org.luvx.coding.jdk.concurrent.usage.threenum;
 
 import java.util.concurrent.Semaphore;
 

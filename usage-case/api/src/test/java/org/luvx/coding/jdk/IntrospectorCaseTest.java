@@ -1,7 +1,7 @@
 package org.luvx.coding.jdk;
 
 import org.junit.jupiter.api.Test;
-import org.luvx.api.reflect.IntrospectorCase;
+import org.luvx.coding.jdk.reflect.IntrospectorCase;
 import org.luvx.coding.jdk.common.User;
 
 import java.beans.BeanInfo;

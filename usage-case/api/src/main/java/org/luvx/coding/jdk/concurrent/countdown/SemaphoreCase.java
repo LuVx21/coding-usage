@@ -1,4 +1,4 @@
-package org.luvx.concurrent.countdown;
+package org.luvx.coding.jdk.concurrent.countdown;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

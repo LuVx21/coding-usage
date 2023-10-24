@@ -1,4 +1,4 @@
-package org.luvx.concurrent.bread;
+package org.luvx.coding.jdk.concurrent.bread;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,4 +1,4 @@
-package org.luvx.concurrent.usage;
+package org.luvx.coding.jdk.concurrent.usage;
 
 import java.util.concurrent.TimeUnit;
 

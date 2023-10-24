@@ -1,4 +1,4 @@
-package org.luvx.collections.map;
+package org.luvx.coding.jdk.collections.map;
 
 import static java.util.stream.Collectors.toMap;
 

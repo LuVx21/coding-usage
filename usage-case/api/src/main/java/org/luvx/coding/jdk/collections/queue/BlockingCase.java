@@ -1,4 +1,4 @@
-package org.luvx.collections.queue;
+package org.luvx.coding.jdk.collections.queue;
 
 import java.util.concurrent.ArrayBlockingQueue;
 

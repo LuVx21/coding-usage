@@ -1,4 +1,4 @@
-package org.luvx.jvm;
+package org.luvx.coding.jdk.jvm;
 
 public class VmStackOOM {
     private void a() {

@@ -1,4 +1,4 @@
-package org.luvx.concurrent.threadlocal;
+package org.luvx.coding.jdk.concurrent.threadlocal;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
-package org.luvx.concurrent.threadpool;
+package org.luvx.coding.jdk.concurrent.threadpool;
 
-import org.luvx.concurrent.entity.CallableCase;
-import org.luvx.concurrent.utils.ThreadUtils;
+import org.luvx.coding.jdk.concurrent.entity.CallableCase;
+import org.luvx.coding.jdk.concurrent.utils.ThreadUtils;
 
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;

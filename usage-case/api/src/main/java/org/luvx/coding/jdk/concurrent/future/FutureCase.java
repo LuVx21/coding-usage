@@ -1,4 +1,4 @@
-package org.luvx.concurrent.future;
+package org.luvx.coding.jdk.concurrent.future;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
@@ -14,13 +14,12 @@ import com.google.common.util.concurrent.MoreExecutors;
 
 import org.jetbrains.annotations.NotNull;
 import org.luvx.coding.common.more.MorePrints;
-import org.luvx.concurrent.entity.CallableCase;
-import org.luvx.concurrent.entity.Task;
+import org.luvx.coding.jdk.concurrent.entity.CallableCase;
+import org.luvx.coding.jdk.concurrent.entity.Task;
+import org.luvx.coding.jdk.concurrent.utils.ThreadUtils;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
-import static org.luvx.concurrent.utils.ThreadUtils.SERVICE;
 
 /**
  * 获取子线程的执行结果
@@ -49,7 +48,7 @@ public class FutureCase {
      * @throws Exception
      */
     public static void future1() throws Exception {
-        Future<String> future = SERVICE.submit(new CallableCase("1234", -1));
+        Future<String> future = ThreadUtils.SERVICE.submit(new CallableCase("1234", -1));
         String result = future.get();
         log.info("[{}] -> {}", Thread.currentThread().getName(), result);
         log.info("future outer end.....");
@@ -66,7 +65,7 @@ public class FutureCase {
     public static void future2() {
         // CompletableFuture.runAsync(() -> {});
         CompletableFuture<String> future = CompletableFuture.supplyAsync(() ->
-                Task.execute(5), SERVICE
+                Task.execute(5), ThreadUtils.SERVICE
         ).thenApply(result -> {
             log.info("处理线程执行结果:{}", result);
             return result + "-" + LocalDateTime.now();
@@ -80,7 +79,7 @@ public class FutureCase {
     }
 
     public static void guavaFuture() {
-        ListeningExecutorService guavaExecutor = MoreExecutors.listeningDecorator(SERVICE);
+        ListeningExecutorService guavaExecutor = MoreExecutors.listeningDecorator(ThreadUtils.SERVICE);
         final ListenableFuture<String> listenableFuture = guavaExecutor.submit(new CallableCase("1234", -1));
         listenableFuture.addListener(() -> {
             try {
@@ -89,7 +88,7 @@ public class FutureCase {
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
-        }, SERVICE);
+        }, ThreadUtils.SERVICE);
 
         Futures.addCallback(listenableFuture, new FutureCallback<>() {
             @Override
@@ -101,7 +100,7 @@ public class FutureCase {
             public void onFailure(@NotNull Throwable e) {
                 log.warn("Callback 异步异常结束", e);
             }
-        }, SERVICE);
+        }, ThreadUtils.SERVICE);
 
         log.info("guavaFuture执行结束");
     }

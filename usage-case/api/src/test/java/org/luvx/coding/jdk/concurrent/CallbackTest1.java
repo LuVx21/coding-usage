@@ -1,7 +1,7 @@
 package org.luvx.concurrent;
 
 import org.junit.jupiter.api.Test;
-import org.luvx.concurrent.callback.callback.Callback1;
+import org.luvx.coding.jdk.concurrent.callback.callback.Callback1;
 
 import java.util.Arrays;
 

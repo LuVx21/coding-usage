@@ -1,6 +1,6 @@
-package org.luvx.concurrent.usage;
+package org.luvx.coding.jdk.concurrent.usage;
 
-import org.luvx.concurrent.utils.ThreadUtils;
+import org.luvx.coding.jdk.concurrent.utils.ThreadUtils;
 
 import java.util.Set;
 import java.util.TreeSet;

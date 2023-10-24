@@ -1,4 +1,4 @@
-package org.luvx.concurrent.lock;
+package org.luvx.coding.jdk.concurrent.lock;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 

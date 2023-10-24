@@ -1,4 +1,4 @@
-package org.luvx.pattern;
+package org.luvx.coding.jdk.pattern;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.length;

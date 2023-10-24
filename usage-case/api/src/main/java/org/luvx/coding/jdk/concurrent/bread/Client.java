@@ -1,4 +1,4 @@
-package org.luvx.concurrent.bread;
+package org.luvx.coding.jdk.concurrent.bread;
 
 // http://blog.csdn.net/luohuacanyue/article/list/1
 // http://blog.csdn.net/luohuacanyue/article/details/14648185

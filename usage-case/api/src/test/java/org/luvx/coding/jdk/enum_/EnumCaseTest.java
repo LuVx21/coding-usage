@@ -1,4 +1,4 @@
-package org.luvx.api.enum_;
+package org.luvx.coding.jdk.enum_;
 
 import org.apache.commons.lang3.EnumUtils;
 import org.junit.jupiter.api.Test;

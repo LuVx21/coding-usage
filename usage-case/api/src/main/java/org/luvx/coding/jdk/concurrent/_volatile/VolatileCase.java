@@ -1,4 +1,4 @@
-package org.luvx.concurrent._volatile;
+package org.luvx.coding.jdk.concurrent._volatile;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;

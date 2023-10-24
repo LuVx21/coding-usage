@@ -1,4 +1,4 @@
-package org.luvx.concurrent.utils;
+package org.luvx.coding.jdk.concurrent.utils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;

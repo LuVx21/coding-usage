@@ -1,4 +1,4 @@
-package org.luvx.concurrent.condition;
+package org.luvx.coding.jdk.concurrent.condition;
 
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;

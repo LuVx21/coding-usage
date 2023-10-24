@@ -1,4 +1,4 @@
-package org.luvx.concurrent.notify;
+package org.luvx.coding.jdk.concurrent.notify;
 
 public class ThreadLocalCase {
     private static ThreadLocal<String> local = new ThreadLocal<>();

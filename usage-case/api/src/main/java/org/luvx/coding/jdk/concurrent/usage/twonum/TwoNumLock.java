@@ -1,4 +1,4 @@
-package org.luvx.concurrent.usage.twonum;
+package org.luvx.coding.jdk.concurrent.usage.twonum;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

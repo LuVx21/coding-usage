@@ -1,4 +1,4 @@
-package org.luvx.concurrent.countdown;
+package org.luvx.coding.jdk.concurrent.countdown;
 
 import lombok.extern.slf4j.Slf4j;
 

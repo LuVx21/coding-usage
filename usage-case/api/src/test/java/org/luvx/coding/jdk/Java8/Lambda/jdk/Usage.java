@@ -1,4 +1,4 @@
-package org.luvx.api.Java8.Lambda.jdk;
+package org.luvx.coding.jdk.Java8.Lambda.jdk;
 
 import org.junit.Before;
 import org.junit.jupiter.api.Test;

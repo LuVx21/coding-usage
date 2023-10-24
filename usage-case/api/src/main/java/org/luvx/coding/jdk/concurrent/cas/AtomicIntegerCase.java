@@ -1,4 +1,4 @@
-package org.luvx.concurrent.cas;
+package org.luvx.coding.jdk.concurrent.cas;
 
 import org.luvx.coding.jdk.common.User;
 

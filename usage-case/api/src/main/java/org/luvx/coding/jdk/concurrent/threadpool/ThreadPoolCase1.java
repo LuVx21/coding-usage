@@ -1,9 +1,9 @@
-package org.luvx.concurrent.threadpool;
+package org.luvx.coding.jdk.concurrent.threadpool;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import org.luvx.concurrent.entity.CallableCase;
-import org.luvx.concurrent.utils.ThreadUtils;
+import org.luvx.coding.jdk.concurrent.entity.CallableCase;
+import org.luvx.coding.jdk.concurrent.utils.ThreadUtils;
 
 import java.util.concurrent.ExecutionException;
 

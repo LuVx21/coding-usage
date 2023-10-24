@@ -1,4 +1,4 @@
-package org.luvx.reflect;
+package org.luvx.coding.jdk.reflect;
 
 import static java.lang.reflect.Modifier.FINAL;
 

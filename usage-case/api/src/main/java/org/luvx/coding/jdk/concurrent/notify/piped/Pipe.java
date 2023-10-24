@@ -1,4 +1,4 @@
-package org.luvx.concurrent.notify.piped;
+package org.luvx.coding.jdk.concurrent.notify.piped;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

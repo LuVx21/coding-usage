@@ -1,4 +1,4 @@
-package org.luvx.collections.set;
+package org.luvx.coding.jdk.collections.set;
 
 import java.util.HashSet;
 
