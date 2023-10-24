@@ -1,7 +1,7 @@
 package org.luvx.pattern.creational.builder.b;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.luvx.pattern.creational.builder.Car;
 
 @Slf4j

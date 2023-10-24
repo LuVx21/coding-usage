@@ -5,7 +5,7 @@ import static java.lang.reflect.Modifier.FINAL;
 import java.lang.reflect.Field;
 
 import org.luvx.coding.common.more.MorePrints;
-import org.luvx.entity.User;
+import org.luvx.coding.jdk.common.User;
 
 import lombok.SneakyThrows;
 

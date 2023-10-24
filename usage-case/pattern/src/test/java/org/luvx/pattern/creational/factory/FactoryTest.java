@@ -1,6 +1,6 @@
 package org.luvx.pattern.creational.factory;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.luvx.pattern.creational.factory._abstract.FactoryAB;
 import org.luvx.pattern.creational.factory.factory.ProductFactoryA;
 import org.luvx.pattern.creational.factory.factory.ProductFactoryB;

@@ -1,6 +1,6 @@
 package org.luvx.pattern.creational.prototype;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ReportManagerTest {
     @Test

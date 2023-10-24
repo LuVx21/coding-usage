@@ -4,6 +4,8 @@ import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
+import java.util.random.RandomGenerator;
+import java.util.random.RandomGeneratorFactory;
 import java.util.stream.IntStream;
 
 /**
@@ -69,5 +71,19 @@ public class RandomCaseTest {
     public void run04() {
         int num = (int) (Math.random() * 10) + 5;
         num = (int) (Math.random() * 10 + 5);
+    }
+
+    /**
+     * 引入RandomGenerator及RandomGeneratorFactory提供更好的随机数生成
+     */
+    @Test
+    public void m1() {
+        RandomGenerator generator = RandomGeneratorFactory.all()
+                .filter(RandomGeneratorFactory::isJumpable)
+                .filter(factory -> factory.stateBits() > 128)
+                .findAny()
+                .map(RandomGeneratorFactory::create)
+                //  .map(JumpableGenerator.class::cast)
+                .orElseThrow();
     }
 }

@@ -1,6 +1,6 @@
 package org.luvx.pattern.behavioral.visitor;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.luvx.pattern.behavioral.visitor.element.SqlExpr;
 import org.luvx.pattern.behavioral.visitor.visitor.ExprVisitor;
 

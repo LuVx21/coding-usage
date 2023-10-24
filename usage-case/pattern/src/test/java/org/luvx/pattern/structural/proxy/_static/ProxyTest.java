@@ -1,6 +1,6 @@
 package org.luvx.pattern.structural.proxy._static;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ProxyTest {
     /**

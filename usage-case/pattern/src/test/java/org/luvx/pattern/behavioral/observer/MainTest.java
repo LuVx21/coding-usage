@@ -1,6 +1,6 @@
 package org.luvx.pattern.behavioral.observer;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @Author: Ren, Xie

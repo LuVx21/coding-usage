@@ -1,6 +1,6 @@
 package org.luvx.pattern.behavioral.mediator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.luvx.pattern.behavioral.mediator.base.Mediator;
 
 public class MediatorTest {

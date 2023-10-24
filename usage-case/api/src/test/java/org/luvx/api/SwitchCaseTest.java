@@ -22,19 +22,4 @@ public class SwitchCaseTest {
         System.out.println(format(1));
         System.out.println(format(8.88D));
     }
-
-    /**
-     * 支持的数据类型:
-     * byte、short、int、char、String,枚举
-     */
-    @Test
-    void m2() {
-        // int i = 1;
-        String i = "aaa";
-        switch (i) {
-            case "aaa":
-                System.out.println("True");
-        }
-
-    }
 }

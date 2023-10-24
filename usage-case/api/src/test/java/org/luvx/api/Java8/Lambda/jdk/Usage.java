@@ -2,7 +2,7 @@ package org.luvx.api.Java8.Lambda.jdk;
 
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import org.luvx.entity.User;
+import org.luvx.coding.jdk.common.User;
 
 import java.io.File;
 import java.util.ArrayList;

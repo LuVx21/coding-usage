@@ -1,6 +1,6 @@
 package org.luvx.concurrent.cas;
 
-import org.luvx.entity.User;
+import org.luvx.coding.jdk.common.User;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicStampedReference;

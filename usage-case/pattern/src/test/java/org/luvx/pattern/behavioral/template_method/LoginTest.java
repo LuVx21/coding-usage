@@ -1,6 +1,6 @@
 package org.luvx.pattern.behavioral.template_method;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @Author: Ren, Xie

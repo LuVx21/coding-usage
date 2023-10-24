@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.luvx</groupId>
-        <artifactId>coding-parent-java</artifactId>
+        <groupId>org.luvx.coding</groupId>
+        <artifactId>coding-parent-kotlin</artifactId>
         <version>0.1</version>
         <relativePath/>
     </parent>
@@ -16,7 +16,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <easyexcel.version>2.2.7</easyexcel.version>
+        <easyexcel.version>3.2.1</easyexcel.version>
     </properties>
 
     <dependencies>
@@ -31,26 +31,5 @@
             <artifactId>commons-csv</artifactId>
             <version>1.8</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.60</version>
-        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin> -->
-        </plugins>
-    </build>
-
 </project>
