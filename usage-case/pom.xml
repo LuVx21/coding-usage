@@ -17,9 +17,8 @@
     <modules>
         <module>api</module>
         <module>nio</module>
-        <module>pattern</module>
-        <module>github</module>
-        <!--<module>third</module>-->
+        <!--<module>pattern</module>-->
+        <module>third</module>
     </modules>
 
     <properties>

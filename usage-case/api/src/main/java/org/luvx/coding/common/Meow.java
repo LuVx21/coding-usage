@@ -1,4 +1,4 @@
-package org.luvx.coding.github.common;
+package org.luvx.coding.common;
 
 import static com.github.phantomthief.util.MoreSuppliers.lazy;
 import static org.luvx.coding.common.util.JsonUtils.fromJson;

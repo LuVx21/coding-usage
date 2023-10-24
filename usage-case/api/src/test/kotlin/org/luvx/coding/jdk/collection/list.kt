@@ -3,10 +3,9 @@ package org.luvx.coding.jdk.collection
 import com.google.common.collect.Lists
 import org.junit.jupiter.api.Test
 import org.luvx.coding.common.enhancer.out
-import org.luvx.kotlin.api.entity.User1
+import org.luvx.coding.sdk.entity.User1
 import java.util.*
 import java.util.Map
-import java.util.function.BiFunction
 import java.util.stream.Collectors
 import java.util.stream.Collectors.*
 

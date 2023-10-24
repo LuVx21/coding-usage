@@ -1,7 +1,6 @@
 package org.luvx.coding.common;
 
 import org.junit.jupiter.api.Test;
-import org.luvx.coding.github.common.Meow;
 
 class MeowTest {
     @Test
