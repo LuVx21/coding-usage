@@ -1,4 +1,4 @@
-package org.luvx.coding;
+package org.luvx.coding.jdk;
 
 import java.math.BigDecimal;
 import java.util.Map;

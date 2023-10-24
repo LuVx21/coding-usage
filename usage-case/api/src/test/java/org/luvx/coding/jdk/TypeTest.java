@@ -1,4 +1,4 @@
-package org.luvx.coding;
+package org.luvx.coding.jdk;
 
 import org.junit.jupiter.api.Test;
 
