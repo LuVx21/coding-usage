@@ -4,18 +4,17 @@ import org.junit.jupiter.api.Test;
 import org.luvx.coding.common.more.MorePrints;
 
 import java.text.MessageFormat;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-/**
- * @author renxie
- */
-public class StringCase {
+class StringCaseTest {
 
     /**
      * String较快的特殊情况
      */
     @Test
-    public void stringTest() {
+    void stringTest() {
         // 没有字符串运算,本身就是"a b c"
         String s = "a " + "b " + "c";
         String ss = "a b c";
@@ -32,7 +31,7 @@ public class StringCase {
 
 
     @Test
-    public void stringTest1() {
+    void stringTest1() {
         StringBuilder sb = new StringBuilder();
         System.out.println(sb.toString().equals(""));
     }
@@ -43,7 +42,7 @@ public class StringCase {
      * 线程安全,方法有synchronized
      */
     @Test
-    public void StringBufferTest() {
+    void StringBufferTest() {
         // 初始容量为16的char型数组,同时计数已使用了的位置数量
         StringBuffer sb = new StringBuffer();
         // 扩容检查,变为原来的2倍+2
@@ -64,7 +63,7 @@ public class StringCase {
      * AbstractStringBuilder的实现
      */
     @Test
-    public void StringBuilderTest() {
+    void StringBuilderTest() {
         StringBuilder sb = new StringBuilder();
         sb.append("ab");
         sb.replace(1, 2, "c");
@@ -76,7 +75,7 @@ public class StringCase {
      * `==`,equals(),hashCode()
      */
     @Test
-    public void equalsTest() {
+    void equalsTest() {
         String aa = "aa";
         String cc = "aa";
         // true
@@ -96,18 +95,38 @@ public class StringCase {
     }
 
     @Test
-    public void method() {
+    void method() {
         String result = MessageFormat.format("from {0} to {1};", 10001 + "", 20000);
         String b = MessageFormat.format("{0},{1},{2},''{3}'','{4}'", "a", "b", "c", "d", "e");
         MorePrints.println(result, b);
     }
 
     @Test
-    public void m1() {
+    void m1() {
         List<String> list = List.of("a", "", "b", "", "c", "");
         String join = String.join(",", list);
         System.out.println(join);
         int i = "102".compareTo("101");
         System.out.println(i);
+    }
+
+    @Test
+    void m2() {
+        String name = "Joan";
+        String info = STR. "My name is \{ name }" ;
+
+        System.out.println(info);
+
+        String time = STR. "The time is \{
+                // The java.time.format package is very useful
+                DateTimeFormatter
+                        .ofPattern("HH:mm:ss")
+                        .format(LocalTime.now())
+                } right now" ;
+        System.out.println(time);
+
+        int x = 10, y = 20;
+        String s = STR. "\{ x } + \{ y } = \{ x + y }" ;
+        System.out.println(s);
     }
 }

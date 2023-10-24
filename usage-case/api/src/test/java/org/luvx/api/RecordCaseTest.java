@@ -13,6 +13,10 @@ class RecordCaseTest {
         User user = new User(1L, "luvx", 18);
         MorePrints.println(user);
 
+        if (user instanceof User u) {
+            System.out.println("Name: " + u.name);
+        }
+
         if (user instanceof User(Long id, String name, Integer age)) {
             System.out.println("Name: " + name);
         }
