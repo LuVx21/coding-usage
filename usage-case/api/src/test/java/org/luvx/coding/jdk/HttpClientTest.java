@@ -1,4 +1,8 @@
-package org.luvx.net;
+package org.luvx.coding.jdk;
+
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
+import org.luvx.coding.common.more.MorePrints;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -9,12 +13,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
-import org.junit.jupiter.api.Test;
-
-import io.vavr.API;
-import lombok.SneakyThrows;
-import org.luvx.coding.common.more.MorePrints;
-
 class HttpClientTest {
     final HttpClient client = HttpClient.newBuilder()
             .connectTimeout(Duration.ofMillis(5_000))
@@ -24,7 +22,7 @@ class HttpClientTest {
     @Test
     @SneakyThrows
     void m1() {
-        //2.set read timeout
+        // 2.set read timeout
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.github.com/repos/LuVx21/doc"))
                 .header("content-type", "application/json; charset=utf-8")
@@ -38,7 +36,8 @@ class HttpClientTest {
         MorePrints.println(response.body(), future.get());
     }
 
-    @Test@SneakyThrows
+    @Test
+    @SneakyThrows
     void m2() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://www.w3school.com.cn/demo/demo_form.asp"))
@@ -47,5 +46,9 @@ class HttpClientTest {
                 .build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         MorePrints.println(response.body());
+    }
+
+    @Test
+    void m3() throws Exception {
     }
 }
