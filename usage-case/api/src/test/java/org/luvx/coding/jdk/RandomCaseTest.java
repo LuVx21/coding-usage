@@ -4,20 +4,20 @@ import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.luvx.coding.common.more.MorePrints;
 
+import java.security.SecureRandom;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.random.RandomGenerator;
 import java.util.random.RandomGeneratorFactory;
 import java.util.stream.IntStream;
 
 /**
  * 随机数
- *
- * @author renxie
  */
-public class RandomCaseTest {
+class RandomCaseTest {
 
     @Test
-    void getRandom() {
+    void case01() {
         int start = 0, end = 10;
         int bound = end - start + 1;
 
@@ -27,7 +27,32 @@ public class RandomCaseTest {
 
         Random random = new Random();
         int i2 = random.nextInt(bound) + start;
-        MorePrints.println(i1, i2);
+
+        ThreadLocalRandom tlRandom = ThreadLocalRandom.current();
+        int i3 = tlRandom.nextInt(start, end) + start;
+
+        SecureRandom secureRandom = new SecureRandom();
+        int i4 = secureRandom.nextInt(start, end) + start;
+
+        MorePrints.println(i1, i2, i3, i4);
+    }
+
+    /**
+     * 引入RandomGenerator及RandomGeneratorFactory提供更好的随机数生成
+     * since jdk 17
+     */
+    @Test
+    void case02() {
+        RandomGenerator generator = RandomGeneratorFactory.all()
+                .filter(RandomGeneratorFactory::isJumpable)
+                .filter(factory -> factory.stateBits() > 128)
+                .findAny()
+                .map(RandomGeneratorFactory::create)
+                //  .map(JumpableGenerator.class::cast)
+                .orElseThrow();
+
+        int i1 = generator.nextInt(0, 10);
+        MorePrints.println(i1);
     }
 
     /**
@@ -35,7 +60,7 @@ public class RandomCaseTest {
      * 函数外的数值即域的起点
      */
     @Test
-    public void run00() {
+    void run00() {
         // 无参构造,默认种子是System.nanoTime()
         Random random = new Random();
 
@@ -52,7 +77,7 @@ public class RandomCaseTest {
     }
 
     @Test
-    public void run01() {
+    void run01() {
         // 种子值确定时,产生的随机数都是确定的
         Random random = new Random(1);
         int num = random.nextInt();
@@ -64,7 +89,7 @@ public class RandomCaseTest {
      * 引入Stream概念
      */
     @Test
-    public void run03() {
+    void run03() {
         Random random = new Random();
         // 5个10~20范围的随机数,同样是左闭右开,下面两行等价
         IntStream ints = random.ints(10, 20).limit(5);
@@ -83,22 +108,8 @@ public class RandomCaseTest {
      * 取值:[0.0,1.0)
      */
     @Ignore
-    public void run04() {
+    void run04() {
         int num = (int) (Math.random() * 10) + 5;
         num = (int) (Math.random() * 10 + 5);
-    }
-
-    /**
-     * 引入RandomGenerator及RandomGeneratorFactory提供更好的随机数生成
-     */
-    @Test
-    public void m1() {
-        RandomGenerator generator = RandomGeneratorFactory.all()
-                .filter(RandomGeneratorFactory::isJumpable)
-                .filter(factory -> factory.stateBits() > 128)
-                .findAny()
-                .map(RandomGeneratorFactory::create)
-                //  .map(JumpableGenerator.class::cast)
-                .orElseThrow();
     }
 }
