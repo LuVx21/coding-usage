@@ -41,7 +41,7 @@ class MainTest {
         Element ul = doc.select("ul.stui-vodlist").first();
 
         URI uri = URI.create(url);
-        String domain = uri.getScheme() + "://" + uri.getHost();
+        String domain = STR."\{uri.getScheme()}://\{uri.getHost()}";
         return ul.children().stream()
                 // .skip(3)
                 .map(child -> {
@@ -79,7 +79,7 @@ class MainTest {
         Element ul = doc.select("div.detail_right_div ul").first();
 
         URI uri = URI.create(url);
-        String domain = uri.getScheme() + "://" + uri.getHost();
+        String domain = STR."\{uri.getScheme()}://\{uri.getHost()}";
         return ul.children().stream()
                 .map(child -> {
                     Elements select = child.select("p.img img.lazy");
