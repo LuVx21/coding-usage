@@ -13,14 +13,16 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.luvx.coding.common.net.UrlUtils;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.luvx.coding.common.consts.Common.RATE_LIMITER_SUPPLIER;
 
 @Slf4j
 @Setter
@@ -28,6 +30,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @ToString
 @Accessors(fluent = true)
 public class PageContentSpider {
+    private static final Function<String, String> IDENTITY = Function.identity();
+
+    /**
+     * 翻几页
+     */
+    private int pageCount   = 2;
     /**
      * 当页的前几个
      */
@@ -37,78 +45,88 @@ public class PageContentSpider {
     private QueryRule chapterTitleRule;
     private QueryRule chapterUrlRule;
 
+    private QueryRule                chapterNextPageRule;
+    private Function<String, String> chapterNextPageUrlPostProcessor = IDENTITY;
+
     private QueryRule                articleRule;
-    private Function<String, String> articlePostUrlProcessor         = Function.identity();
+    private Function<String, String> articlePostUrlProcessor         = IDENTITY;
+    /**
+     * 单一文章内可能翻页
+     */
     @Nullable
     private QueryRule                articleNextPageRule;
-    private Function<String, String> articleNextPagePostUrlProcessor = Function.identity();
+    private Function<String, String> articleNextPageUrlPostProcessor = IDENTITY;
 
-    public List<Element> getIndexList(String url) throws IOException {
-        Document doc = Jsoup.connect(url).get();
-        return doc.select(chapterListRule);
-    }
-
-    public String article(String title, String url) throws IOException {
+    public String article(String url) throws IOException {
         StringBuilder article = new StringBuilder();
         String pageUrl = url;
         do {
+            log.info("解析内容页: {}", pageUrl);
+            RATE_LIMITER_SUPPLIER.get().acquire();
             Document document = Jsoup.connect(pageUrl).get();
             Elements a = document.select(articleRule.elementQuery);
             for (Element element : a) {
                 article.append(getValue(element, articleRule.valueQuery)).append("\n");
             }
 
-            if (articleNextPageRule != null) {
-                Element nextPageUrl = document.selectFirst(articleNextPageRule.elementQuery);
-                pageUrl = getValue(nextPageUrl, articleNextPageRule.valueQuery);
-                if (!pageUrl.startsWith("http")) {
-                    URI uri = URI.create(url);
-                    String domain = STR."\{uri.getScheme()}://\{uri.getHost()}";
-                    pageUrl = domain + pageUrl;
-                }
-                pageUrl = articleNextPagePostUrlProcessor.apply(pageUrl);
-            } else {
-                pageUrl = null;
-            }
+            pageUrl = Optional.ofNullable(articleNextPageRule)
+                    .map(r -> getValue(document, r))
+                    .map(aa -> UrlUtils.urlAddDomain(url, aa))
+                    .map(articleNextPageUrlPostProcessor)
+                    .orElse(null);
         } while (isNotBlank(pageUrl));
         return articlePostUrlProcessor.apply(article.toString());
     }
 
-    public List<Pair<String, String>> visit(String chapterListUrl) throws IOException {
-        List<Element> indexList = getIndexList(chapterListUrl);
-        if (CollectionUtils.isEmpty(indexList)) {
-            return Lists.newArrayList();
-        }
-
+    public List<Pair<String, String>> visit(String url) throws IOException {
         List<Pair<String, String>> result = Lists.newArrayList();
-        int max = Math.min(indexList.size(), countInPage);
-        for (int i = 0; i < max; i++) {
-            Element element = indexList.get(i);
-            Element e1 = isNotBlank(chapterTitleRule.elementQuery) ? element.selectFirst(chapterTitleRule.elementQuery) : element;
-            String title = getValue(e1, chapterTitleRule.valueQuery);
-
-            Element e2 = isNotBlank(chapterUrlRule.elementQuery) ? element.selectFirst(chapterUrlRule.elementQuery) : element;
-            String href = getValue(e2, chapterUrlRule.valueQuery);
-            log.info("{}: {}", title, href);
-            if (StringUtils.isBlank(href)) {
-                continue;
+        String pageUrl = url;
+        for (int i = 0; i < pageCount && isNotBlank(pageUrl); i++) {
+            log.info("解析目录页: {}", pageUrl);
+            RATE_LIMITER_SUPPLIER.get().acquire();
+            Document doc = Jsoup.connect(pageUrl).get();
+            List<Element> indexList = doc.select(chapterListRule);
+            if (CollectionUtils.isEmpty(indexList)) {
+                return result;
             }
-            String article = article(title, href);
-            log.info("内容: {}", article);
-            result.add(Pair.of(title, article));
+            int max = Math.min(indexList.size(), countInPage);
+            for (int k = 0; k < max; k++) {
+                Element element = indexList.get(k);
+                String title = getValue(element, chapterTitleRule);
+
+                String href = getValue(element, chapterUrlRule);
+                log.info("目录页内容: {} {} {}", k, title, href);
+                if (StringUtils.isBlank(href)) {
+                    continue;
+                }
+                String article = article(href);
+                log.info("内容页内容: {}", article);
+                result.add(Pair.of(title, article));
+            }
+
+            pageUrl = Optional.ofNullable(chapterNextPageRule)
+                    .map(r -> getValue(doc, r))
+                    .map(aa -> UrlUtils.urlAddDomain(url, aa))
+                    .map(chapterNextPageUrlPostProcessor)
+                    .orElse(null);
         }
         return result;
     }
 
-    private String getValue(Element element, String rule) {
-        if (element == null || StringUtils.isBlank(rule)) {
+    private String getValue(Element element, QueryRule rule) {
+        Element e = isNotBlank(rule.elementQuery) ? element.selectFirst(rule.elementQuery) : element;
+        return getValue(e, rule.valueQuery);
+    }
+
+    private String getValue(Element element, String elementQuery) {
+        if (element == null || StringUtils.isBlank(elementQuery)) {
             return "";
         }
-        return switch (rule) {
+        return switch (elementQuery) {
             case "text" -> element.text();
             case "data" -> element.data();
-            case "href" -> element.absUrl(rule);
-            default -> element.attr(rule);
+            case "href" -> element.absUrl(elementQuery);
+            default -> element.attr(elementQuery);
         };
     }
 

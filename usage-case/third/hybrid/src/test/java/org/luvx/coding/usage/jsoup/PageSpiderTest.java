@@ -5,7 +5,6 @@ import com.alibaba.fastjson2.JSONObject;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -30,7 +29,7 @@ class PageSpiderTest {
                 .chapterUrlRule(QueryRule.of("", "href"))
                 .articleRule(QueryRule.of("div#novelcontent > p", "text"))
                 .articleNextPageRule(QueryRule.of("div#novelcontent ul.novelbutton a#pb_next", "href"))
-                .articleNextPagePostUrlProcessor(url -> url.endsWith("_2.html") ? url : "")
+                .articleNextPageUrlPostProcessor(url -> url.endsWith("_2.html") ? url : "")
                 .visit("https://m.lnsjkc.com/46/46869_7/");
     }
 
@@ -58,6 +57,7 @@ class PageSpiderTest {
                 // .chapterListRule("div.detail_right_div > ul:eq(1) li p:eq(0)")
                 // .chapterTitleRule(QueryRule.of("img", "title"))
                 // .chapterUrlRule(QueryRule.of("a", "href"))
+                // .chapterNextPageRule(QueryRule.of("div.detail_right_div > ul:eq(2) ul a[title=下一页]", "href"))
                 // .articleRule(QueryRule.of("div.detail_right_tab div#bofang_box script:eq(0)", "data"))
                 // .articlePostUrlProcessor(postProcessor)
 
