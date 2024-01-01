@@ -45,6 +45,7 @@ public class PageContentSpider {
     private QueryRule chapterTitleRule;
     private QueryRule chapterUrlRule;
 
+    @Nullable
     private QueryRule                chapterNextPageRule;
     private Function<String, String> chapterNextPageUrlPostProcessor = IDENTITY;
 
@@ -60,7 +61,7 @@ public class PageContentSpider {
     public String article(String url) throws IOException {
         StringBuilder article = new StringBuilder();
         String pageUrl = url;
-        do {
+        for (int i = 0; isNotBlank(pageUrl); i++) {
             log.info("解析内容页: {}", pageUrl);
             RATE_LIMITER_SUPPLIER.get().acquire();
             Document document = Jsoup.connect(pageUrl).get();
@@ -69,12 +70,14 @@ public class PageContentSpider {
                 article.append(getValue(element, articleRule.valueQuery)).append("\n");
             }
 
+            String finalPageUrl = pageUrl;
             pageUrl = Optional.ofNullable(articleNextPageRule)
                     .map(r -> getValue(document, r))
                     .map(aa -> UrlUtils.urlAddDomain(url, aa))
                     .map(articleNextPageUrlPostProcessor)
+                    .filter(u -> !finalPageUrl.equals(u))
                     .orElse(null);
-        } while (isNotBlank(pageUrl));
+        }
         return articlePostUrlProcessor.apply(article.toString());
     }
 
@@ -104,10 +107,12 @@ public class PageContentSpider {
                 result.add(Pair.of(title, article));
             }
 
+            String finalPageUrl = pageUrl;
             pageUrl = Optional.ofNullable(chapterNextPageRule)
                     .map(r -> getValue(doc, r))
                     .map(aa -> UrlUtils.urlAddDomain(url, aa))
                     .map(chapterNextPageUrlPostProcessor)
+                    .filter(u -> !finalPageUrl.equals(u))
                     .orElse(null);
         }
         return result;

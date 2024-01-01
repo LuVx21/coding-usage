@@ -27,6 +27,7 @@ class PageSpiderTest {
                 .chapterListRule("ul.chapters li a")
                 .chapterTitleRule(QueryRule.of("", "text"))
                 .chapterUrlRule(QueryRule.of("", "href"))
+                .chapterNextPageRule(QueryRule.of("body.chapterlist > div.page a:eq(2)", "href"))
                 .articleRule(QueryRule.of("div#novelcontent > p", "text"))
                 .articleNextPageRule(QueryRule.of("div#novelcontent ul.novelbutton a#pb_next", "href"))
                 .articleNextPageUrlPostProcessor(url -> url.endsWith("_2.html") ? url : "")
@@ -53,6 +54,7 @@ class PageSpiderTest {
             return jsonObject.getString("url");
         };
         new PageContentSpider()
+                .pageCount(3)
                 .countInPage(999)
                 // .chapterListRule("div.detail_right_div > ul:eq(1) li p:eq(0)")
                 // .chapterTitleRule(QueryRule.of("img", "title"))
@@ -61,11 +63,12 @@ class PageSpiderTest {
                 // .articleRule(QueryRule.of("div.detail_right_tab div#bofang_box script:eq(0)", "data"))
                 // .articlePostUrlProcessor(postProcessor)
 
-                .chapterListRule("div.stui-vodlist__box a.stui-vodlist__thumb")
-                .chapterTitleRule(QueryRule.of("", "title"))
-                .chapterUrlRule(QueryRule.of("", "href"))
-                .articleRule(QueryRule.of("div.stui-warp-content div.stui-pannel div.stui-player__video script", "data"))
-                .articlePostUrlProcessor(postProcessor)
+                // .chapterListRule("div.stui-vodlist__box a.stui-vodlist__thumb")
+                // .chapterTitleRule(QueryRule.of("", "title"))
+                // .chapterUrlRule(QueryRule.of("", "href"))
+                // .articleRule(QueryRule.of("div.stui-warp-content div.stui-pannel div.stui-player__video script", "data"))
+                // .articlePostUrlProcessor(postProcessor)
+
                 .visit("")
 
                 .stream()
