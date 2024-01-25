@@ -4,16 +4,19 @@ import org.luvx.coding.jdk.concurrent.entity.Task;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.concurrent.StructuredTaskScope.Subtask;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StructuredTaskCase {
+    private final static ScopedValue<String> context = ScopedValue.newInstance();
 
     public static void main(String[] args) throws Exception {
-        m1();
+        // m1();
         m2();
+        // m3();
     }
 
     /**
@@ -32,7 +35,27 @@ public class StructuredTaskCase {
         }
     }
 
-    public static void m2() throws IOException {
+    public static void m2() {
+        ScopedValue.runWhere(context, "foobar", () -> {
+            try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+                scope.fork(() -> {
+                    System.out.println(STR."hello:\{context.get()}");
+                    return "hello";
+                });
+                scope.fork(() -> {
+                    System.out.println(STR."say:\{context.get()}");
+                    return 12;
+                });
+                try {
+                    scope.join().throwIfFailed();
+                } catch (ExecutionException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+    public static void m3() throws IOException {
         try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
             Subtask<String> res1 = scope.fork(() -> {
                 if (new Random().nextLong(3) == 0) {
