@@ -19,17 +19,14 @@ public class Demo1 {
         final Lock lock = new ReentrantLock();
         lock.lock();
 
-        Thread t1 = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    lock.lockInterruptibly();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    log.info("线程{}中断", Thread.currentThread().getName());
-                }
-                log.info("线程{}结束了", Thread.currentThread().getName());
+        Thread t1 = new Thread(() -> {
+            try {
+                lock.lockInterruptibly();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                log.info("线程{}中断", Thread.currentThread().getName());
             }
+            log.info("线程{}结束了", Thread.currentThread().getName());
         });
 
         t1.start();

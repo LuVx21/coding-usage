@@ -6,10 +6,11 @@
     <parent>
         <groupId>org.luvx.coding</groupId>
         <artifactId>coding-parent-kotlin</artifactId>
-        <version>0.1</version>
+        <version>0.3</version>
     </parent>
 
     <artifactId>usage-case</artifactId>
+    <version>0.0.0</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>

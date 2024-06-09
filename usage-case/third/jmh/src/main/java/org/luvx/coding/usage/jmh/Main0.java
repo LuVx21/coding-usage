@@ -14,12 +14,12 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-@Fork(2)
+@Fork(1)
 @Threads(8)
 @Warmup(iterations = 3)
-@Measurement(iterations = 10, time = 5)
+@Measurement(iterations = 6, time = 1)
 @BenchmarkMode(Mode.Throughput)
-@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@OutputTimeUnit(TimeUnit.MICROSECONDS)
 public class Main0 {
 
     @Benchmark
@@ -31,7 +31,7 @@ public class Main0 {
         print(a);
     }
 
-
+    @Benchmark
     public void testStringBuilderAdd() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 10; i++) {

@@ -8,18 +8,16 @@ import java.io.PipedOutputStream;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author: Ren, Xie
  */
 @Slf4j
-public class Case5 {
+public class PCByPiped {
     final PipedInputStream  pis = new PipedInputStream();
     final PipedOutputStream pos = new PipedOutputStream();
 
     {
         try {
             pis.connect(pos);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException _) {
         }
     }
 
@@ -34,14 +32,12 @@ public class Case5 {
                     pos.write(num);
                     pos.flush();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception _) {
             } finally {
                 try {
                     pos.close();
                     pis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException _) {
                 }
             }
         }
@@ -56,14 +52,12 @@ public class Case5 {
                     int num = pis.read();
                     log.info("消费者({})消费 -> {}", Thread.currentThread().getName(), num);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception _) {
             } finally {
                 try {
                     pos.close();
                     pis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (IOException _) {
                 }
             }
         }

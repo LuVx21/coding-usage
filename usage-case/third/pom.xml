@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.luvx.coding</groupId>
         <artifactId>usage-case</artifactId>
-        <version>0.1</version>
+        <version>0.0.0</version>
     </parent>
 
     <artifactId>third</artifactId>
@@ -15,7 +15,7 @@
     <name>${project.artifactId}</name>
 
     <modules>
-<!--        <module>jmh</module>-->
+        <module>jmh</module>
         <module>hybrid</module>
 <!--        <module>usage-retrofit2</module>-->
 <!--        <module>usage-serialize</module>-->

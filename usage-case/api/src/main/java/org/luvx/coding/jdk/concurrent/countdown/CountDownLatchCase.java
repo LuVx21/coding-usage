@@ -17,25 +17,25 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class CountDownLatchCase {
-    private static final int            THREAD_COUNT_NUM = 10;
-    private static final CountDownLatch countDownLatch   = new CountDownLatch(10);
+    private static final int THREAD_COUNT_NUM = 10;
+
+    private final CountDownLatch countDownLatch = new CountDownLatch(10);
 
     @AllArgsConstructor
-    static class A implements Runnable {
+    class A implements Runnable {
         private int i;
 
         @SneakyThrows
         @Override
         public void run() {
-            TimeUnit.MILLISECONDS.sleep(i * 100);
+            TimeUnit.MILLISECONDS.sleep(i * 100L);
             // 每个线程结束后执行
-            log.info("第{}个人到了, 线程:{}", i, Thread.currentThread().getName());
             countDownLatch.countDown();
-            log.info("第{}个人进门, 线程:{}", i, Thread.currentThread().getName());
+            log.info("第{}个线程结束, 线程:{}", i, Thread.currentThread().getName());
         }
     }
 
-    private static void a() throws InterruptedException {
+    private void a() throws InterruptedException {
         for (int i = 0; i < THREAD_COUNT_NUM; i++) {
             new Thread(new A(i)).start();
         }
@@ -43,10 +43,10 @@ public class CountDownLatchCase {
         countDownLatch.await();
 
         TimeUnit.SECONDS.sleep(1);
-        log.info("10人全到了");
+        log.info("10个全结束");
     }
 
-    private static void b() throws InterruptedException {
+    private void b() throws InterruptedException {
         ExecutorService executor = Executors.newCachedThreadPool();
         for (int i = 0; i < THREAD_COUNT_NUM; i++) {
             executor.execute(new A(i));
@@ -55,12 +55,13 @@ public class CountDownLatchCase {
         countDownLatch.await();
 
         TimeUnit.SECONDS.sleep(1);
-        log.info("10人全到了");
+        log.info("10个全结束");
         executor.shutdown();
     }
 
     public static void main(String[] args) throws InterruptedException {
-        a();
-        // b();
+        CountDownLatchCase exec = new CountDownLatchCase();
+        exec.a();
+        // exec.b();
     }
 }

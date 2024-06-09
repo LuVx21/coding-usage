@@ -1,6 +1,8 @@
 package org.luvx.coding.sdk
 
-private val log = mu.KotlinLogging.logger {}
+import io.github.oshai.kotlinlogging.KotlinLogging
+
+private val log = KotlinLogging.logger {}
 
 class Init1 {
     open class Foo {

@@ -6,12 +6,12 @@
     <parent>
         <groupId>org.luvx.coding</groupId>
         <artifactId>third</artifactId>
-        <version>0.1</version>
+        <version>0.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>usage-serialize</artifactId>
-    <version>0.1</version>
+    <version>0.0.0</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
