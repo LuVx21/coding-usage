@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * @author renxie
  */
 @Slf4j
-public class CountDownLatchCase {
+public class CountDownLatchCase1 {
     private static final int THREAD_COUNT_NUM = 10;
 
     private final CountDownLatch countDownLatch = new CountDownLatch(10);
@@ -60,7 +60,7 @@ public class CountDownLatchCase {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        CountDownLatchCase exec = new CountDownLatchCase();
+        CountDownLatchCase1 exec = new CountDownLatchCase1();
         exec.a();
         // exec.b();
     }

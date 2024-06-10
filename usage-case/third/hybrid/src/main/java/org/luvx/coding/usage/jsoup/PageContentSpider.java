@@ -13,9 +13,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.luvx.coding.common.consts.Commons;
 import org.luvx.coding.common.net.UrlUtils;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +64,7 @@ public class PageContentSpider {
         String pageUrl = url;
         for (int i = 0; isNotBlank(pageUrl); i++) {
             log.info("解析内容页: {}", pageUrl);
-            RATE_LIMITER_SUPPLIER.get().acquire();
+            Commons.getLimiter(pageUrl).acquire();
             Document document = Jsoup.connect(pageUrl).get();
             Elements a = document.select(articleRule.elementQuery);
             for (Element element : a) {
@@ -86,7 +87,7 @@ public class PageContentSpider {
         String pageUrl = url;
         for (int i = 0; i < pageCount && isNotBlank(pageUrl); i++) {
             log.info("解析目录页: {}", pageUrl);
-            RATE_LIMITER_SUPPLIER.get().acquire();
+            Commons.getLimiter(pageUrl).acquire();
             Document doc = Jsoup.connect(pageUrl).get();
             List<Element> indexList = doc.select(chapterListRule);
             if (CollectionUtils.isEmpty(indexList)) {

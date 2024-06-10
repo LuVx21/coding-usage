@@ -2,7 +2,7 @@ package org.luvx.pattern.behavioral.strategy;
 
 import lombok.*;
 
-import javax.annotation.Nullable;
+import jakarta.annotation.Nullable;
 import java.io.Serializable;
 
 /**

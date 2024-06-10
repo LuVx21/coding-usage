@@ -14,29 +14,27 @@ import java.util.concurrent.TimeUnit;
  * 例子: 约人一起打球
  */
 @Slf4j
-public class CyclicBarrierUsage1 {
-    private static final int             NUM      = 4;
-    private static final ExecutorService executor = Executors.newCachedThreadPool();
+public class CyclicBarrierCase3 {
+    private static final int NUM = 4;
 
-    private static CyclicBarrier cb = new CyclicBarrier(NUM, () -> {
-        log.info("集合完毕, 出发去球场");
-    });
+    private final CyclicBarrier cb = new CyclicBarrier(NUM, () -> log.info("集合完毕, 出发去球场"));
 
     @AllArgsConstructor
-    static class A implements Runnable {
+    class A implements Runnable {
         private final int i;
 
         @SneakyThrows
         @Override
         public void run() {
-            TimeUnit.MILLISECONDS.sleep(i * 100);
+            TimeUnit.MILLISECONDS.sleep(i * 100L);
             log.info("第{}个人到了楼下", i);
             cb.await();
             log.info("第{}个人从楼下出发", i);
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public void main(String[] args) throws InterruptedException {
+        final ExecutorService executor = Executors.newCachedThreadPool();
         for (int i = 1; i <= NUM; i++) {
             executor.execute(new A(i));
         }

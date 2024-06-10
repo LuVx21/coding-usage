@@ -1,6 +1,6 @@
 package org.luvx.coding.jdk.lang
 
-import mu.KotlinLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.junit.jupiter.api.Test
 
 private val log = KotlinLogging.logger {}

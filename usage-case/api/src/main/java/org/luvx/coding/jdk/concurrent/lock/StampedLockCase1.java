@@ -1,4 +1,6 @@
-package org.luvx.coding.jdk.concurrent;
+package org.luvx.coding.jdk.concurrent.lock;
+
+import org.luvx.coding.common.concurrent.Threads;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -8,11 +10,11 @@ import java.util.concurrent.locks.StampedLock;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class StampedLockDemo {
+public class StampedLockCase1 {
     private final StampedLock lock = new StampedLock();
-    private double balance;
+    private       int         balance;
 
-    public void deposit(double amount) {
+    public void deposit(int amount) {
         long stamp = lock.writeLock();
         try {
             balance += amount;
@@ -21,7 +23,7 @@ public class StampedLockDemo {
         }
     }
 
-    public double getBalance() {
+    public int getBalance() {
         long stamp = lock.readLock();
         try {
             return balance;
@@ -31,26 +33,26 @@ public class StampedLockDemo {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        StampedLockDemo account = new StampedLockDemo();
+        StampedLockCase1 exec = new StampedLockCase1();
         ExecutorService pool = Executors.newCachedThreadPool();
 
-        List<Callable<Double>> callables = IntStream.rangeClosed(1, 5)
-                .mapToObj(x -> (Callable<Double>) () -> {
-                    account.deposit(x);
-                    return account.getBalance();
+        // 1+2+3+4+5
+        List<Callable<Integer>> callables = IntStream.rangeClosed(1, 5)
+                .mapToObj(x -> (Callable<Integer>) () -> {
+                    exec.deposit(x);
+                    return exec.getBalance();
                 })
                 .collect(Collectors.toList());
 
         pool.invokeAll(callables).forEach(x -> {
             try {
-                System.out.println(x.get());
-            } catch (Exception e) {
-                e.printStackTrace();
+                Threads.info(x.get() + "");
+            } catch (Exception _) {
             }
         });
 
         pool.shutdown();
 
-        System.out.println(account.getBalance());
+        System.out.println("总:" + exec.getBalance());
     }
 }

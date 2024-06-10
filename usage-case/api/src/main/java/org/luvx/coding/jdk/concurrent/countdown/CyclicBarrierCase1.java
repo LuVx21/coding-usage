@@ -10,38 +10,35 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class CyclicBarrierCase {
-    private static final int           THREAD_COUNT_NUM  = 10;
-    private static       CyclicBarrier callMasterBarrier = new CyclicBarrier(THREAD_COUNT_NUM, () -> {
-        log.info("10人全到了, 开门放行");
-        try {
-            TimeUnit.SECONDS.sleep(2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+public class CyclicBarrierCase1 {
+    private static final int THREAD_COUNT_NUM = 10;
+
+    private final CyclicBarrier callMasterBarrier = new CyclicBarrier(THREAD_COUNT_NUM, () -> {
+        log.info("{}个线程全部完成,继续...", THREAD_COUNT_NUM);
+        // 继续执行await()后的逻辑
     });
 
     @AllArgsConstructor
-    static class A implements Runnable {
-        private final int i;
+    class A implements Runnable {
+        private int i;
 
         @SneakyThrows
         @Override
         public void run() {
-            TimeUnit.MILLISECONDS.sleep(i * 100);
-            log.info("第{}个人到了, 线程:{}", i, Thread.currentThread().getName());
+            log.info("第{}个线程开始, 线程:{}", i, Thread.currentThread().getName());
+            TimeUnit.MILLISECONDS.sleep(i * 100L);
             callMasterBarrier.await();
-            log.info("第{}个人进门, 线程:{}", i, Thread.currentThread().getName());
+            log.info("第{}个线程结束, 线程:{}", i, Thread.currentThread().getName());
         }
     }
 
-    private static void a() {
+    private void a() {
         for (int i = 1; i <= THREAD_COUNT_NUM; i++) {
             new Thread(new A(i)).start();
         }
     }
 
-    private static void b() {
+    private void b() {
         ExecutorService executor = Executors.newCachedThreadPool();
         for (int i = 0; i < THREAD_COUNT_NUM; i++) {
             executor.execute(new A(i));
@@ -50,7 +47,8 @@ public class CyclicBarrierCase {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        a();
-        // b();
+        CyclicBarrierCase1 exec = new CyclicBarrierCase1();
+        exec.a();
+        // exec.b();
     }
 }
