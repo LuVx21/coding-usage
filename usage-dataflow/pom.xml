@@ -6,10 +6,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.luvx</groupId>
-        <artifactId>coding-java-parent</artifactId>
-        <version>0.1</version>
-        <relativePath/>
+        <groupId>org.luvx.coding</groupId>
+        <artifactId>coding-usage</artifactId>
+        <version>0.0.0</version>
     </parent>
 
     <artifactId>usage-dataflow</artifactId>
@@ -23,22 +22,14 @@
     </modules>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>15</java.version>
-        <guava.version>28.2-jre</guava.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.16</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.70</version>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.4.0</version>
+            <scope>runtime</scope>
         </dependency>
         <!--文件上传下载-->
         <!--        <dependency>-->

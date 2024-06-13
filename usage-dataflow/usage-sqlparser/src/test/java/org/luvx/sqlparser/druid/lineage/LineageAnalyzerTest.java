@@ -63,7 +63,7 @@ public class LineageAnalyzerTest {
             Set<LineageField> leafNodes = e.getAllLeafData();
             for (LineageField f : leafNodes) {
                 if (f.getIsEnd()) {
-                    log.info("{}:\n{}", e.getData().getField(), JSONObject.toJSONString(f, true));
+                    log.info("{}:\n{}", e.getData().getField(), JSONObject.toJSONString(f));
                 }
             }
         }

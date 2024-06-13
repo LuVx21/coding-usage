@@ -3,22 +3,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-
     <parent>
         <groupId>org.luvx.coding</groupId>
-        <artifactId>coding-usage</artifactId>
-        <version>0.0.0</version>
+        <artifactId>coding-parent-kotlin</artifactId>
+        <version>0.3</version>
     </parent>
 
-    <artifactId>usage-jvm</artifactId>
-    <packaging>jar</packaging>
+    <artifactId>coding-usage</artifactId>
+    <version>0.0.0</version>
+    <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
 
     <properties>
     </properties>
 
+    <modules>
+        <module>usage-excel</module>
+        <module>usage-grpc</module>
+        <module>usage-jvm</module>
+        <module>usage-dataflow</module>
+    </modules>
+
     <dependencies>
     </dependencies>
-
 </project>

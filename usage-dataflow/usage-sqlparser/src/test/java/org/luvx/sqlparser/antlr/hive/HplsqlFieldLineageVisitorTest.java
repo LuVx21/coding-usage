@@ -43,7 +43,7 @@ public class HplsqlFieldLineageVisitorTest {
         HplsqlFieldLineageVisitor visitor = new HplsqlFieldLineageVisitor(sql);
         visitor.visit(parseTree);
         List<HiveFieldLineage> list = visitor.getHiveFieldLineage1();
-        log.info("字段血缘关系:{}", JSON.toJSONString(list, true));
+        log.info("字段血缘关系:{}", JSON.toJSONString(list));
 
         log.info("耗时:{}", started.stop());
     }

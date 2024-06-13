@@ -41,7 +41,7 @@ public class HplsqlTableLineageVisitorTest {
         HplsqlTableLineageVisitor visitor = new HplsqlTableLineageVisitor();
         visitor.visit(parseTree);
         HiveTableLineage tableLineage = visitor.getTableLineage();
-        log.info("表血缘关系:{}", JSON.toJSONString(tableLineage, true));
+        log.info("表血缘关系:{}", JSON.toJSONString(tableLineage));
 
         log.info("耗时:{}", started.stop());
     }
