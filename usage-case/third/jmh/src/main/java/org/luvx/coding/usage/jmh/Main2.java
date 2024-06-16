@@ -1,23 +1,16 @@
 package org.luvx.coding.usage.jmh;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.commons.math3.util.Pair;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Measurement;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OutputTimeUnit;
-import org.openjdk.jmh.annotations.Warmup;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.options.Options;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
-
-import lombok.AllArgsConstructor;
 
 @Warmup(iterations = 5, time = 1)
 @Measurement(iterations = 5, time = 1)
@@ -29,7 +22,7 @@ public class Main2 {
     static {
         demoList = new ArrayList<>();
         for (int i = 0; i < 10_0000; i++) {
-            demoList.add(new Pair<>(i, "test"));
+            demoList.add(Pair.of(i, "test"));
         }
     }
 

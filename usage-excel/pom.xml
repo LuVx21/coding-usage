@@ -15,7 +15,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <easyexcel.version>3.2.1</easyexcel.version>
+        <easyexcel.version>4.0.1</easyexcel.version>
     </properties>
 
     <dependencies>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
-            <version>1.8</version>
+            <version>1.11.0</version>
         </dependency>
     </dependencies>
 </project>

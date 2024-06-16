@@ -19,6 +19,7 @@
     </properties>
 
     <modules>
+        <module>usage-case</module>
         <module>usage-excel</module>
         <module>usage-grpc</module>
         <module>usage-jvm</module>

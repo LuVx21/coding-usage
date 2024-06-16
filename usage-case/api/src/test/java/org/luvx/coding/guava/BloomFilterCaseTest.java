@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 class BloomFilterCaseTest {
     @Test
     void m1() {
+        // 预计插入10亿个元素，误判率为0.01
         BloomFilter<CharSequence> bloomFilter = BloomFilter.create(
                 Funnels.stringFunnel(StandardCharsets.UTF_8), 10_0000_0000L, 0.01
         );
@@ -29,5 +30,9 @@ class BloomFilterCaseTest {
         } else {
             System.out.println("key_10000 不存在");
         }
+    }
+
+    @Test
+    void m2() {
     }
 }
