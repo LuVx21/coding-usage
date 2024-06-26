@@ -27,7 +27,6 @@ public class Main2 {
     }
 
     @Benchmark
-
     public void testHashMapWithoutSize() {
         Map<Integer, String> map = new HashMap<>();
         for (Pair<Integer, String> pair : demoList) {
