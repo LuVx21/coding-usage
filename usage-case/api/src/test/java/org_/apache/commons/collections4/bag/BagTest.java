@@ -1,5 +1,6 @@
-package org.apache.commons.collections4.bag;
+package org_.apache.commons.collections4.bag;
 
+import org.apache.commons.collections4.bag.HashBag;
 import org.junit.jupiter.api.Test;
 
 class BagTest {

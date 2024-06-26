@@ -1,10 +1,7 @@
-package org.luvx.coding.usage.jmh;
+package org.luvx.coding.usage.jmh.map;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.options.Options;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 5, time = 1)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class Main2 {
+public class Main {
     static List<Pair<Integer, String>> demoList;
 
     static {
@@ -40,14 +37,5 @@ public class Main2 {
         for (Pair<Integer, String> pair : demoList) {
             map.put(pair.getKey(), pair.getValue());
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        Options opt = new OptionsBuilder()
-                .include(Main2.class.getSimpleName())
-                .forks(1)
-                .build();
-
-        new Runner(opt).run();
     }
 }
