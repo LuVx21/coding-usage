@@ -18,6 +18,7 @@
 
     <modules>
         <module>usage-jar</module>
+        <module>usage-proto</module>
         <module>usage-json</module>
     </modules>
 

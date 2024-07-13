@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package org.luvx.proto;
+
+option java_package = "org.luvx.coding.serialize.protobuf";
+option java_outer_classname = "UserProto";
+
+message Users {
+  repeated User users = 1;
+}
+message User{
+  string id = 1;
+  string name = 2;
+  string sex = 3;
+}

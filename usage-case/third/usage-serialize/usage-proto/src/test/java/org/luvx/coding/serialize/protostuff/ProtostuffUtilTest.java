@@ -1,33 +1,20 @@
-package org.luvx.serialize.protostuff;
+package org.luvx.coding.serialize.protostuff;
 
-import io.protostuff.LinkedBuffer;
-import io.protostuff.ProtostuffIOUtil;
-import io.protostuff.runtime.RuntimeSchema;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class Main {
-    static RuntimeSchema<Po> poSchema = RuntimeSchema.createFrom(Po.class);
-
-    private static byte[] serialize(Po po) {
-        return ProtostuffIOUtil.toByteArray(po, poSchema, LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE));
-    }
-
-    private static Po deserialize(byte[] bytes) {
-        Po po = poSchema.newMessage();
-        ProtostuffIOUtil.mergeFrom(bytes, po, poSchema);
-        return po;
-    }
-
-    public void main(String[] args) {
+class ProtostuffUtilTest {
+    @Test
+    void m1() {
         Po po = new Po(1, "foo", new int[]{1, 2, 3, 4}, new InnerPo(1, "InnerPo1"), List.of("a", "b"));
-        byte[] bytes = serialize(po);
+        byte[] bytes = ProtostuffUtil.serialize(po);
         System.out.println("字节数组:" + bytes.length);
 
-        Po newPo = deserialize(bytes);
+        Po newPo = ProtostuffUtil.deserialize(bytes, Po.class);
         System.out.println(newPo);
     }
 
