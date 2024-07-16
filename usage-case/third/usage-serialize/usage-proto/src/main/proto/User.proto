@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package org.luvx.proto;
 
+option java_multiple_files = true;
 option java_package = "org.luvx.coding.serialize.protobuf";
 option java_outer_classname = "UserProto";
 

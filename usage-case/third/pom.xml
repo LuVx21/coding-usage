@@ -18,7 +18,7 @@
         <module>jmh</module>
         <module>hybrid</module>
 <!--        <module>usage-retrofit2</module>-->
-<!--        <module>usage-serialize</module>-->
+        <module>usage-serialize</module>
     </modules>
 
 </project>

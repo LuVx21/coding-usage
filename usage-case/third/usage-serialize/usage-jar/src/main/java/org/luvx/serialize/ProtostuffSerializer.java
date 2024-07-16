@@ -1,4 +1,4 @@
-package org.luvx.coding.serialize.protostuff;
+package org.luvx.serialize;
 
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
@@ -18,9 +18,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static io.protostuff.LinkedBuffer.DEFAULT_BUFFER_SIZE;
+
 @Slf4j
-public class ProtostuffUtil {
-    private static final Map<Class<?>, Schema<?>> cache = new ConcurrentHashMap<>();
+public class ProtostuffSerializer implements Serializer {
+    private static final Map<Class<?>, Schema<?>> cache  = new ConcurrentHashMap<>();
+    /**
+     * 避免每次序列化都重新申请Buffer空间
+     */
+    private static final LinkedBuffer             BUFFER = LinkedBuffer.allocate(DEFAULT_BUFFER_SIZE);
 
     @SuppressWarnings("unchecked")
     private static <T> Schema<T> getSchema(Class<T> clazz) {
@@ -30,14 +36,14 @@ public class ProtostuffUtil {
     /**
      * 序列化对象
      */
-    public static <T> byte[] serialize(T o) {
+    public <T> byte[] serialize(T o) {
         if (o == null) {
             return ArrayUtils.EMPTY_BYTE_ARRAY;
         }
 
         @SuppressWarnings("unchecked")
         Schema<T> schema = (Schema<T>) getSchema(o.getClass());
-        LinkedBuffer buffer = LinkedBuffer.allocate(1024 * 1024);
+        LinkedBuffer buffer = BUFFER; // LinkedBuffer.allocate(1024 * 1024);
         byte[] bytes;
         try {
             bytes = ProtostuffIOUtil.toByteArray(o, schema, buffer);
@@ -53,7 +59,7 @@ public class ProtostuffUtil {
      * 反序列化对象
      */
     @Nullable
-    public static <T> T deserialize(byte[] bytes, Class<T> clazz) {
+    public <T> T deserialize(byte[] bytes, Class<T> clazz) {
         if (ArrayUtils.isEmpty(bytes)) {
             return null;
         }

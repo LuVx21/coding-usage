@@ -15,24 +15,49 @@
     <name>${project.artifactId}</name>
 
     <dependencies>
+        <!--hessian,蚂蚁金服和dubbo有在更新-->
         <dependency>
             <groupId>com.caucho</groupId>
             <artifactId>hessian</artifactId>
-            <version>4.0.38</version>
+            <version>4.0.66</version>
         </dependency>
+
+        <!--kryo-->
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+            <version>5.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>de.javakaffee</groupId>
+            <artifactId>kryo-serializers</artifactId>
+            <version>0.45</version>
+        </dependency>
+
+        <!--protostuff-->
+        <dependency>
+            <groupId>io.protostuff</groupId>
+            <artifactId>protostuff-core</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.protostuff</groupId>
+            <artifactId>protostuff-runtime</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+
+
+        <!--Avro-->
+
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.plugin.version}</version>
-                <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 

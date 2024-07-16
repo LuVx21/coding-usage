@@ -2,7 +2,7 @@ package org.luvx.coding.serialize.protostuff;
 
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.luvx.coding.serialize.protobuf.UserProto.User;
+import org.luvx.coding.serialize.protobuf.User;
 
 import static org.luvx.coding.common.more.MorePrints.println;
 
