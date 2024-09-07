@@ -4,6 +4,7 @@ import com.google.common.collect.Range
 import com.google.common.util.concurrent.RateLimiter
 import org.junit.jupiter.api.Test
 import org.luvx.coding.common.enhancer.out
+import java.time.Duration
 import java.time.LocalDateTime
 
 internal class MainTest {
@@ -14,8 +15,11 @@ internal class MainTest {
         LocalDateTime.now().out()
         create.acquire()
         LocalDateTime.now().out()
+    }
 
-
+    @Test
+    fun warmup() {
+        val create = RateLimiter.create(1.0, Duration.ofSeconds(10))
     }
 
     @Test

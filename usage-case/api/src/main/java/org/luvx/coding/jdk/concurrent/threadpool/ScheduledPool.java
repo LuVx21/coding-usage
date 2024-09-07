@@ -4,12 +4,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Slf4j
 public class ScheduledPool {
+    static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(5);
 
     private static class TimerTask implements Runnable {
         @Override
@@ -22,7 +21,33 @@ public class ScheduledPool {
     }
 
     public static void main(String[] args) {
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(5);
+        m0();
+    }
+
+    /**
+     * 移除任务
+     */
+    @SneakyThrows
+    private static void m0() {
+        ScheduledThreadPoolExecutor executor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(5);
+
+        RunnableScheduledFuture<?> f1 = (RunnableScheduledFuture<?>) executor.scheduleAtFixedRate(() -> {
+            System.out.println("111 " + LocalDateTime.now());
+        }, 0, 1, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(() -> {
+            System.out.println("222 " + LocalDateTime.now());
+        }, 0, 1, TimeUnit.SECONDS);
+
+
+        // 10s后移除任务,不在调度执行
+        TimeUnit.SECONDS.sleep(10);
+        // executor.remove(f1);
+        f1.cancel(true);
+
+        TimeUnit.SECONDS.sleep(60);
+    }
+
+    private static void m1() {
         log.info("起始时间：{}", LocalDateTime.now());
         // 指定时间后执行
         executor.schedule(new TimerTask(), 2, TimeUnit.SECONDS);

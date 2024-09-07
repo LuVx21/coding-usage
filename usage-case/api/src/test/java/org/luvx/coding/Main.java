@@ -3,6 +3,8 @@ package org.luvx.coding;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.atomic.LongAdder;
+
 @Slf4j
 public class Main {
     @Test
@@ -14,6 +16,11 @@ public class Main {
 
     @Test
     void m2() {
+        LongAdder a = new LongAdder();
+        a.add(10);
+        System.out.println(a);
+        a.add(11);
+        System.out.println(a);
     }
 
     @Test

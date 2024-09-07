@@ -15,7 +15,6 @@ import org.luvx.coding.common.more.MorePrints;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName: org.luvx.guava
@@ -57,17 +56,6 @@ public class ArgsCheckTest {
                 .onResultOf((u) -> u._3 + "");
         // 1 person的年龄比ps大 所以输出1
         System.out.println(byOrdering.compare(person, ps));
-    }
-
-    /**
-     * org.springframework.util.StopWatch
-     */
-    @Test
-    public void method3() throws Exception {
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        Thread.sleep(1000);
-        long nanos = stopwatch.elapsed(TimeUnit.MILLISECONDS);
-        System.out.println(nanos);
     }
 
     @Test
