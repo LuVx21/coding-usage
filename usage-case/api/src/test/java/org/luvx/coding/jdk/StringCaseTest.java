@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.luvx.coding.common.more.MorePrints;
 
 import java.text.MessageFormat;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 class StringCaseTest {
@@ -108,25 +106,5 @@ class StringCaseTest {
         System.out.println(join);
         int i = "102".compareTo("101");
         System.out.println(i);
-    }
-
-    @Test
-    void m2() {
-        String name = "Joan";
-        String info = STR. "My name is \{ name }" ;
-
-        System.out.println(info);
-
-        String time = STR. "The time is \{
-                // The java.time.format package is very useful
-                DateTimeFormatter
-                        .ofPattern("HH:mm:ss")
-                        .format(LocalTime.now())
-                } right now" ;
-        System.out.println(time);
-
-        int x = 10, y = 20;
-        String s = STR. "\{ x } + \{ y } = \{ x + y }" ;
-        System.out.println(s);
     }
 }

@@ -89,10 +89,10 @@ public class PCByReentrantReadWriteLock {
 
     public void main() {
         // for (int i = 0; i < 2; i++) {
-        //     MoreRuns.runThread(new Consumer(), STR."消费者\{i + 1}");
+        //     MoreRuns.runThread(new Consumer(), "消费者" + (i + 1));
         // }
         // for (int i = 0; i < 2; i++) {
-        //     MoreRuns.runThread(new Producer(), STR."生产者\{i + 1}");
+        //     MoreRuns.runThread(new Producer(), "生产者" + (i + 1));
         // }
 
         for (int i = 0; i < 5; i++) {

@@ -52,7 +52,7 @@ public class MapCache<T> {
      * @param field 缓存field
      */
     public T hget(String key, String field) {
-        key = STR."\{key}:\{field}";
+        key = key + ":" + field;
         return this.get(key);
     }
 
@@ -99,7 +99,7 @@ public class MapCache<T> {
      * @param expired 过期时间，单位为秒
      */
     public void hset(String key, String field, T value, long expired) {
-        key = STR."\{key}:\{field}";
+        key = key + ":" + field;
         expired = expired > 0 ? System.currentTimeMillis() / 1000 + expired : expired;
         CacheObject<T> cacheObject = new CacheObject<>(key, value, expired);
         cachePool.put(key, cacheObject);
@@ -121,7 +121,7 @@ public class MapCache<T> {
      * @param field 缓存field
      */
     public void hdel(String key, String field) {
-        key = STR."\{key}:\{field}";
+        key = key + ":" + field;
         this.del(key);
     }
 

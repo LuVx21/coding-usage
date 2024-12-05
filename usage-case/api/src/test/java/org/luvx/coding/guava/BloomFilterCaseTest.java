@@ -14,7 +14,7 @@ class BloomFilterCaseTest {
                 Funnels.stringFunnel(StandardCharsets.UTF_8), 10_0000_0000L, 0.01
         );
         for (int i = 1; i <= 1_0000; i++) {
-            bloomFilter.put(STR."key_\{i}");
+            bloomFilter.put("key_" + i);
         }
 
         // 判断key_9999是否存在

@@ -20,7 +20,7 @@ public class ReentrantLockCase {
     private void read() {
         try {
             lock.readLock().lock();
-            System.out.println(STR."\{Thread.currentThread().getName()}获得读锁 时间:\{LocalDateTime.now()}");
+            System.out.println(Thread.currentThread().getName() + "获得读锁 时间:" + LocalDateTime.now());
             // 模拟读操作时间为5秒
             TimeUnit.SECONDS.sleep(5);
         } finally {
@@ -32,7 +32,7 @@ public class ReentrantLockCase {
     private void write() {
         try {
             lock.writeLock().lock();
-            System.out.println(STR."\{Thread.currentThread().getName()}获得写锁 时间:\{LocalDateTime.now()}");
+            System.out.println(Thread.currentThread().getName() + "获得写锁 时间:" + LocalDateTime.now());
             // 模拟写操作时间为5秒
             TimeUnit.SECONDS.sleep(5);
         } finally {

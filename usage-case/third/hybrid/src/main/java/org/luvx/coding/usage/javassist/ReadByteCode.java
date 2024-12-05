@@ -44,7 +44,7 @@ public class ReadByteCode {
         // 调用 personFly 方法
         Method personFlyMethod = o.getClass().getMethod("run");
         personFlyMethod.invoke(o);
-        //调用 joinFriend 方法
+        // 调用 joinFriend 方法
         Method execute = o.getClass().getMethod("run1");
         execute.invoke(o);
     }
@@ -64,18 +64,19 @@ public class ReadByteCode {
         for (int i = 0; i < methods.length; i++) {
             CtMethod method = methods[i];
             String methodName = method.getName();
-            String oldMethodName = STR."\{methodName}$$old";
+            String oldMethodName = methodName + "$$old";
             if (!"main".equalsIgnoreCase(methodName)) {
                 CtMethod newMethod = CtNewMethod.copy(method, cc, null);
                 method.setName(oldMethodName);
 
-                String s = STR."""
+                String s = """
                         {
                             long s = System.currentTimeMillis();
-                            \{oldMethodName}($$);
-                            System.out.println("方法(\{methodName})执行花费:" + (System.currentTimeMillis()-s) + " ms.");
+                            %s($$);
+                            System.out.println("方法(%s)执行花费:" + (System.currentTimeMillis()-s) + " ms.");
                         }
                         """;
+                s = String.format(s, oldMethodName, methodName);
 
                 newMethod.setBody(s);
                 newMethod.setName(methodName);

@@ -39,11 +39,11 @@ public class StructuredTaskCase {
         ScopedValue.runWhere(context, "foobar", () -> {
             try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
                 scope.fork(() -> {
-                    System.out.println(STR."hello:\{context.get()}");
+                    System.out.println("hello:" + context.get());
                     return "hello";
                 });
                 scope.fork(() -> {
-                    System.out.println(STR."say:\{context.get()}");
+                    System.out.println("say:" + context.get());
                     return 12;
                 });
                 try {
