@@ -17,7 +17,7 @@
 
     <properties>
         <disruptor.version>4.0.0</disruptor.version>
-        <mapstruct.version>1.6.0.Beta2</mapstruct.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
     </properties>
 
     <dependencies>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-            <version>3.6.7</version>
+            <version>3.7.1</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -40,7 +40,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>QLExpress</artifactId>
-            <version>3.3.3</version>
+            <version>3.3.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-lang</groupId>
@@ -74,7 +74,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven.plugin.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
