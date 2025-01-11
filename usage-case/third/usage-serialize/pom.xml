@@ -16,10 +16,6 @@
 
     <name>${project.artifactId}</name>
 
-    <properties>
-        <protoc.version>4.29.3</protoc.version>
-    </properties>
-
     <modules>
         <module>usage-jar</module>
         <module>usage-proto</module>
