@@ -1,4 +1,4 @@
-package org.luvx.coding.usage.javassist;
+package org.luvx.coding.usage.bc.javassist;
 
 public class Bool {
     public static void main(String[] args) throws InterruptedException {
