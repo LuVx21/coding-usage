@@ -19,6 +19,7 @@
         <module>hybrid</module>
 <!--        <module>usage-retrofit2</module>-->
         <module>usage-serialize</module>
+        <module>usage-byte</module>
     </modules>
 
 </project>
