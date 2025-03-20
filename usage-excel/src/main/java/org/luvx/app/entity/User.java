@@ -1,6 +1,6 @@
 package org.luvx.app.entity;
 
-import com.alibaba.excel.annotation.ExcelProperty;
+import cn.idev.excel.annotation.ExcelProperty;
 import lombok.Data;
 
 import java.time.LocalDate;

@@ -1,12 +1,12 @@
 package org.luvx.coding.excel;
 
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.support.ExcelTypeEnum;
-import com.alibaba.excel.write.merge.LoopMergeStrategy;
-import com.alibaba.excel.write.metadata.WriteSheet;
-import com.alibaba.excel.write.metadata.WriteTable;
-import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import cn.idev.excel.EasyExcel;
+import cn.idev.excel.ExcelWriter;
+import cn.idev.excel.support.ExcelTypeEnum;
+import cn.idev.excel.write.merge.LoopMergeStrategy;
+import cn.idev.excel.write.metadata.WriteSheet;
+import cn.idev.excel.write.metadata.WriteTable;
+import cn.idev.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
