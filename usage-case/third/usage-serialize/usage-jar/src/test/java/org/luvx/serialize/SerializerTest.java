@@ -59,6 +59,18 @@ class SerializerTest {
         MorePrints.print(bytes.length, po1);
     }
 
+    @Test
+    void furyTest() {
+        FurySerializer.register(InnerPo.class);
+        Serializer fury = new FurySerializer();
+        byte[] bytes = fury.serialize(po);
+
+        Object po = FurySerializer.fury.deserialize(bytes);
+
+        // var po = fury.deserialize(bytes);
+        MorePrints.print(bytes.length, po, po.getClass());
+    }
+
     @ToString
     @AllArgsConstructor
     static class Po implements Serializable {
