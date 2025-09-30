@@ -16,7 +16,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <grpc.version>1.71.0</grpc.version>
+        <grpc.version>1.75.0</grpc.version>
         <protoc.version>4.27.0</protoc.version>
         <protobuf.version>4.30.0</protobuf.version>
         <netty.tcnative.version>2.0.70.Final</netty.tcnative.version>
